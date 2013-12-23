@@ -11,3 +11,13 @@
 *.lai
 *.la
 *.a
+
+# Directories
+obj
+dist/media
+
+# Executable
+dist/bin/main
+
+# Misc
+dist/bin/Ogre.log
