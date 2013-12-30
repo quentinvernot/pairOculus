@@ -33,12 +33,13 @@ class Game : public Ogre::FrameListener{
 		~Game();
 
 		void go();
+		void shutDown();
 
-		bool injectMouseMoved(const OIS::MouseEvent &arg);
-		bool injectMousePressed(
+		bool injectMouseMove(const OIS::MouseEvent &arg);
+		bool injectMouseDown(
 			const OIS::MouseEvent &arg, OIS::MouseButtonID id
 		);
-		bool injectMouseReleased(
+		bool injectMouseUp(
 			const OIS::MouseEvent &arg, OIS::MouseButtonID id
 		);
 		bool injectKeyDown(const OIS::KeyEvent &arg);

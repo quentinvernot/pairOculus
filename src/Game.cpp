@@ -29,6 +29,7 @@ Game::~Game(){
 }
 
 void Game::go(){
+
 #ifdef _DEBUG
 	ogreResourcesCfg = "resources_d.cfg";
 	ogrePluginsCfg = "plugins_d.cfg";
@@ -44,22 +45,27 @@ void Game::go(){
 
 	// clean up
 	destroyScene();
+
 }
 
-bool Game::injectMouseMoved(const OIS::MouseEvent &arg){
-	return localPlayer->injectMouseMoved(arg);
+void shutDown(){
+	shutDownFlag = true;
 }
 
-bool Game::injectMousePressed(
+bool Game::injectMouseMove(const OIS::MouseEvent &arg){
+	return localPlayer->injectMouseMove(arg);
+}
+
+bool Game::injectMouseDown(
 	const OIS::MouseEvent &arg, OIS::MouseButtonID id
 ){
-	return localPlayer->injectMousePressed(arg, id);
+	return localPlayer->injectMouseDown(arg, id);
 }
 
-bool Game::injectMouseReleased(
+bool Game::injectMouseUp(
 	const OIS::MouseEvent &arg, OIS::MouseButtonID id
 ){
-	return localPlayer->injectMouseReleased(arg, id);
+	return localPlayer->injectMouseUp(arg, id);
 }
 
 bool Game::injectKeyDown(const OIS::KeyEvent &arg){
@@ -139,9 +145,9 @@ void Game::createFrameListener(){
 	input = new Input(gameWindow->getWindow());
 
 	input->setMouseListener(
-		boost::bind(&Game::injectMouseMoved, this, _1),
-		boost::bind(&Game::injectMousePressed, this, _1, _2),
-		boost::bind(&Game::injectMouseReleased, this, _1, _2)
+		boost::bind(&Game::injectMouseMove, this, _1),
+		boost::bind(&Game::injectMouseDown, this, _1, _2),
+		boost::bind(&Game::injectMouseUp, this, _1, _2)
 	);
 
 	input->setKeyboardListener(
@@ -168,10 +174,10 @@ void Game::createScene(){
 
 }
 
-void Game::destroyScene(){
-}
+void Game::destroyScene(){}
 
 void Game::setupResources(){
+
 	// Load resource paths from config file
 	Ogre::ConfigFile cf;
 	cf.load(ogreResourcesCfg);
@@ -180,11 +186,13 @@ void Game::setupResources(){
 	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
 
 	Ogre::String secName, typeName, archName;
-	while (seci.hasMoreElements())
-	{
+
+	while (seci.hasMoreElements()){
+
 		secName = seci.peekNextKey();
 		Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
 		Ogre::ConfigFile::SettingsMultiMap::iterator i;
+
 		for (i = settings->begin(); i != settings->end(); ++i){
 
 			typeName = i->first;
@@ -193,11 +201,12 @@ void Game::setupResources(){
 				archName, typeName, secName);
 
 		}
+
 	}
+
 }
 
-void Game::createResourceListener(){
-}
+void Game::createResourceListener(){}
 
 void Game::loadResources(){
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -209,7 +218,7 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		return false;
 
 	input->capture();
-	
+
 	localPlayer->frameRenderingQueued(evt);
 
 	return true;

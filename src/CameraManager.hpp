@@ -15,8 +15,8 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
-#include <SdkCameraMan.h>
-#include "OculusCameraMan.hpp"
+#include "SimpleCamera.hpp"
+#include "OculusCamera.hpp"
 
 class CameraManager{
 
@@ -25,17 +25,17 @@ class CameraManager{
 		CameraManager(Ogre::SceneManager *_sceneMgr);
 		~CameraManager();
 
+		void move(const Ogre::Vector3 vec);
+		void yaw(Ogre::Radian ang);
+		void pitch(Ogre::Radian ang);
+		void roll(Ogre::Radian ang);
+		Ogre::Vector3 getDirection();
+		Ogre::Vector3 getUp();
+		Ogre::Vector3 getRight();
+
 		void switchCameraMode();
 		Ogre::String getCameraMode();
 		void setCameraMode(Ogre::String mode);
-
-		bool injectMouseMoved(const OIS::MouseEvent &arg);
-		bool injectMousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		bool injectMouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		bool injectKeyDown(const OIS::KeyEvent &arg);
-		bool injectKeyUp(const OIS::KeyEvent &arg);
-
-		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		Ogre::Camera *getCamera();
 		Ogre::Camera *getOculusCameraLeft();
@@ -43,20 +43,16 @@ class CameraManager{
 
 	private:
 		//Methods
-		void createCamera();
+		void createSimpleCamera();
 		void createOculusCamera();
 		void destroyCameras();
 
 		//Arguments
-		Ogre::SceneManager *sceneMgr;
-		Ogre::Camera *camera;
-		Ogre::Camera *cameraLeft;
-		Ogre::Camera *cameraRight;
+		Ogre::SceneManager *mSceneMgr;
+		Ogre::String mCameraMode;
 
-		Ogre::String cameraMode;
-
-		OgreBites::SdkCameraMan* cameraMan;
-		OculusUtils::OculusCameraMan* oculusCameraMan;
+		SimpleCamera *mSimpleCamera;
+		OculusCamera *mOculusCamera;
 
 };
 

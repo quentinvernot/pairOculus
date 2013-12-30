@@ -39,10 +39,10 @@ Input::~Input(){
 }
 
 void Input::capture(){
-	
+
 	mouse->capture();
 	keyboard->capture();
-	
+
 }
 
 void Input::setMouseListener(

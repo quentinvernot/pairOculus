@@ -22,12 +22,12 @@ class LocalPlayer : public Player{
 
 	public:
 		//Methods
-		LocalPlayer(Ogre::String _name, CameraManager *_cameraManager);
+		LocalPlayer(Ogre::String name, CameraManager *cameraManager);
 		~LocalPlayer();
 
-		bool injectMouseMoved(const OIS::MouseEvent &arg);
-		bool injectMousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		bool injectMouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+		bool injectMouseMove(const OIS::MouseEvent &arg);
+		bool injectMouseDown(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+		bool injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 		bool injectKeyDown(const OIS::KeyEvent &arg);
 		bool injectKeyUp(const OIS::KeyEvent &arg);
 
@@ -35,7 +35,32 @@ class LocalPlayer : public Player{
 
 	private:
 		//Attributes
-		CameraManager *cameraManager;
+		CameraManager *mCameraManager;
+		
+		Ogre::Real mTopSpeed;
+		Ogre::Real mTopAccel;
+		Ogre::Vector3 mVelocity;
+
+		bool mGoingForward;
+		bool mGoingBack;
+		bool mGoingLeft;
+		bool mGoingRight;
+		bool mGoingUp;
+		bool mGoingDown;
+
+		int mAccelForward;
+		int mAccelBack;
+		int mAccelLeft;
+		int mAccelRight;
+		int mAccelUp;
+		int mAccelDown;
+
+		bool mFastMove;
+
+		Ogre::Radian mNodeYaw;
+		Ogre::Radian mNodePitch;
+		Ogre::Radian mNodeRoll;
+		Ogre::Vector3 mNodePosition;
 
 };
 

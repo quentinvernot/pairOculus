@@ -12,7 +12,7 @@ class Player{
 		Ogre::String getName();
 		
 		//Attributes
-		Ogre::String name;
+		Ogre::String mName;
 
 };
 

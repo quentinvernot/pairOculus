@@ -226,8 +226,7 @@ namespace OculusUtils{
 			else if (evt.key == OIS::KC_LSHIFT) mFastMove = true;
 
 		}
-if(mGoingForward)
-	Ogre::LogManager::getSingletonPtr()->logMessage("b");
+
 	}
 
 	/*-----------------------------------------------------------------------------

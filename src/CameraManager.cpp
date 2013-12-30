@@ -1,29 +1,26 @@
 #include "CameraManager.hpp"
 
 CameraManager::CameraManager(Ogre::SceneManager *_sceneMgr) :
-	sceneMgr(_sceneMgr),
-	camera(0),
-	cameraLeft(0),
-	cameraRight(0),
-	cameraMode("default"),
-	cameraMan(0),
-	oculusCameraMan(0)
+	mSceneMgr(_sceneMgr),
+	mCameraMode("default"),
+	mSimpleCamera(NULL),
+	mOculusCamera(NULL)
 {
 }
 
 CameraManager::~CameraManager(){
 
-	if(cameraMan)
-		delete cameraMan;
-	if(oculusCameraMan)
-		delete oculusCameraMan;
+	if(mSimpleCamera)
+		delete mSimpleCamera;
+	if(mOculusCamera)
+		delete mOculusCamera;
 
 }
 
-void CameraManager::createCamera(){
+void CameraManager::createSimpleCamera(){
 
 	// Create the camera
-	camera = sceneMgr->createCamera("PlayerCam");
+	Ogre::Camera *camera = mSceneMgr->createCamera("PlayerCam");
 
 	// Position it at 500 in Z direction
 	camera->setPosition(Ogre::Vector3(0,0,80));
@@ -32,17 +29,17 @@ void CameraManager::createCamera(){
 	camera->lookAt(Ogre::Vector3(0,0,-300));
 	camera->setNearClipDistance(1);
 
-	if(cameraMan == 0)
-		cameraMan = new OgreBites::SdkCameraMan(camera);
+	if(mSimpleCamera == NULL)
+		mSimpleCamera = new SimpleCamera(camera);
 	else
-		cameraMan->setCamera(camera);
+		mSimpleCamera->setCamera(camera);
 
 }
 
 void CameraManager::createOculusCamera(){
 
-	cameraLeft = sceneMgr->createCamera("PlayerCamLeft");
-	cameraRight = sceneMgr->createCamera("PlayerCamRight");
+	Ogre::Camera *cameraLeft = mSceneMgr->createCamera("PlayerCamLeft");
+	Ogre::Camera *cameraRight = mSceneMgr->createCamera("PlayerCamRight");
 
 	cameraLeft->setPosition(Ogre::Vector3(0,0,80));
 	cameraRight->setPosition(Ogre::Vector3(0,0,80));
@@ -52,115 +49,109 @@ void CameraManager::createOculusCamera(){
 	cameraLeft->setNearClipDistance(0.5);
 	cameraRight->setNearClipDistance(0.5);
 
-	if(oculusCameraMan == 0)
-		oculusCameraMan = new OculusUtils::OculusCameraMan(cameraLeft, cameraRight);
+	if(mOculusCamera == 0)
+		mOculusCamera = new OculusCamera(cameraLeft, cameraRight);
 	else{
-		oculusCameraMan->setLeftCamera(cameraLeft);
-		oculusCameraMan->setRightCamera(cameraRight);
+		mOculusCamera->setLeftCamera(cameraLeft);
+		mOculusCamera->setRightCamera(cameraRight);
 	}
 
 }
 
 void CameraManager::destroyCameras(){
-	sceneMgr->destroyAllCameras();
+	mSceneMgr->destroyAllCameras();
 }
 
-bool CameraManager::injectMouseMoved(const OIS::MouseEvent &arg){
+void CameraManager::move(const Ogre::Vector3 vec){
 
-	if(cameraMode == "oculus")
-		oculusCameraMan->injectMouseMove(arg);
+	if(mCameraMode == "oculus")
+		mOculusCamera->move(vec);
 	else
-		cameraMan->injectMouseMove(arg);
+		mSimpleCamera->move(vec);
 
-	return true;
 }
 
-bool CameraManager::injectMousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
+void CameraManager::yaw(Ogre::Radian ang){
 
-	if(cameraMode == "oculus")
-		oculusCameraMan->injectMouseDown(arg, id);
+	if(mCameraMode == "oculus")
+		mOculusCamera->yaw(ang);
 	else
-		cameraMan->injectMouseDown(arg, id);
+		mSimpleCamera->yaw(ang);
 
-	return true;
 }
 
-bool CameraManager::injectMouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
+void CameraManager::pitch(Ogre::Radian ang){
 
-	if(cameraMode == "oculus")
-		oculusCameraMan->injectMouseUp(arg, id);
+	if(mCameraMode == "oculus")
+		mOculusCamera->pitch(ang);
 	else
-		cameraMan->injectMouseUp(arg, id);
+		mSimpleCamera->pitch(ang);
 
-	return true;
 }
 
-bool CameraManager::injectKeyDown(const OIS::KeyEvent &arg){
+void CameraManager::roll(Ogre::Radian ang){
 
-	if (arg.key == OIS::KC_A)
-		switchCameraMode();
-
-	if(cameraMode == "oculus")
-		oculusCameraMan->injectKeyDown(arg);
+	if(mCameraMode == "oculus")
+		mOculusCamera->roll(ang);
 	else
-		cameraMan->injectKeyDown(arg);
-
-	return true;
+		mSimpleCamera->roll(ang);
 
 }
 
-bool CameraManager::injectKeyUp(const OIS::KeyEvent &arg){
+Ogre::Vector3 CameraManager::getDirection(){
 
-	if(cameraMode == "oculus")
-		oculusCameraMan->injectKeyUp(arg);
-	else
-		cameraMan->injectKeyUp(arg);
-
-	return true;
+	if(mCameraMode == "oculus")
+		return mOculusCamera->getLeftCamera()->getDirection();
+	return mSimpleCamera->getCamera()->getDirection();
 
 }
 
-bool CameraManager::frameRenderingQueued(const Ogre::FrameEvent &evt){
+Ogre::Vector3 CameraManager::getUp(){
 
-	if(cameraMode == "oculus")
-		oculusCameraMan->frameRenderingQueued(evt);
-	else
-		cameraMan->frameRenderingQueued(evt);
-
-	return true;
+	if(mCameraMode == "oculus")
+		return mOculusCamera->getLeftCamera()->getUp();
+	return mSimpleCamera->getCamera()->getUp();
 
 }
 
-Ogre::Camera *CameraManager::getCamera(){return camera;}
-Ogre::Camera *CameraManager::getOculusCameraLeft(){return cameraLeft;}
-Ogre::Camera *CameraManager::getOculusCameraRight(){return cameraRight;}
+Ogre::Vector3 CameraManager::getRight(){
+
+	if(mCameraMode == "oculus")
+		return mOculusCamera->getLeftCamera()->getRight();
+	return mSimpleCamera->getCamera()->getRight();
+
+}
 
 void CameraManager::switchCameraMode(){
 
-	if(cameraMode == "default")
+	if(mCameraMode == "default")
 		setCameraMode("default");
-	else if(cameraMode == "oculus")
+	else if(mCameraMode == "oculus")
 		setCameraMode("oculus");
 
 }
 
-Ogre::String CameraManager::getCameraMode(){return cameraMode;}
+Ogre::String CameraManager::getCameraMode(){return mCameraMode;}
 
 void CameraManager::setCameraMode(Ogre::String mode){
 
 	if(mode == "default"){
 
-		cameraMode = "default";
+		mCameraMode = "default";
 		destroyCameras();
-		createCamera();
+		createSimpleCamera();
 
 	}
 	else if(mode == "oculus"){
 
-		cameraMode = "oculus";
+		mCameraMode = "oculus";
 		destroyCameras();
 		createOculusCamera();
 
 	}
 
 }
+
+Ogre::Camera *CameraManager::getCamera(){return mSimpleCamera->getCamera();}
+Ogre::Camera *CameraManager::getOculusCameraLeft(){return mOculusCamera->getLeftCamera();}
+Ogre::Camera *CameraManager::getOculusCameraRight(){return mOculusCamera->getRightCamera();}
