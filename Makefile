@@ -5,7 +5,7 @@ OBJDIR=obj/
 LIBDIR=lib/
 BINDIR=dist/bin/
 
-OGRE=-I/usr/include/OGRE
+OGRE=-I/usr/include/OGRE -I/usr/local/include/OGRE
 OIS=-I/usr/include/OIS
 LIBS=-pthread -lGL -lOgreMain -lOIS -lOgreTerrain -lX11 -lXinerama -ludev -lGLU 
 
