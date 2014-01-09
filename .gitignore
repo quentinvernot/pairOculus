@@ -14,7 +14,6 @@
 
 # Directories
 obj
-dist/media
 
 # Executable
 dist/bin/main
