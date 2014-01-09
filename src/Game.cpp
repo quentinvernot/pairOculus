@@ -48,7 +48,7 @@ void Game::go(){
 
 }
 
-void shutDown(){
+void Game::shutDown(){
 	shutDownFlag = true;
 }
 
