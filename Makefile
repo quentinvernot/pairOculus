@@ -5,13 +5,15 @@ OBJDIR=obj/
 LIBDIR=lib/
 BINDIR=dist/bin/
 
-OGRE=-I/usr/include/OGRE
+OGRE=-I/usr/include/OGRE -I/usr/local/include/OGRE
 OIS=-I/usr/include/OIS
 LIBS=-pthread -lGL -lOgreMain -lOIS -lOgreTerrain -lX11 -lXinerama -ludev -lGLU 
 
-all: $(BINDIR)main
-main: $(BINDIR)main
+all: obj $(BINDIR)main
 re: clean all
+
+obj:
+	mkdir -p obj
 
 $(OBJDIR)Game.o: $(SRCDIR)Game.hpp $(SRCDIR)Game.cpp $(OBJDIR)CameraManager.o $(OBJDIR)LocalPlayer.o $(OBJDIR)Input.o $(OBJDIR)GameWindow.o
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)Game.cpp -o $(OBJDIR)Game.o
