@@ -22,7 +22,7 @@ class LocalPlayer : public Player{
 
 	public:
 		//Methods
-		LocalPlayer(Ogre::String name, CameraManager *cameraManager);
+		LocalPlayer(std::string name, CameraManager *cameraManager);
 		~LocalPlayer();
 
 		bool injectMouseMove(const OIS::MouseEvent &arg);
@@ -36,17 +36,6 @@ class LocalPlayer : public Player{
 	private:
 		//Attributes
 		CameraManager *mCameraManager;
-		
-		Ogre::Real mTopSpeed;
-		Ogre::Real mTopAccel;
-		Ogre::Vector3 mVelocity;
-
-		bool mGoingForward;
-		bool mGoingBack;
-		bool mGoingLeft;
-		bool mGoingRight;
-		bool mGoingUp;
-		bool mGoingDown;
 
 		int mAccelForward;
 		int mAccelBack;
@@ -54,13 +43,6 @@ class LocalPlayer : public Player{
 		int mAccelRight;
 		int mAccelUp;
 		int mAccelDown;
-
-		bool mFastMove;
-
-		Ogre::Radian mNodeYaw;
-		Ogre::Radian mNodePitch;
-		Ogre::Radian mNodeRoll;
-		Ogre::Vector3 mNodePosition;
 
 };
 

@@ -18,8 +18,8 @@ class GameWindow{
 		//Methods
 		GameWindow();
 		GameWindow(
-			CameraManager *_cameraManager,
-			Ogre::RenderWindow *_ogreWindow
+			CameraManager *cameraManager,
+			Ogre::RenderWindow *ogreWindow
 		);
 		~GameWindow();
 		void switchViewMode();
@@ -33,9 +33,9 @@ class GameWindow{
 		void destroyViewports();
 
 		//Attributes
-		CameraManager *cameraManager;
-		Ogre::RenderWindow *ogreWindow;
-		Ogre::String viewMode;
+		CameraManager *mCameraManager;
+		Ogre::RenderWindow *mOgreWindow;
+		Ogre::String mViewMode;
 
 };
 
