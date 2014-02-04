@@ -29,9 +29,14 @@ class CameraManager{
 		void yaw(Ogre::Radian ang);
 		void pitch(Ogre::Radian ang);
 		void roll(Ogre::Radian ang);
+
 		Ogre::Vector3 getDirection();
 		Ogre::Vector3 getUp();
 		Ogre::Vector3 getRight();
+
+		Ogre::Vector3 getForwardDirection();
+		Ogre::Vector3 getUpDirection();
+		Ogre::Vector3 getRightDirection();
 
 		void switchCameraMode();
 		Ogre::String getCameraMode();
