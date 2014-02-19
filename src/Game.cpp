@@ -86,7 +86,7 @@ bool Game::setup(){
 	ogreRoot = new Ogre::Root(ogrePluginsCfg);
 
 	setupResources();
-	
+
 	chooseSceneManager();
 
 	if(!configure())
@@ -116,7 +116,7 @@ bool Game::configure(){
 
 		Ogre::LogManager::getSingletonPtr()->logMessage("Creating Camera Manager");
 		cameraManager = new CameraManager(sceneMgr);
-		
+
 		Ogre::LogManager::getSingletonPtr()->logMessage("Creating Game Window");
 		gameWindow = new GameWindow(
 			cameraManager,
@@ -160,14 +160,16 @@ void Game::createFrameListener(){
 }
 
 void Game::createScene(){
+	unsigned int width = 10, height = 20, scale = 10;
 
+	// Data part
+	Map *map = new Map(width, height);
+
+	// Representation part
+	LocalMap(map, sceneMgr, scale);
+
+	// Lights
 	sceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
-
-	Ogre::SceneNode* headNode = sceneMgr->getRootSceneNode()->createChildSceneNode("HeadNode");
-	Ogre::Entity* ogreHead = sceneMgr->createEntity("Head", "ogrehead.mesh");
-	headNode->attachObject(ogreHead);
-
-	headNode->setPosition(50,-50,-70);
 
 	Ogre::Light* light = sceneMgr->createLight("MainLight");
 	light->setPosition(0, 80, 0);

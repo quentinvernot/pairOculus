@@ -1,15 +1,14 @@
 #ifndef CUBE_H
 #define CUBE_H
 
-#include "Block.h"
+#include "Block.hpp"
 
-class Cube : public Block
-{
+class Cube : public Block {
 	public:
 		/** Default constructor */
-		Cube();
+//		Cube();
 		/** My constructor */
-		Cube(Ogre::ManualObject *man, PrintType print, bool des, Real px, Real py, Real pz, Real sx = 100.0, Real sy = 100.0, Real sz = 100.0);
+		Cube(Ogre::ManualObject *man, PrintType print, Real px, Real py, Real pz, Real sx = 100.0, Real sy = 100.0, Real sz = 100.0);
 		/** Default destructor */
 		virtual ~Cube();
 

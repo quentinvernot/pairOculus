@@ -1,9 +1,7 @@
-#include "Cube.h"
+#include "Cube.hpp"
 
-Cube::Cube(Ogre::ManualObject *man, PrintType print, bool des, Real px, Real py, Real pz, Real sx, Real sy, Real sz)
-	:
-	Block (man, print, des, px, py, pz, sx, sy, sz)
-{
+Cube::Cube(Ogre::ManualObject *man, PrintType print, Real px, Real py, Real pz, Real sx, Real sy, Real sz) :
+	Block (man, print, px, py, pz, sx, sy, sz) {
 	switch (print) {
 		case EMPTY:
 			break;
@@ -16,22 +14,21 @@ Cube::Cube(Ogre::ManualObject *man, PrintType print, bool des, Real px, Real py,
 		case SOLID:
 			createBlockSolid();
 			break;
-		case COMPLET:
+		case COMPLETE:
 			createBlockWireframe();
 			createBlockSolid();
 			break;
 		default:
 			std::cerr << "WARNING unimplemented option for Cube creation." << std::endl;	//!TODO create a log message for that
+			break;
 	}
 }
 
-Cube::~Cube()
-{
+Cube::~Cube() {
 	//dtor
 }
 
-void Cube::createBlockPoint()
-{
+void Cube::createBlockPoint() {
 	manualBlock->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_POINT_LIST);
 
 	// define vertex position of index 0..7
@@ -57,8 +54,7 @@ void Cube::createBlockPoint()
 	manualBlock->end();
 }
 
-void Cube::createBlockWireframe()
-{
+void Cube::createBlockWireframe() {
 	manualBlock->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_STRIP);
 
 	// define vertex position of index 0..7
@@ -92,8 +88,7 @@ void Cube::createBlockWireframe()
 	manualBlock->end();
 }
 
-void Cube::createBlockSolid ()
-{
+void Cube::createBlockSolid () {
 	manualBlock->begin("", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 	// define vertex position of index 0..7

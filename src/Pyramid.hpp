@@ -1,15 +1,14 @@
 #ifndef PYRAMID_H
 #define PYRAMID_H
 
-#include "Block.h"
+#include "Block.hpp"
 
-class Pyramid : public Block
-{
+class Pyramid : public Block {
 	public:
 		/** Default constructor */
-		Pyramid();
+//		Pyramid();
 		/** My constructor */
-		Pyramid(Ogre::ManualObject *man, PrintType print, bool des, Real px, Real py, Real pz, Real sx = 100.0, Real sy = 100.0, Real sz = 100.0);
+		Pyramid(Ogre::ManualObject *man, PrintType print, Real px, Real py, Real pz, Real sx = 100.0, Real sy = 100.0, Real sz = 100.0);
 		/** Default destructor */
 		virtual ~Pyramid();
 

@@ -1,27 +1,17 @@
-#include "Block.h"
+#include "Block.hpp"
 
-Block::Block()
-{
-	//ctor
-}
-
-Block::Block(Ogre::ManualObject *man, PrintType print, bool des, Real px, Real py, Real pz, Real sx, Real sy, Real sz)
-	:
-	manualBlock (man),
+Block::Block(Ogre::ManualObject *man, PrintType print, Real px, Real py, Real pz, Real sx, Real sy, Real sz) :
 	print (print),
-	destructible (des),
 	positionX (px),
 	positionY (py),
 	positionZ (pz),
 	sizeX (sx),
 	sizeY (sy),
-	sizeZ (sz)
-{
-			std::cerr << "WARNING unimplemented option for Block creation." << std::endl;	//!TODO create a log message for that
+	sizeZ (sz),
+	manualBlock (man) {
 	//ctor
 }
 
-Block::~Block()
-{
+Block::~Block() {
 	//dtor
 }

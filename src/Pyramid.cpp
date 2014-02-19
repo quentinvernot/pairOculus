@@ -1,9 +1,7 @@
-#include "Pyramid.h"
+#include "Pyramid.hpp"
 
-Pyramid::Pyramid(Ogre::ManualObject *man, PrintType print, bool des, Real px, Real py, Real pz, Real sx, Real sy, Real sz)
-	:
-	Block (man, print, des, px, py, pz, sx, sy, sz)
-{
+Pyramid::Pyramid(Ogre::ManualObject *man, PrintType print, Real px, Real py, Real pz, Real sx, Real sy, Real sz) :
+	Block (man, print, px, py, pz, sx, sy, sz) {
 	switch (print) {
 		case EMPTY:
 			break;
@@ -16,22 +14,21 @@ Pyramid::Pyramid(Ogre::ManualObject *man, PrintType print, bool des, Real px, Re
 		case SOLID:
 			createBlockSolid();
 			break;
-		case COMPLET:
+		case COMPLETE:
 			createBlockWireframe();
 			createBlockSolid();
 			break;
 		default:
 			std::cerr << "WARNING unimplemented option for Pyramid creation." << std::endl;	//!TODO create a log message for that
+			break;
 	}
 }
 
-Pyramid::~Pyramid()
-{
+Pyramid::~Pyramid() {
 	//dtor
 }
 
-void Pyramid::createBlockPoint()
-{
+void Pyramid::createBlockPoint() {
 	manualBlock->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_POINT_LIST);
 
 	// define vertex position of index 0..4
@@ -51,8 +48,7 @@ void Pyramid::createBlockPoint()
 	manualBlock->end();
 }
 
-void Pyramid::createBlockWireframe()
-{
+void Pyramid::createBlockWireframe() {
 	manualBlock->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_STRIP);
 
 	// define vertex position of index 0..4
@@ -77,8 +73,7 @@ void Pyramid::createBlockWireframe()
 	manualBlock->end();
 }
 
-void Pyramid::createBlockSolid ()
-{
+void Pyramid::createBlockSolid () {
 	manualBlock->begin("", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 	// define vertex position of index 0..4

@@ -20,6 +20,7 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
+#include "LocalMap.hpp"
 #include "CameraManager.hpp"
 #include "LocalPlayer.hpp"
 #include "Input.hpp"
