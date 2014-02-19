@@ -17,6 +17,7 @@ obj
 
 # Executable
 dist/bin/main
+dist/bin/server
 
 # Misc
 dist/bin/Ogre.log

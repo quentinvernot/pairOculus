@@ -122,6 +122,50 @@ Ogre::Vector3 CameraManager::getRight(){
 
 }
 
+Ogre::Vector3 CameraManager::getForwardDirection(){
+
+	Ogre::Vector3 direction;
+
+	if(mCameraMode == "oculus")
+		direction = mOculusCamera->getLeftCamera()->getDirection();
+	else
+		direction = mSimpleCamera->getCamera()->getDirection();
+
+	direction.y = 0;
+	direction.normalise();
+
+	return direction;
+
+}
+
+Ogre::Vector3 CameraManager::getUpDirection(){
+
+	return Ogre::Vector3::UNIT_Y;
+
+}
+
+#include <iostream>
+
+Ogre::Vector3 CameraManager::getRightDirection(){
+
+	using namespace std;
+	cout << "a" <<endl;
+
+	Ogre::Vector3 direction;
+
+	if(mCameraMode == "oculus")
+		direction = mOculusCamera->getLeftCamera()->getRight();
+	else
+		direction = mSimpleCamera->getCamera()->getRight();
+
+	direction.y = 0;
+	direction.normalise();
+
+	return direction;
+
+
+}
+
 void CameraManager::switchCameraMode(){
 
 	if(mCameraMode == "default")

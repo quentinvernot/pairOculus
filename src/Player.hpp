@@ -1,18 +1,39 @@
 #ifndef __PLAYER_H
 #define __PLAYER_H
 
-#include <OgreRoot.h>
+#include <string>
 
 class Player{
 
 	public:
+		Player(std::string name);
 
 	protected:
 		//Methods
-		Ogre::String getName();
+		std::string getName();
 		
 		//Attributes
-		Ogre::String mName;
+		std::string mName;
+
+		int mTopSpeed;
+		int mTopAccel;
+
+		bool mFastMove;
+
+		double mNodeYaw;
+		double mNodePitch;
+		double mNodeRoll;
+
+		long mNodePositionX;
+		long mNodePositionY;
+		long mNodePositionZ;
+
+		bool mGoingForward;
+		bool mGoingBack;
+		bool mGoingLeft;
+		bool mGoingRight;
+		bool mGoingUp;
+		bool mGoingDown;
 
 };
 

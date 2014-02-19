@@ -1,22 +1,20 @@
 #include "GameWindow.hpp"
 
 GameWindow::GameWindow() :
-	cameraManager(0),
-	ogreWindow(0),
-	viewMode("default")
+	mCameraManager(0),
+	mOgreWindow(0),
+	mViewMode("default")
 {
 }
 
 GameWindow::GameWindow(
-	CameraManager *_cameraManager,
-	Ogre::RenderWindow *_ogreWindow
+	CameraManager *cameraManager,
+	Ogre::RenderWindow *ogreWindow
 ) :
-	viewMode("default")
+	mCameraManager(cameraManager),
+	mOgreWindow(ogreWindow),
+	mViewMode("default")
 {
-
-	cameraManager = _cameraManager;
-	ogreWindow = _ogreWindow;
-
 }
 
 GameWindow::~GameWindow(){
@@ -24,9 +22,9 @@ GameWindow::~GameWindow(){
 
 void GameWindow::switchViewMode(){
 
-	if(viewMode == "default")
+	if(mViewMode == "default")
 		setViewMode("default");
-	else if(viewMode == "oculus")
+	else if(mViewMode == "oculus")
 		setViewMode("oculus");
 
 }
@@ -35,17 +33,17 @@ void GameWindow::setViewMode(Ogre::String mode){
 
 	if(mode == "default"){
 
-		viewMode = "default";
+		mViewMode = "default";
 		destroyViewports();
-		cameraManager->setCameraMode(mode);
+		mCameraManager->setCameraMode(mode);
 		createSimpleViewport();
 
 	}
 	else if(mode == "oculus"){
 
-		viewMode = "oculus";
+		mViewMode = "oculus";
 		destroyViewports();
-		cameraManager->setCameraMode(mode);
+		mCameraManager->setCameraMode(mode);
 		createOculusViewports();
 
 	}
@@ -53,36 +51,37 @@ void GameWindow::setViewMode(Ogre::String mode){
 }
 
 void GameWindow::createSimpleViewport(){
+
 	// Create one viewport, entire window
-	Ogre::Viewport* vp = ogreWindow->addViewport(
-		cameraManager->getCamera(), 0, 0, 0, 1, 1
+	Ogre::Viewport* vp = mOgreWindow->addViewport(
+		mCameraManager->getCamera(), 0, 0, 0, 1, 1
 	);
 
 	vp->setBackgroundColour(Ogre::ColourValue(1,1,1));
 
 	// Alter the camera aspect ratio to match the viewport
-	cameraManager->getCamera()->setAspectRatio(
+	mCameraManager->getCamera()->setAspectRatio(
 		Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
 }
 
 void GameWindow::createOculusViewports(){
 
-	Ogre::Viewport* vpLeft = ogreWindow->addViewport(
-		cameraManager->getOculusCameraLeft(), 1, 0, 0, 0.5, 1
+	Ogre::Viewport* vpLeft = mOgreWindow->addViewport(
+		mCameraManager->getOculusCameraLeft(), 1, 0, 0, 0.5, 1
 	);
-	Ogre::Viewport* vpRight = ogreWindow->addViewport(
-		cameraManager->getOculusCameraRight(), 2, 0.5, 0, 0.5, 1
+	Ogre::Viewport* vpRight = mOgreWindow->addViewport(
+		mCameraManager->getOculusCameraRight(), 2, 0.5, 0, 0.5, 1
 	);
 
 	vpLeft->setBackgroundColour(Ogre::ColourValue(1,1,1));
 	vpRight->setBackgroundColour(Ogre::ColourValue(1,1,1));
 
-	cameraManager->getOculusCameraLeft()->setAspectRatio(
+	mCameraManager->getOculusCameraLeft()->setAspectRatio(
 		Ogre::Real(vpLeft->getActualWidth())
 		/ Ogre::Real(vpLeft->getActualHeight())
 	);
-	cameraManager->getOculusCameraRight()->setAspectRatio(
+	mCameraManager->getOculusCameraRight()->setAspectRatio(
 		Ogre::Real(vpRight->getActualWidth())
 		/ Ogre::Real(vpRight->getActualHeight())
 	);
@@ -91,22 +90,22 @@ void GameWindow::createOculusViewports(){
 	vpRight->setOverlaysEnabled(false);
 
 	Ogre::CompositorManager::getSingleton().addCompositor(
-		cameraManager->getOculusCameraLeft()->getViewport(), "Oculus"
+		mCameraManager->getOculusCameraLeft()->getViewport(), "Oculus"
 	);
 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(
-		cameraManager->getOculusCameraLeft()->getViewport(), "Oculus", true
+		mCameraManager->getOculusCameraLeft()->getViewport(), "Oculus", true
 	);
 	Ogre::CompositorManager::getSingleton().addCompositor(
-		cameraManager->getOculusCameraRight()->getViewport(), "Oculus"
+		mCameraManager->getOculusCameraRight()->getViewport(), "Oculus"
 	);
 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(
-		cameraManager->getOculusCameraRight()->getViewport(), "Oculus", true
+		mCameraManager->getOculusCameraRight()->getViewport(), "Oculus", true
 	);
 
 }
 
 void GameWindow::destroyViewports(){
-	ogreWindow->removeAllViewports();
+	mOgreWindow->removeAllViewports();
 }
 
-Ogre::RenderWindow *GameWindow::getWindow(){return ogreWindow;}
+Ogre::RenderWindow *GameWindow::getWindow(){return mOgreWindow;}
