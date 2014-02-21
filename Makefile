@@ -12,10 +12,15 @@ OIS=-I/usr/include/OIS
 LIBBOOST=-lboost_date_time -lboost_serialization -lboost_system -lboost_thread -lboost_wserialization
 LIBOGRE=-lGL -lOgreMain -lOIS -lOgreTerrain -lX11 -lXinerama -ludev -lGLU
 
-all: obj $(BINDIR)main $(BINDIR)server
+all: obj $(BINDIR)main $(BINDIR)server $(BINDIR)client
 re: clean all
-obj:
-	mkdir -p obj
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+MAINOBJ=$(OBJDIR)Game.o $(OBJDIR)GameWindow.o $(OBJDIR)Input.o $(OBJDIR)Player.o $(OBJDIR)CameraManager.o $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o $(OBJDIR)LocalPlayer.o $(OBJDIR)Block.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)Map.o $(OBJDIR)LocalMap.o $(OBJDIR)FloorPanel.o $(OBJDIR)BlockFactory.o
+$(BINDIR)main: main.cpp $(OBJDIR)Game.o
+	$(CC) $(OGRE) $(OIS) $(CFLAGS) main.cpp $(MAINOBJ) $(LIBOGRE) $(LIBBOOST) -o $(BINDIR)main
 
 $(OBJDIR)Game.o: $(SRCDIR)Game.hpp $(SRCDIR)Game.cpp $(OBJDIR)CameraManager.o $(OBJDIR)LocalPlayer.o $(OBJDIR)Input.o $(OBJDIR)GameWindow.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)Map.o $(OBJDIR)LocalMap.o
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)Game.cpp -o $(OBJDIR)Game.o
@@ -65,24 +70,40 @@ $(OBJDIR)FloorPanel.o: $(SRCDIR)FloorPanel.hpp $(SRCDIR)FloorPanel.cpp
 $(OBJDIR)BlockFactory.o: $(SRCDIR)BlockFactory.hpp $(SRCDIR)BlockFactory.cpp
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)BlockFactory.cpp -o $(OBJDIR)BlockFactory.o
 
-MAINOBJ=$(OBJDIR)Game.o $(OBJDIR)GameWindow.o $(OBJDIR)Input.o $(OBJDIR)Player.o $(OBJDIR)CameraManager.o $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o $(OBJDIR)LocalPlayer.o $(OBJDIR)Block.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)Map.o $(OBJDIR)LocalMap.o $(OBJDIR)FloorPanel.o $(OBJDIR)BlockFactory.o
-$(BINDIR)main: main.cpp $(OBJDIR)Game.o
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) main.cpp $(MAINOBJ) $(LIBOGRE) -o $(BINDIR)main
-
-$(OBJDIR)GameServer.o: $(SRCDIR)GameServer.hpp $(SRCDIR)GameServer.cpp $(OBJDIR)GameServerInstance.o
-	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)GameServer.cpp -o $(OBJDIR)GameServer.o
-
-$(OBJDIR)GameServerInstance.o: $(SRCDIR)GameServerInstance.hpp $(SRCDIR)GameServerInstance.cpp $(OBJDIR)GameSession.o
-	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)GameServerInstance.cpp -o $(OBJDIR)GameServerInstance.o
-
-$(OBJDIR)GameSession.o: $(SRCDIR)GameSession.hpp $(SRCDIR)GameSession.cpp
-	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)GameSession.cpp -o $(OBJDIR)GameSession.o
-
-SERVEROBJ=$(OBJDIR)GameServer.o $(OBJDIR)GameServerInstance.o $(OBJDIR)GameSession.o
+MESSAGEOBJ=$(OBJDIR)NetworkMessage/NetworkMessageFactory.o $(MESSAGEFACTORYOBJ)
+MESSAGEFACTORYOBJ=$(OBJDIR)NetworkMessage/NetworkMessage.o $(OBJDIR)NetworkMessage/Join.o $(OBJDIR)NetworkMessage/Leave.o $(OBJDIR)NetworkMessage/JoinAccept.o $(OBJDIR)NetworkMessage/JoinRefuse.o $(OBJDIR)NetworkMessage/PlayerJoined.o $(OBJDIR)NetworkMessage/PlayerLeft.o $(OBJDIR)NetworkMessage/GameStart.o $(OBJDIR)NetworkMessage/GameEnd.o $(OBJDIR)NetworkMessage/PlayerInput.o $(OBJDIR)NetworkMessage/PlayerKilled.o
+SERVEROBJ=$(OBJDIR)GameServer.o $(OBJDIR)GameServerInstance.o $(OBJDIR)GameServerSession.o $(OBJDIR)GameServerSessionList.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
 $(BINDIR)server: server.cpp $(OBJDIR)GameServer.o
 	$(CC) $(CFLAGS) server.cpp $(SERVEROBJ) $(LIBBOOST) -o $(BINDIR)server
 
+$(OBJDIR)GameServer.o: $(SRCDIR)GameServer.hpp $(SRCDIR)GameServer.cpp $(OBJDIR)GameServerInstance.o
+	$(CC) $(CFLAGS) -c $(SRCDIR)GameServer.cpp -o $(OBJDIR)GameServer.o
+
+$(OBJDIR)GameServerInstance.o: $(SRCDIR)GameServerInstance.hpp $(SRCDIR)GameServerInstance.cpp $(OBJDIR)GameServerSession.o $(OBJDIR)GameServerSessionList.o
+	$(CC) $(CFLAGS) -c $(SRCDIR)GameServerInstance.cpp -o $(OBJDIR)GameServerInstance.o
+
+$(OBJDIR)GameServerSession.o: $(SRCDIR)GameServerSession.hpp $(SRCDIR)GameServerSession.cpp $(OBJDIR)NetworkMessage $(OBJDIR)PlayerList.o
+	$(CC) $(CFLAGS) -c $(SRCDIR)GameServerSession.cpp -o $(OBJDIR)GameServerSession.o
+
+$(OBJDIR)GameServerSessionList.o: $(SRCDIR)GameServerSessionList.hpp $(SRCDIR)GameServerSessionList.cpp $(OBJDIR)GameServerSession.o
+	$(CC) $(CFLAGS) -c $(SRCDIR)GameServerSessionList.cpp -o $(OBJDIR)GameServerSessionList.o
+
+CLIENTOBJ=$(OBJDIR)GameClient/GameClient.o $(OBJDIR)GameClient/Listener.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
+$(BINDIR)client: client.cpp $(OBJDIR)GameClient
+	$(CC) $(CFLAGS) client.cpp $(CLIENTOBJ) $(LIBBOOST) -o $(BINDIR)client
+
+$(OBJDIR)GameClient: .FORCE $(OBJDIR)NetworkMessage $(OBJDIR)Player.o
+	cd $(SRCDIR)GameClient/ && make
+
+$(OBJDIR)NetworkMessage: .FORCE $(OBJDIR)Player.o $(OBJDIR)PlayerList.o
+	cd $(SRCDIR)NetworkMessage/ && make
+
 clean:
-	rm -f $(OBJDIR)*.o
-	rm -f main
-	rm -f server
+	cd $(SRCDIR)NetworkMessage/ && make clean
+	cd $(SRCDIR)GameClient/ && make clean
+	rm -rf $(OBJDIR)
+	rm -f $(BINDIR)main
+	rm -f $(BINDIR)server
+	rm -f $(BINDIR)client
+
+.FORCE:
