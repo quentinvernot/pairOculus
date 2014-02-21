@@ -12,7 +12,7 @@ OIS=-I/usr/include/OIS
 LIBBOOST=-lboost_date_time -lboost_serialization -lboost_system -lboost_thread -lboost_wserialization
 LIBOGRE=-lGL -lOgreMain -lOIS -lOgreTerrain -lX11 -lXinerama -ludev -lGLU
 
-all: obj $(BINDIR)main $(BINDIR)server $(BINDIR)client
+all: $(OBJDIR) $(BINDIR)main $(BINDIR)server $(BINDIR)client
 re: clean all
 
 $(OBJDIR):
@@ -33,6 +33,9 @@ $(OBJDIR)Input.o: $(SRCDIR)Input.hpp $(SRCDIR)Input.cpp
 
 $(OBJDIR)Player.o: $(SRCDIR)Player.hpp $(SRCDIR)Player.cpp
 	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)Player.cpp -o $(OBJDIR)Player.o
+
+$(OBJDIR)PlayerList.o: $(SRCDIR)PlayerList.hpp $(SRCDIR)PlayerList.cpp $(OBJDIR)Player.o
+	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)PlayerList.cpp -o $(OBJDIR)PlayerList.o
 
 $(OBJDIR)CameraManager.o: $(SRCDIR)CameraManager.hpp $(SRCDIR)CameraManager.cpp $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)CameraManager.cpp -o $(OBJDIR)CameraManager.o
@@ -70,23 +73,12 @@ $(OBJDIR)FloorPanel.o: $(SRCDIR)FloorPanel.hpp $(SRCDIR)FloorPanel.cpp
 $(OBJDIR)BlockFactory.o: $(SRCDIR)BlockFactory.hpp $(SRCDIR)BlockFactory.cpp
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)BlockFactory.cpp -o $(OBJDIR)BlockFactory.o
 
-MESSAGEOBJ=$(OBJDIR)NetworkMessage/NetworkMessageFactory.o $(MESSAGEFACTORYOBJ)
-MESSAGEFACTORYOBJ=$(OBJDIR)NetworkMessage/NetworkMessage.o $(OBJDIR)NetworkMessage/Join.o $(OBJDIR)NetworkMessage/Leave.o $(OBJDIR)NetworkMessage/JoinAccept.o $(OBJDIR)NetworkMessage/JoinRefuse.o $(OBJDIR)NetworkMessage/PlayerJoined.o $(OBJDIR)NetworkMessage/PlayerLeft.o $(OBJDIR)NetworkMessage/GameStart.o $(OBJDIR)NetworkMessage/GameEnd.o $(OBJDIR)NetworkMessage/PlayerInput.o $(OBJDIR)NetworkMessage/PlayerKilled.o
-SERVEROBJ=$(OBJDIR)GameServer.o $(OBJDIR)GameServerInstance.o $(OBJDIR)GameServerSession.o $(OBJDIR)GameServerSessionList.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
-$(BINDIR)server: server.cpp $(OBJDIR)GameServer.o
+SERVEROBJ=$(OBJDIR)GameServer/GameServer.o $(OBJDIR)GameServer/Instance.o $(OBJDIR)GameServer/Session.o $(OBJDIR)GameServer/SessionList.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
+$(BINDIR)server: server.cpp $(OBJDIR)GameServer
 	$(CC) $(CFLAGS) server.cpp $(SERVEROBJ) $(LIBBOOST) -o $(BINDIR)server
 
-$(OBJDIR)GameServer.o: $(SRCDIR)GameServer.hpp $(SRCDIR)GameServer.cpp $(OBJDIR)GameServerInstance.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)GameServer.cpp -o $(OBJDIR)GameServer.o
-
-$(OBJDIR)GameServerInstance.o: $(SRCDIR)GameServerInstance.hpp $(SRCDIR)GameServerInstance.cpp $(OBJDIR)GameServerSession.o $(OBJDIR)GameServerSessionList.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)GameServerInstance.cpp -o $(OBJDIR)GameServerInstance.o
-
-$(OBJDIR)GameServerSession.o: $(SRCDIR)GameServerSession.hpp $(SRCDIR)GameServerSession.cpp $(OBJDIR)NetworkMessage $(OBJDIR)PlayerList.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)GameServerSession.cpp -o $(OBJDIR)GameServerSession.o
-
-$(OBJDIR)GameServerSessionList.o: $(SRCDIR)GameServerSessionList.hpp $(SRCDIR)GameServerSessionList.cpp $(OBJDIR)GameServerSession.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)GameServerSessionList.cpp -o $(OBJDIR)GameServerSessionList.o
+$(OBJDIR)GameServer: .FORCE $(OBJDIR)NetworkMessage $(OBJDIR)Player.o
+	cd $(SRCDIR)GameServer/ && make
 
 CLIENTOBJ=$(OBJDIR)GameClient/GameClient.o $(OBJDIR)GameClient/Listener.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
 $(BINDIR)client: client.cpp $(OBJDIR)GameClient
@@ -95,11 +87,14 @@ $(BINDIR)client: client.cpp $(OBJDIR)GameClient
 $(OBJDIR)GameClient: .FORCE $(OBJDIR)NetworkMessage $(OBJDIR)Player.o
 	cd $(SRCDIR)GameClient/ && make
 
+MESSAGEOBJ=$(OBJDIR)NetworkMessage/NetworkMessageFactory.o $(MESSAGEFACTORYOBJ)
+MESSAGEFACTORYOBJ=$(OBJDIR)NetworkMessage/NetworkMessage.o $(OBJDIR)NetworkMessage/Join.o $(OBJDIR)NetworkMessage/Leave.o $(OBJDIR)NetworkMessage/JoinAccept.o $(OBJDIR)NetworkMessage/JoinRefuse.o $(OBJDIR)NetworkMessage/PlayerJoined.o $(OBJDIR)NetworkMessage/PlayerLeft.o $(OBJDIR)NetworkMessage/GameStart.o $(OBJDIR)NetworkMessage/GameEnd.o $(OBJDIR)NetworkMessage/PlayerInput.o $(OBJDIR)NetworkMessage/PlayerKilled.o
 $(OBJDIR)NetworkMessage: .FORCE $(OBJDIR)Player.o $(OBJDIR)PlayerList.o
 	cd $(SRCDIR)NetworkMessage/ && make
 
 clean:
 	cd $(SRCDIR)NetworkMessage/ && make clean
+	cd $(SRCDIR)GameServer/ && make clean
 	cd $(SRCDIR)GameClient/ && make clean
 	rm -rf $(OBJDIR)
 	rm -f $(BINDIR)main
