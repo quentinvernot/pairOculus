@@ -25,8 +25,8 @@ class GameServer{
 		//Methods
 
 		//Attributes
-		boost::asio::io_service io_service;
-		GameServerInstance *instance;
+		boost::asio::io_service mIo_service;
+		GameServerInstance *mInstance;
 
 };
 

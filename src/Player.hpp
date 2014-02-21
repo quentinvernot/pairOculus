@@ -8,9 +8,28 @@ class Player{
 	public:
 		Player(std::string name);
 
+		std::string getNickname();
+
+		double getNodeYaw();
+		double getNodePitch();
+		double getNodeRoll();
+
+		long getNodePositionX();
+		long getNodePositionY();
+		long getNodePositionZ();
+		void setNodePositionX(long nodePositionX);
+		void setNodePositionY(long nodePositionY);
+		void setNodePositionZ(long nodePositionZ);
+
+		bool getGoingForward();
+		bool getGoingBack();
+		bool getGoingLeft();
+		bool getGoingRight();
+		bool getGoingUp();
+		bool getGoingDown();
+
 	protected:
 		//Methods
-		std::string getName();
 		
 		//Attributes
 		std::string mName;

@@ -20,4 +20,28 @@ Player::Player(std::string name):
 {
 }
 
-std::string Player::getName(){return mName;}
+std::string Player::getNickname(){return mName;}
+
+double Player::getNodeYaw(){return mNodeYaw;}
+double Player::getNodePitch(){return mNodePitch;}
+double Player::getNodeRoll(){return mNodeRoll;}
+
+long Player::getNodePositionX(){return mNodePositionX;}
+long Player::getNodePositionY(){return mNodePositionY;}
+long Player::getNodePositionZ(){return mNodePositionZ;}
+void Player::setNodePositionX(long nodePositionX){
+	mNodePositionX = nodePositionX;
+}
+void Player::setNodePositionY(long nodePositionY){
+	mNodePositionY = nodePositionY;
+}
+void Player::setNodePositionZ(long nodePositionZ){
+	mNodePositionZ = nodePositionZ;
+}
+
+bool Player::getGoingForward(){return mGoingForward;}
+bool Player::getGoingBack(){return mGoingBack;}
+bool Player::getGoingLeft(){return mGoingLeft;}
+bool Player::getGoingRight(){return mGoingRight;}
+bool Player::getGoingUp(){return mGoingUp;}
+bool Player::getGoingDown(){return mGoingDown;}

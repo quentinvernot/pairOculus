@@ -1,12 +1,12 @@
 #include "GameServer.hpp"
 
 GameServer::GameServer(){
-	instance = new GameServerInstance(1337, io_service);
+	mInstance = new GameServerInstance(1337, mIo_service);
 }
 
 GameServer::~GameServer(){
 }
 
 void GameServer::start(){
-    io_service.run();
+    mIo_service.run();
 }
