@@ -9,13 +9,14 @@
 #include <boost/asio.hpp>
 
 #include "../NetworkMessage/NetworkMessageFactory.hpp"
+#include "../NetworkIO.hpp"
 #include "../Player.hpp"
 
 using boost::asio::ip::tcp;
 
 namespace GameServer{
 
-	class Session{
+	class Session : public NetworkIO{
 
 		public:
 			//Methods
@@ -26,25 +27,18 @@ namespace GameServer{
 						NetworkMessage::NetworkMessage *message,
 						Session *sourceSession
 					)
-				> handleReceive
+				> receive
 			);
 			~Session();
-
-			tcp::socket &getSocket();
-			void start();
-			void sendMessage(NetworkMessage::NetworkMessage *message);
 
 			Player *getPlayer();
 			void setPlayer(Player *player);
 
 		private:
 			//Methods
-			void handleReadHeader(const boost::system::error_code& error);
-			void handleReadBody(const boost::system::error_code& error);
-			void handleWrite(const boost::system::error_code& error);
+			void handleReceive(NetworkMessage::NetworkMessage *message);
 
 			//Attributes
-			tcp::socket mSocket;
 			char *mHeaderBuffer;
 			char *mBodyBuffer;
 			std::string mMessageBuffer;
@@ -55,8 +49,7 @@ namespace GameServer{
 					NetworkMessage::NetworkMessage *message,
 					Session *sourceSession
 				)
-			> mHandleReceive;
-
+			> mReceive;
 			Player *mPlayer;
 
 	};

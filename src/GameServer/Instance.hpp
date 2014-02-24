@@ -20,10 +20,7 @@ namespace GameServer{
 
 		public:
 			//Methods
-			Instance(
-				unsigned short port,
-				boost::asio::io_service& io_service
-			);
+			Instance(unsigned short port);
 			~Instance();
 
 			void start();
@@ -31,7 +28,7 @@ namespace GameServer{
 				Session *gss,
 				const boost::system::error_code& error
 			);
-			void handleReceive(
+			void onReceive(
 				NetworkMessage::NetworkMessage *message,
 				Session *sourceSession
 			);
@@ -80,7 +77,7 @@ namespace GameServer{
 			);
 
 			//Attributes
-			boost::asio::io_service& mIo_service;
+			boost::asio::io_service mIo_service;
 			tcp::acceptor mAcceptor;
 			Session *mSession;
 			SessionList *mSessionList;

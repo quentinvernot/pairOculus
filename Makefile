@@ -73,22 +73,24 @@ $(OBJDIR)FloorPanel.o: $(SRCDIR)FloorPanel.hpp $(SRCDIR)FloorPanel.cpp
 $(OBJDIR)BlockFactory.o: $(SRCDIR)BlockFactory.hpp $(SRCDIR)BlockFactory.cpp
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)BlockFactory.cpp -o $(OBJDIR)BlockFactory.o
 
-SERVEROBJ=$(OBJDIR)GameServer/GameServer.o $(OBJDIR)GameServer/Instance.o $(OBJDIR)GameServer/Session.o $(OBJDIR)GameServer/SessionList.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
+$(OBJDIR)NetworkIO.o: $(SRCDIR)NetworkIO.hpp $(SRCDIR)NetworkIO.cpp $(OBJDIR)NetworkMessage
+	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)NetworkIO.cpp -o $(OBJDIR)NetworkIO.o
+
+SERVEROBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)GameServer/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
 $(BINDIR)server: server.cpp $(OBJDIR)GameServer
 	$(CC) $(CFLAGS) server.cpp $(SERVEROBJ) $(LIBBOOST) -o $(BINDIR)server
 
-$(OBJDIR)GameServer: .FORCE $(OBJDIR)NetworkMessage $(OBJDIR)Player.o
+$(OBJDIR)GameServer: .FORCE $(OBJDIR)PlayerList.o $(OBJDIR)NetworkIO.o
 	cd $(SRCDIR)GameServer/ && make
 
-CLIENTOBJ=$(OBJDIR)GameClient/GameClient.o $(OBJDIR)GameClient/Listener.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
+CLIENTOBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)GameClient/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
 $(BINDIR)client: client.cpp $(OBJDIR)GameClient
 	$(CC) $(CFLAGS) client.cpp $(CLIENTOBJ) $(LIBBOOST) -o $(BINDIR)client
 
-$(OBJDIR)GameClient: .FORCE $(OBJDIR)NetworkMessage $(OBJDIR)Player.o
+$(OBJDIR)GameClient: .FORCE $(OBJDIR)NetworkIO.o $(OBJDIR)NetworkMessage $(OBJDIR)Player.o
 	cd $(SRCDIR)GameClient/ && make
 
-MESSAGEOBJ=$(OBJDIR)NetworkMessage/NetworkMessageFactory.o $(MESSAGEFACTORYOBJ)
-MESSAGEFACTORYOBJ=$(OBJDIR)NetworkMessage/NetworkMessage.o $(OBJDIR)NetworkMessage/Join.o $(OBJDIR)NetworkMessage/Leave.o $(OBJDIR)NetworkMessage/JoinAccept.o $(OBJDIR)NetworkMessage/JoinRefuse.o $(OBJDIR)NetworkMessage/PlayerJoined.o $(OBJDIR)NetworkMessage/PlayerLeft.o $(OBJDIR)NetworkMessage/GameStart.o $(OBJDIR)NetworkMessage/GameEnd.o $(OBJDIR)NetworkMessage/PlayerInput.o $(OBJDIR)NetworkMessage/PlayerKilled.o
+MESSAGEOBJ=$(OBJDIR)NetworkMessage/*.o
 $(OBJDIR)NetworkMessage: .FORCE $(OBJDIR)Player.o $(OBJDIR)PlayerList.o
 	cd $(SRCDIR)NetworkMessage/ && make
 

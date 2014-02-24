@@ -14,13 +14,10 @@ re: clean all
 $(OBJDIRC):
 	mkdir -p $(OBJDIRC)
 
-MESSAGEOBJ=$(OBJDIRN)NetworkMessageFactory.o $(MESSAGEFACTORYOBJ)
-MESSAGEFACTORYOBJ=$(OBJDIRN)NetworkMessage.o $(OBJDIRN)Join.o $(OBJDIRN)Leave.o $(OBJDIRN)JoinAccept.o $(OBJDIRN)JoinRefuse.o $(OBJDIRN)PlayerJoined.o $(OBJDIRN)PlayerLeft.o $(OBJDIRN)GameStart.o $(OBJDIRN)GameEnd.o $(OBJDIRN)PlayerInput.o $(OBJDIRN)PlayerKilled.o
-
-$(OBJDIRC)GameClient.o: $(SRCDIR)GameClient.hpp $(SRCDIR)GameClient.cpp $(OBJDIRC)Listener.o $(MESSAGEOBJ)
+$(OBJDIRC)GameClient.o: $(SRCDIR)GameClient.hpp $(SRCDIR)GameClient.cpp $(OBJDIRC)Listener.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)GameClient.cpp -o $(OBJDIRC)GameClient.o
 
-$(OBJDIRC)Listener.o: $(SRCDIR)Listener.hpp $(SRCDIR)Listener.cpp
+$(OBJDIRC)Listener.o: $(SRCDIR)Listener.hpp $(SRCDIR)Listener.cpp $(OBJDIRN)*.o $(OBJDIR)NetworkIO.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)Listener.cpp -o $(OBJDIRC)Listener.o
 
 clean:

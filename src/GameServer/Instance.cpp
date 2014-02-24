@@ -2,18 +2,14 @@
 
 namespace GameServer{
 
-	Instance::Instance(
-		unsigned short port,
-		boost::asio::io_service& io_service
-	) :
-		mIo_service(io_service),
+	Instance::Instance(unsigned short port) :
+		mIo_service(),
 		mAcceptor(mIo_service, tcp::endpoint(tcp::v4(), port)),
 		mSession(0),
 		mSessionList(new SessionList),
 		mPlayerList(new PlayerList()),
 		mNMFactory(new NetworkMessage::NetworkMessageFactory())
 	{
-		start();
 	}
 
 	Instance::~Instance(){
@@ -24,7 +20,7 @@ namespace GameServer{
 		mSession = new Session(
 			mIo_service,
 			boost::bind(
-				&Instance::handleReceive,
+				&Instance::onReceive,
 				this,
 				_1,
 				_2
@@ -40,24 +36,26 @@ namespace GameServer{
 				boost::asio::placeholders::error
 			)
 		);
+		
+		mIo_service.run();
 
 	}
 
 	void Instance::handleAccept(
-		Session *Session,
+		Session *session,
 		const boost::system::error_code& error
 	){
 
 		if (!error){
-			mSessionList->addSession(Session);
-			Session->start();
+			mSessionList->addSession(session);
+			session->start();
 		}
 
 		start();
 
 	}
 
-	void Instance::handleReceive(
+	void Instance::onReceive(
 		NetworkMessage::NetworkMessage *message,
 		Session *sourceSession
 	){
