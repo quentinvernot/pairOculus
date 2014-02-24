@@ -13,7 +13,6 @@ re: clean all
 $(OBJDIRN):
 	mkdir -p $(OBJDIRN)
 
-MESSAGEOBJ=$(OBJDIRN)NetworkMessageFactory.o $(MESSAGEFACTORYOBJ)
 MESSAGEFACTORYOBJ=$(OBJDIRN)NetworkMessage.o $(OBJDIRN)Join.o $(OBJDIRN)Leave.o $(OBJDIRN)JoinAccept.o $(OBJDIRN)JoinRefuse.o $(OBJDIRN)PlayerJoined.o $(OBJDIRN)PlayerLeft.o $(OBJDIRN)GameStart.o $(OBJDIRN)GameEnd.o $(OBJDIRN)PlayerInput.o $(OBJDIRN)PlayerKilled.o
 
 $(OBJDIRN)NetworkMessageFactory.o: $(SRCDIR)NetworkMessageFactory.hpp $(SRCDIR)NetworkMessageFactory.cpp $(MESSAGEFACTORYOBJ)

@@ -1,7 +1,7 @@
 #include "Player.hpp"
 
-Player::Player(std::string name):
-	mName(name),
+Player::Player(std::string nickname):
+	mNickname(nickname),
 	mTopSpeed(300),
 	mTopAccel(1),
 	mFastMove(false),
@@ -20,7 +20,7 @@ Player::Player(std::string name):
 {
 }
 
-std::string Player::getNickname(){return mName;}
+std::string Player::getNickname(){return mNickname;}
 
 double Player::getNodeYaw(){return mNodeYaw;}
 double Player::getNodePitch(){return mNodePitch;}

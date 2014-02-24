@@ -56,7 +56,21 @@ namespace NetworkMessage{
 			case GAMEEND:
 				return new GameEnd();
 			case PLAYERINPUT:
-				return new PlayerInput();
+				return new PlayerInput(
+					parts[2],
+					atof(parts[3].c_str()),
+					atof(parts[4].c_str()),
+					atof(parts[5].c_str()),
+					atoi(parts[6].c_str()),
+					atoi(parts[7].c_str()),
+					atoi(parts[8].c_str()),
+					atoi(parts[9].c_str()),
+					atoi(parts[10].c_str()),
+					atoi(parts[11].c_str()),
+					atoi(parts[12].c_str()),
+					atoi(parts[13].c_str()),
+					atoi(parts[14].c_str())
+				);
 			case PLAYERKILLED:
 				return new PlayerKilled();
 			default:
@@ -133,6 +147,8 @@ namespace NetworkMessage{
 		switch(type){
 			case PLAYERJOINED:
 				return new PlayerJoined(player);
+			case PLAYERINPUT:
+				return new PlayerInput(player);
 			default:
 				break;
 		}
@@ -149,6 +165,48 @@ namespace NetworkMessage{
 		switch(type){
 			case JOINACCEPT:
 				return new JoinAccept(playerList);
+			default:
+				break;
+		}
+		
+		return 0;
+
+	}
+
+	NetworkMessage *NetworkMessageFactory::buildMessage(
+		MessageType type,
+		std::string nickname,
+		double nodeYaw,
+		double nodePitch,
+		double nodeRoll,
+		long nodePositionX,
+		long nodePositionY,
+		long nodePositionZ,
+		bool goingForward,
+		bool goingBack,
+		bool goingLeft,
+		bool goingRight,
+		bool goingUp,
+		bool goingDown
+	){
+
+		switch(type){
+			case PLAYERINPUT:
+				return new PlayerInput(
+					nickname,
+					nodeYaw,
+					nodePitch,
+					nodeRoll,
+					nodePositionX,
+					nodePositionY,
+					nodePositionZ,
+					goingForward,
+					goingBack,
+					goingLeft,
+					goingRight,
+					goingUp,
+					goingDown
+				);
 			default:
 				break;
 		}

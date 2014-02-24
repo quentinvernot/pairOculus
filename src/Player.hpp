@@ -6,7 +6,7 @@
 class Player{
 
 	public:
-		Player(std::string name);
+		Player(std::string nickname);
 
 		std::string getNickname();
 
@@ -32,7 +32,7 @@ class Player{
 		//Methods
 		
 		//Attributes
-		std::string mName;
+		std::string mNickname;
 
 		int mTopSpeed;
 		int mTopAccel;

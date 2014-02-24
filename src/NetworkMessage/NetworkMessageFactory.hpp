@@ -54,6 +54,22 @@ namespace NetworkMessage{
 				MessageType type,
 				PlayerList *playerList
 			);
+			NetworkMessage *buildMessage(
+				MessageType type,
+				std::string nickname,
+				double nodeYaw,
+				double nodePitch,
+				double nodeRoll,
+				long nodePositionX,
+				long nodePositionY,
+				long nodePositionZ,
+				bool goingForward,
+				bool goingBack,
+				bool goingLeft,
+				bool goingRight,
+				bool goingUp,
+				bool goingDown
+			);
 			int getLengthFromHeader(std::string header);
 
 		private:
