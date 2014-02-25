@@ -68,7 +68,13 @@ namespace NetworkMessage{
 				bool goingLeft,
 				bool goingRight,
 				bool goingUp,
-				bool goingDown
+				bool goingDown,
+				long timestamp
+			);
+			NetworkMessage *buildMessage(
+				MessageType type,
+				Player *player,
+				long timestamp
 			);
 			int getLengthFromHeader(std::string header);
 

@@ -6,10 +6,14 @@ NetworkIO::NetworkIO(boost::asio::io_service& io_service):
 	mBodyBuffer(0),
 	mMessageBuffer(""),
 	mNMFactory(new NetworkMessage::NetworkMessageFactory()),
-	mMessageList()
+	mMessageList(),
+	mWriting(false)
 {
 	mHeaderBuffer = new char[NetworkMessage::HEADERLENGTH+1];
 	mBodyBuffer = new char[NetworkMessage::MAXBODYLENGTH+1];
+	
+	std::fill_n(mHeaderBuffer, (int)NetworkMessage::HEADERLENGTH+1, 0);
+	std::fill_n(mBodyBuffer, (int)NetworkMessage::MAXBODYLENGTH+1, 0);
 }
 
 NetworkIO::~NetworkIO(){
@@ -19,6 +23,9 @@ tcp::socket &NetworkIO::getSocket(){return mSocket;}
 
 void NetworkIO::start(){
 	handleReadBody(boost::system::error_code());
+}
+
+void NetworkIO::close(){
 }
 
 void NetworkIO::sendMessage(NetworkMessage::NetworkMessage *message){
@@ -32,7 +39,9 @@ void NetworkIO::sendMessage(NetworkMessage::NetworkMessage *message){
 
 void NetworkIO::handleReadHeader(const boost::system::error_code& error){
 
+	std::cout << "#" << mHeaderBuffer << "#" << std::endl;
 	mMessageBuffer = mHeaderBuffer;
+	std::fill_n(mBodyBuffer, (int)NetworkMessage::MAXBODYLENGTH+1, 0);
 
 	if(!error){
 		boost::asio::async_read(
@@ -48,19 +57,21 @@ void NetworkIO::handleReadHeader(const boost::system::error_code& error){
 			)
 		);
 	}
+	else{
+		close();
+	}
 
 }
 
 void NetworkIO::handleReadBody(const boost::system::error_code& error){
 
 	if(!error){
-		
-		if(mMessageBuffer != ""){
 
+		if(mMessageBuffer != ""){
 			mMessageBuffer += mBodyBuffer;
 			handleReceive(mNMFactory->buildMessage(mMessageBuffer));
 			mMessageBuffer = "";
-
+			std::fill_n(mHeaderBuffer, (int)NetworkMessage::HEADERLENGTH+1, 0);
 		}
 
 		boost::asio::async_read(
@@ -76,16 +87,24 @@ void NetworkIO::handleReadBody(const boost::system::error_code& error){
 			)
 		);
 	}
+	else{
+		close();
+	}
 
 }
 
 void NetworkIO::handleWrite(const boost::system::error_code& error){
 
-	if(mMessageList.size() == 0)
+	using namespace NetworkMessage;
+
+	if(mMessageList.size() == 0){
+		mWriting = false;
 		return;
+	}
 
 	NetworkMessage::NetworkMessage nm = mMessageList.front();
 	mMessageList.pop_front();
+	mWriting = true;
 
 	if(!error){
 		boost::asio::async_write(
@@ -100,5 +119,8 @@ void NetworkIO::handleWrite(const boost::system::error_code& error){
 				boost::asio::placeholders::error
 			)
 		);
+	}
+	else{
+		close();
 	}
 }

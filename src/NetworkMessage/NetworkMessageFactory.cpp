@@ -69,7 +69,8 @@ namespace NetworkMessage{
 					atoi(parts[11].c_str()),
 					atoi(parts[12].c_str()),
 					atoi(parts[13].c_str()),
-					atoi(parts[14].c_str())
+					atoi(parts[14].c_str()),
+					atoi(parts[15].c_str())
 				);
 			case PLAYERKILLED:
 				return new PlayerKilled();
@@ -147,8 +148,6 @@ namespace NetworkMessage{
 		switch(type){
 			case PLAYERJOINED:
 				return new PlayerJoined(player);
-			case PLAYERINPUT:
-				return new PlayerInput(player);
 			default:
 				break;
 		}
@@ -187,7 +186,8 @@ namespace NetworkMessage{
 		bool goingLeft,
 		bool goingRight,
 		bool goingUp,
-		bool goingDown
+		bool goingDown,
+		long timestamp
 	){
 
 		switch(type){
@@ -205,8 +205,26 @@ namespace NetworkMessage{
 					goingLeft,
 					goingRight,
 					goingUp,
-					goingDown
+					goingDown,
+					timestamp
 				);
+			default:
+				break;
+		}
+		
+		return 0;
+
+	}
+
+	NetworkMessage *NetworkMessageFactory::buildMessage(
+		MessageType type,
+		Player *player,
+		long timestamp
+	){
+
+		switch(type){
+			case PLAYERINPUT:
+				return new PlayerInput(player, timestamp);
 			default:
 				break;
 		}

@@ -12,7 +12,7 @@ namespace NetworkMessage{
 
 		public:
 			//methods
-			PlayerInput(Player *player);
+			PlayerInput(Player *player, long timestamp);
 			PlayerInput(
 				std::string nickname,
 				double nodeYaw,
@@ -26,7 +26,8 @@ namespace NetworkMessage{
 				bool goingLeft,
 				bool goingRight,
 				bool goingUp,
-				bool goingDown
+				bool goingDown,
+				long timestamp
 			);
 			~PlayerInput();
 			
@@ -68,6 +69,8 @@ namespace NetworkMessage{
 			bool mGoingRight;
 			bool mGoingUp;
 			bool mGoingDown;
+
+			long mTimestamp;
 
 	};
 

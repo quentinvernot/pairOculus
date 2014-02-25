@@ -9,7 +9,7 @@ BOOST=-I/usr/include/boost
 OGRE=-I/usr/include/OGRE -I/usr/local/include/OGRE
 OIS=-I/usr/include/OIS
 
-LIBBOOST=-lboost_date_time -lboost_serialization -lboost_system -lboost_thread -lboost_wserialization
+LIBBOOST=-lboost_date_time -lboost_system -lboost_thread
 LIBOGRE=-lGL -lOgreMain -lOIS -lOgreTerrain -lX11 -lXinerama -ludev -lGLU
 
 all: $(OBJDIR) $(BINDIR)main $(BINDIR)server $(BINDIR)client
@@ -76,14 +76,14 @@ $(OBJDIR)BlockFactory.o: $(SRCDIR)BlockFactory.hpp $(SRCDIR)BlockFactory.cpp
 $(OBJDIR)NetworkIO.o: $(SRCDIR)NetworkIO.hpp $(SRCDIR)NetworkIO.cpp $(OBJDIR)NetworkMessage
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)NetworkIO.cpp -o $(OBJDIR)NetworkIO.o
 
-SERVEROBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)GameServer/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
+SERVEROBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)GameServer/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ) 
 $(BINDIR)server: server.cpp $(OBJDIR)GameServer
 	$(CC) $(CFLAGS) server.cpp $(SERVEROBJ) $(LIBBOOST) -o $(BINDIR)server
 
 $(OBJDIR)GameServer: .FORCE $(OBJDIR)PlayerList.o $(OBJDIR)NetworkIO.o
 	cd $(SRCDIR)GameServer/ && make
 
-CLIENTOBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)GameClient/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ)
+CLIENTOBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)GameClient/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ) 
 $(BINDIR)client: client.cpp $(OBJDIR)GameClient
 	$(CC) $(CFLAGS) client.cpp $(CLIENTOBJ) $(LIBBOOST) -o $(BINDIR)client
 

@@ -19,6 +19,10 @@ namespace GameServer{
 				mSessionList.erase(mSessionList.begin() + i);
 
 	}
+	
+	void SessionList::clear(){
+		mSessionList.clear();
+	}
 
 	Session *SessionList::get(unsigned int i){
 		return mSessionList[i];

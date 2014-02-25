@@ -24,6 +24,7 @@ namespace GameServer{
 			~Instance();
 
 			void start();
+			void stop();
 			void handleAccept(
 				Session *gss,
 				const boost::system::error_code& error
@@ -32,6 +33,7 @@ namespace GameServer{
 				NetworkMessage::NetworkMessage *message,
 				Session *sourceSession
 			);
+			void onClose(Session *sourceSession);
 
 		private:
 			//Methods
@@ -75,6 +77,17 @@ namespace GameServer{
 				NetworkMessage::PlayerKilled *message,
 				Session *sourceSession
 			);
+			
+			void sendJoinAccept(Session *sourceSession);
+			void sendJoinRefuse(Session *sourceSession);
+			void sendPlayerJoined(Player *player);
+			void sendPlayerLeft(std::string nickname);
+			void sendGameStart();
+			void sendGameEnd();
+			void sendPlayerInput(
+				std::string nickname,
+				NetworkMessage::PlayerInput *message
+			);
 
 			//Attributes
 			boost::asio::io_service mIo_service;
@@ -83,6 +96,8 @@ namespace GameServer{
 			SessionList *mSessionList;
 			PlayerList *mPlayerList;
 			NetworkMessage::NetworkMessageFactory *mNMFactory;
+			int mOpenedSessions;
+			bool mGameStarted;
 
 	};
 

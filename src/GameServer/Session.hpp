@@ -21,36 +21,41 @@ namespace GameServer{
 		public:
 			//Methods
 			Session(
+				int id,
 				boost::asio::io_service& io_service,
 				boost::function<
 					void (
 						NetworkMessage::NetworkMessage *message,
 						Session *sourceSession
 					)
-				> receive
+				> receive,
+				boost::function<void (Session *sourceSession)> close
 			);
 			~Session();
+			
+			void close();
 
+			int getId();
 			Player *getPlayer();
 			void setPlayer(Player *player);
+			bool getIsReady();
+			void setIsReady(bool isReady);
 
 		private:
 			//Methods
 			void handleReceive(NetworkMessage::NetworkMessage *message);
 
 			//Attributes
-			char *mHeaderBuffer;
-			char *mBodyBuffer;
-			std::string mMessageBuffer;
-			NetworkMessage::NetworkMessageFactory *mNMFactory;
-			std::list<NetworkMessage::NetworkMessage> mMessageList;
+			int mId;
 			boost::function<
 				void (
 					NetworkMessage::NetworkMessage *message,
 					Session *sourceSession
 				)
 			> mReceive;
+			boost::function<void (Session *sourceSession)> mClose;
 			Player *mPlayer;
+			bool mIsReady;
 
 	};
 

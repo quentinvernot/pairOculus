@@ -4,9 +4,9 @@ SRCDIR=
 OBJDIR=../../obj/
 OBJDIRS=../../obj/GameServer/
 OBJDIRN=../../obj/NetworkMessage/
-LIBDIR=lib/
+LIBDIR=../lib/
 
-LIBBOOST=-lboost_date_time -lboost_serialization -lboost_system -lboost_thread -lboost_wserialization
+LIBBOOST=-lboost_date_time -lboost_system -lboost_thread
 
 all: $(OBJDIRS) $(OBJDIRS)Instance.o
 re: clean all

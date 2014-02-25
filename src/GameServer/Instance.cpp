@@ -2,13 +2,15 @@
 
 namespace GameServer{
 
-	Instance::Instance(unsigned short port) :
+	Instance::Instance(unsigned short port):
 		mIo_service(),
 		mAcceptor(mIo_service, tcp::endpoint(tcp::v4(), port)),
 		mSession(0),
 		mSessionList(new SessionList),
 		mPlayerList(new PlayerList()),
-		mNMFactory(new NetworkMessage::NetworkMessageFactory())
+		mNMFactory(new NetworkMessage::NetworkMessageFactory()),
+		mOpenedSessions(0),
+		mGameStarted(false)
 	{
 	}
 
@@ -18,12 +20,18 @@ namespace GameServer{
 	void Instance::start(){
 
 		mSession = new Session(
+			mOpenedSessions,
 			mIo_service,
 			boost::bind(
 				&Instance::onReceive,
 				this,
 				_1,
 				_2
+			),
+			boost::bind(
+				&Instance::onClose,
+				this,
+				_1
 			)
 		);
 
@@ -41,12 +49,18 @@ namespace GameServer{
 
 	}
 
+	void Instance::stop(){
+		mSessionList->clear();
+	}
+
 	void Instance::handleAccept(
 		Session *session,
 		const boost::system::error_code& error
 	){
 
 		if (!error){
+			std::cout << "Adding session " << mOpenedSessions << std::endl;
+			mOpenedSessions++;
 			mSessionList->addSession(session);
 			session->start();
 		}
@@ -59,6 +73,8 @@ namespace GameServer{
 		NetworkMessage::NetworkMessage *message,
 		Session *sourceSession
 	){
+
+		std::cout << "In session " << sourceSession->getId() << std::endl;
 
 		using namespace NetworkMessage;
 
@@ -99,6 +115,18 @@ namespace GameServer{
 
 	}
 
+	void Instance::onClose(Session *sourceSession){
+
+		int id = sourceSession->getId();
+		std::cout << "Deleting session " << id << std::endl;
+
+		if(sourceSession->getPlayer() != 0)
+			sendPlayerLeft(sourceSession->getPlayer()->getNickname());
+		
+		mSessionList->removeSession(sourceSession);
+
+	}
+
 	void Instance::onJoin(
 		NetworkMessage::Join *message,
 		Session *sourceSession
@@ -114,34 +142,15 @@ namespace GameServer{
 			mPlayerList->getPlayerByName(nickname) == 0 &&
 			sourceSession->getPlayer() == 0
 		){
-
 			mPlayerList->addPlayer(nickname);
 			Player *np = mPlayerList->getPlayerByName(nickname);
 			sourceSession->setPlayer(np);
-			std::cout << "Sending JOINACCEPT to source" << std::endl;
-			sourceSession->sendMessage(
-				mNMFactory->buildMessage(JOINACCEPT, mPlayerList)
-			);
-			std::cout << "Sending PLAYERJOINED to everyone else" << std::endl;
-			for(unsigned int i = 0; i < mSessionList->size(); i++){
-				
-				if(
-					(*mSessionList)[i]->getPlayer() != 0 &&
-					(*mSessionList)[i]->getPlayer()->getNickname() != nickname
-				){
-					(*mSessionList)[i]->sendMessage(
-						mNMFactory->buildMessage(PLAYERJOINED, np)
-					);
-				}
-				
-			}
+			sendJoinAccept(sourceSession);
+			sendPlayerJoined(np);
 
 		}
 		else{
-			std::cout << "Sending JOINREFUSE to source" << std::endl;
-			sourceSession->sendMessage(
-				mNMFactory->buildMessage(JOINREFUSE, "Nickname already in use.")
-			);
+			sendJoinRefuse(sourceSession);
 			mSessionList->removeSession(sourceSession);
 		}
 
@@ -151,32 +160,11 @@ namespace GameServer{
 		NetworkMessage::Leave *message,
 		Session *sourceSession
 	){
-		using namespace NetworkMessage;
 
 		std::cout << "Received LEAVE" << std::endl;
 		std::cout << message->getMessage() << std::endl;
 
-		std::string nickname = sourceSession->getPlayer()->getNickname();
-		std::cout << "a" << std::endl;
-		if(mPlayerList->getPlayerByName(nickname) != 0){
-
-			std::cout << "Sending PLAYERLEFT to everyone else" << std::endl;
-			for(unsigned int i = 0; i < mSessionList->size(); i++){
-				
-				if(
-					(*mSessionList)[i]->getPlayer() != 0 &&
-					(*mSessionList)[i]->getPlayer()->getNickname() != nickname
-				){
-					(*mSessionList)[i]->sendMessage(
-						mNMFactory->buildMessage(PLAYERLEFT, nickname)
-					);
-				}
-				
-			}
-			
-			mPlayerList->removePlayer(nickname);
-			
-		}
+		sendPlayerLeft(sourceSession->getPlayer()->getNickname());
 
 	}
 
@@ -184,7 +172,6 @@ namespace GameServer{
 		NetworkMessage::JoinAccept *message,
 		Session *sourceSession
 	){
-		using namespace NetworkMessage;
 
 		std::cout << "Received JOINACCEPT" << std::endl;
 		std::cout << message->getMessage() << std::endl;
@@ -195,7 +182,6 @@ namespace GameServer{
 		NetworkMessage::JoinRefuse *message,
 		Session *sourceSession
 	){
-		using namespace NetworkMessage;
 
 		std::cout << "Received JOINREFUSE" << std::endl;
 		std::cout << message->getMessage() << std::endl;
@@ -228,20 +214,20 @@ namespace GameServer{
 		NetworkMessage::GameStart *message,
 		Session *sourceSession
 	){
-		using namespace NetworkMessage;
 
 		std::cout << "Received GAMESTART" << std::endl;
 		std::cout << message->getMessage() << std::endl;
 
-		std::cout << "Sending GAMESTART to everyone" << std::endl;
-		for(unsigned int i = 0; i < mSessionList->size(); i++){
-
-			if((*mSessionList)[i]->getPlayer() != 0){
-				(*mSessionList)[i]->sendMessage(
-					mNMFactory->buildMessage(GAMESTART)
-				);
-			}
-
+		sourceSession->setIsReady(true);
+		
+		unsigned int readyCount = 0;
+		for(unsigned int i = 0; i < mSessionList->size(); i++)
+			if((*mSessionList)[i]->getIsReady())
+				readyCount++;
+		
+		if(readyCount == mPlayerList->size()){
+			std::cout << "Everyone is ready to start" << std::endl;
+			sendGameStart();
 		}
 
 	}
@@ -250,21 +236,11 @@ namespace GameServer{
 		NetworkMessage::GameEnd *message,
 		Session *sourceSession
 	){
-		using namespace NetworkMessage;
 
 		std::cout << "Received GAMEEND" << std::endl;
 		std::cout << message->getMessage() << std::endl;
 
-		std::cout << "Sending GAMEEND to everyone" << std::endl;
-		for(unsigned int i = 0; i < mSessionList->size(); i++){
-
-			if((*mSessionList)[i]->getPlayer() != 0){
-				(*mSessionList)[i]->sendMessage(
-					mNMFactory->buildMessage(GAMEEND)
-				);
-			}
-
-		}
+		sendGameEnd();
 
 	}
 
@@ -272,10 +248,14 @@ namespace GameServer{
 		NetworkMessage::PlayerInput *message,
 		Session *sourceSession
 	){
-		using namespace NetworkMessage;
 
 		std::cout << "Received PLAYERINPUT" << std::endl;
 		std::cout << message->getMessage() << std::endl;
+
+		if(sourceSession->getPlayer() != 0){
+			std::string nickname = sourceSession->getPlayer()->getNickname();
+			sendPlayerInput(nickname, message);
+		}
 
 	}
 
@@ -290,4 +270,125 @@ namespace GameServer{
 
 	}
 
+	void Instance::sendJoinAccept(Session *sourceSession){
+
+		using namespace NetworkMessage;
+		std::cout << "Sending JOINACCEPT to source" << std::endl;
+		sourceSession->sendMessage(
+			mNMFactory->buildMessage(JOINACCEPT, mPlayerList)
+		);
+
+	}
+
+	void Instance::sendJoinRefuse(Session *sourceSession){
+
+		using namespace NetworkMessage;
+		std::cout << "Sending JOINREFUSE to source" << std::endl;
+		sourceSession->sendMessage(
+			mNMFactory->buildMessage(JOINREFUSE, "Nickname already in use.")
+		);
+
+	}
+
+	void Instance::sendPlayerJoined(Player *player){
+
+		using namespace NetworkMessage;
+		std::cout << "Sending PLAYERJOINED to everyone else" << std::endl;
+		std::string nickname = player->getNickname();
+		
+		for(unsigned int i = 0; i < mSessionList->size(); i++){
+
+			if(
+				(*mSessionList)[i]->getPlayer() != 0 &&
+				(*mSessionList)[i]->getPlayer()->getNickname() != nickname
+			){
+				(*mSessionList)[i]->sendMessage(
+					mNMFactory->buildMessage(PLAYERJOINED, player)
+				);
+			}
+
+		}
+
+	}
+
+	void Instance::sendPlayerLeft(std::string nickname){
+
+		using namespace NetworkMessage;
+
+		if(mPlayerList->getPlayerByName(nickname) != 0){
+
+			std::cout << "Sending PLAYERLEFT to everyone else" << std::endl;
+			for(unsigned int i = 0; i < mSessionList->size(); i++){
+
+				if(
+					(*mSessionList)[i]->getPlayer() != 0 &&
+					(*mSessionList)[i]->getPlayer()->getNickname() != nickname
+				){
+					(*mSessionList)[i]->sendMessage(
+						mNMFactory->buildMessage(PLAYERLEFT, nickname)
+					);
+				}
+
+			}
+
+			mPlayerList->removePlayer(nickname);
+
+		}
+
+	}
+
+	void Instance::sendGameStart(){
+
+		using namespace NetworkMessage;
+		std::cout << "Sending GAMESTART to everyone" << std::endl;
+
+		for(unsigned int i = 0; i < mSessionList->size(); i++){
+
+			if((*mSessionList)[i]->getPlayer() != 0){
+				(*mSessionList)[i]->sendMessage(
+					mNMFactory->buildMessage(GAMESTART)
+				);
+			}
+
+		}
+
+	}
+
+	void Instance::sendGameEnd(){
+
+		using namespace NetworkMessage;
+		std::cout << "Sending GAMEEND to everyone" << std::endl;
+		
+		for(unsigned int i = 0; i < mSessionList->size(); i++){
+
+			if((*mSessionList)[i]->getPlayer() != 0){
+				(*mSessionList)[i]->sendMessage(
+					mNMFactory->buildMessage(GAMEEND)
+				);
+			}
+
+		}
+
+	}
+
+	void Instance::sendPlayerInput(
+		std::string nickname,
+		NetworkMessage::PlayerInput *message
+	){
+
+		using namespace NetworkMessage;
+		std::cout << "Sending PLAYERINPUT to everyone else" << std::endl;
+		for(unsigned int i = 0; i < mSessionList->size(); i++){
+
+			if(
+				(*mSessionList)[i]->getPlayer() != 0 &&
+				(*mSessionList)[i]->getPlayer()->getNickname() != nickname
+			){
+				(*mSessionList)[i]->sendMessage(message);
+			}
+
+		}
+
+	}
+	
 };

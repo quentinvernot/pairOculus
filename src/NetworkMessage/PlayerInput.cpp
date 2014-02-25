@@ -2,7 +2,7 @@
 
 namespace NetworkMessage{
 
-	PlayerInput::PlayerInput(Player *player):
+	PlayerInput::PlayerInput(Player *player, long timestamp):
 		NetworkMessage(PLAYERINPUT),
 		mNickname(player->getNickname()),
 		mNodeYaw(player->getNodeYaw()),
@@ -16,7 +16,8 @@ namespace NetworkMessage{
 		mGoingLeft(player->getGoingLeft()),
 		mGoingRight(player->getGoingRight()),
 		mGoingUp(player->getGoingUp()),
-		mGoingDown(player->getGoingDown())
+		mGoingDown(player->getGoingDown()),
+		mTimestamp(timestamp)
 	{
 	}
 
@@ -33,7 +34,8 @@ namespace NetworkMessage{
 		bool goingLeft,
 		bool goingRight,
 		bool goingUp,
-		bool goingDown
+		bool goingDown,
+		long timestamp
 	):
 		NetworkMessage(PLAYERINPUT),
 		mNickname(nickname),
@@ -48,7 +50,8 @@ namespace NetworkMessage{
 		mGoingLeft(goingLeft),
 		mGoingRight(goingRight),
 		mGoingUp(goingUp),
-		mGoingDown(goingDown)
+		mGoingDown(goingDown),
+		mTimestamp(timestamp)
 	{
 	}
 

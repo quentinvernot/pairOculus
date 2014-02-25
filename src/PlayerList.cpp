@@ -16,12 +16,17 @@ void PlayerList::addPlayer(std::string nickname){
 
 void PlayerList::removePlayer(std::string nickname){
 
-	for(unsigned int i = 0; i < mPlayerList.size(); i++){
-		if(mPlayerList[i]->getNickname() == nickname){
-			delete mPlayerList[i];
+	for(unsigned int i = 0; i < mPlayerList.size(); i++)
+		if(mPlayerList[i]->getNickname() == nickname)
 			mPlayerList.erase(mPlayerList.begin() + i);
-		}
-	}
+
+}
+
+void PlayerList::removePlayer(Player *player){
+
+	for(unsigned int i = 0; i < mPlayerList.size(); i++)
+		if(mPlayerList[i] == player)
+			mPlayerList.erase(mPlayerList.begin() + i);
 
 }
 

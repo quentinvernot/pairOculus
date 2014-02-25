@@ -17,20 +17,18 @@ namespace GameServer{
 
 			void addSession(Session *session);
 			void removeSession(Session *session);
+			void clear();
 			Session *get(unsigned int i);
 			Session *operator[](unsigned int i);
-			Session *getSessionByName(std::string nickname);
 			unsigned int size();
 
 
 		private:
-			//Methods
-			std::deque<Session*> mSessionList;
-
 			//Attributes
+			std::deque<Session*> mSessionList;
 
 	};
 
 };
 
-#endif //__SESSIONLIST_H
+#endif //__GAMESERVERSESSIONLIST_H

@@ -14,6 +14,7 @@ class PlayerList{
 		void addPlayer(Player *player);
 		void addPlayer(std::string nickname);
 		void removePlayer(std::string nickname);
+		void removePlayer(Player *player);
 		Player *get(unsigned int i);
 		Player *operator[](unsigned int i);
 		Player *getPlayerByName(std::string nickname);

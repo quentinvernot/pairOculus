@@ -5,7 +5,7 @@ OBJDIR=../../obj/
 OBJDIRN=../../obj/NetworkMessage/
 LIBDIR=lib/
 
-LIBBOOST=-lboost_date_time -lboost_serialization -lboost_system -lboost_thread -lboost_wserialization
+LIBBOOST=-lboost_date_time -lboost_system -lboost_thread
 
 all: $(OBJDIRN) $(OBJDIRN)NetworkMessageFactory.o
 re: clean all
@@ -13,7 +13,7 @@ re: clean all
 $(OBJDIRN):
 	mkdir -p $(OBJDIRN)
 
-MESSAGEFACTORYOBJ=$(OBJDIRN)NetworkMessage.o $(OBJDIRN)Join.o $(OBJDIRN)Leave.o $(OBJDIRN)JoinAccept.o $(OBJDIRN)JoinRefuse.o $(OBJDIRN)PlayerJoined.o $(OBJDIRN)PlayerLeft.o $(OBJDIRN)GameStart.o $(OBJDIRN)GameEnd.o $(OBJDIRN)PlayerInput.o $(OBJDIRN)PlayerKilled.o
+MESSAGEFACTORYOBJ=$(OBJDIRN)Join.o $(OBJDIRN)Leave.o $(OBJDIRN)JoinAccept.o $(OBJDIRN)JoinRefuse.o $(OBJDIRN)PlayerJoined.o $(OBJDIRN)PlayerLeft.o $(OBJDIRN)GameStart.o $(OBJDIRN)GameEnd.o $(OBJDIRN)PlayerInput.o $(OBJDIRN)PlayerKilled.o
 
 $(OBJDIRN)NetworkMessageFactory.o: $(SRCDIR)NetworkMessageFactory.hpp $(SRCDIR)NetworkMessageFactory.cpp $(MESSAGEFACTORYOBJ)
 	$(CC) $(CFLAGS) -c $(SRCDIR)NetworkMessageFactory.cpp -o $(OBJDIRN)NetworkMessageFactory.o

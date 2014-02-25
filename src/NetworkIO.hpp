@@ -20,6 +20,7 @@ class NetworkIO{
 
 		tcp::socket &getSocket();
 		virtual void start();
+		virtual void close();
 		void sendMessage(NetworkMessage::NetworkMessage *message);
 
 	protected:
@@ -38,6 +39,7 @@ class NetworkIO{
 		std::string mMessageBuffer;
 		NetworkMessage::NetworkMessageFactory *mNMFactory;
 		std::list<NetworkMessage::NetworkMessage> mMessageList;
+		bool mWriting;
 
 };
 
