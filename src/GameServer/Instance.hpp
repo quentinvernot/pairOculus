@@ -4,6 +4,7 @@
 #include "Session.hpp"
 #include "SessionList.hpp"
 #include "../PlayerList.hpp"
+#include "../Map.hpp"
 
 #include <iostream>
 #include <deque>
@@ -94,8 +95,10 @@ namespace GameServer{
 			tcp::acceptor mAcceptor;
 			Session *mSession;
 			SessionList *mSessionList;
-			PlayerList *mPlayerList;
 			NetworkMessage::NetworkMessageFactory *mNMFactory;
+
+			PlayerList *mPlayerList;
+			Map *mMap;
 			int mOpenedSessions;
 			bool mGameStarted;
 

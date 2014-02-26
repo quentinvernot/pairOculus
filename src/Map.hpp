@@ -20,7 +20,7 @@ class Map {
 		/** Server constructor */
 		Map(unsigned int height, unsigned int width);
 		/** Client constructor */
-		Map(PrintType** mapData, unsigned int height, unsigned int width);
+		Map(unsigned int height, unsigned int width, time_t seed);
 		/** Default destructor */
 		virtual ~Map();
 
@@ -58,6 +58,11 @@ class Map {
 		 * \return The current value of mHeight
 		 */
 		unsigned int getHeight() { return mHeight; }
+		/** Access mSeed
+		 * \return The current value of mSeed
+		 */
+		time_t getSeed();
+
 	protected:
 	private:
 		//Methods
@@ -77,6 +82,8 @@ class Map {
 		PrintType** mMap;
 		unsigned int mWidth;
 		unsigned int mHeight;
+		time_t mSeed;
+
 };
 
 #endif // MAP_H

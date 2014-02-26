@@ -52,7 +52,10 @@ namespace NetworkMessage{
 			);
 			NetworkMessage *buildMessage(
 				MessageType type,
-				PlayerList *playerList
+				PlayerList *playerList,
+				unsigned int mapHeight,
+				unsigned int mapWidth,
+				time_t seed
 			);
 			NetworkMessage *buildMessage(
 				MessageType type,

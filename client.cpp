@@ -17,7 +17,7 @@ int main(int argc, char **argv){
 	Listener *gc = new Listener("127.0.0.1", "1337");
 	gc->start();
 	gc->sendMessage(aa);
-	sleep(1);
+	sleep(5);
 	gc->stop();
 
     return 0;

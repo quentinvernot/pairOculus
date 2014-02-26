@@ -17,6 +17,7 @@ namespace NetworkMessage{
 		for(std::string token = ""; getline(buf, token, '\n'); )
 			parts.push_back(token);
 
+		unsigned int j = 0;
 		double x, y, z;
 		PlayerList playerList;
 
@@ -28,20 +29,25 @@ namespace NetworkMessage{
 			case LEAVE:
 				return new Leave();
 			case JOINACCEPT:
-				for(unsigned int i = 0; i < (parts.size()-2)/4; i++){
+				for(; j < (parts.size()-2)/4; j++){
 
-					playerList.addPlayer(new Player(parts[4*i+2]));
-					x = atoi(parts[4*i+3].c_str());
-					y = atoi(parts[4*i+4].c_str());
-					z = atoi(parts[4*i+5].c_str());
+					playerList.addPlayer(new Player(parts[4*j+2]));
+					x = atoi(parts[4*j+3].c_str());
+					y = atoi(parts[4*j+4].c_str());
+					z = atoi(parts[4*j+5].c_str());
 
-					playerList[i]->setNodePositionX(x);
-					playerList[i]->setNodePositionY(y);
-					playerList[i]->setNodePositionZ(z);
+					playerList[j]->setNodePositionX(x);
+					playerList[j]->setNodePositionY(y);
+					playerList[j]->setNodePositionZ(z);
 
 				}
 
-				return new JoinAccept(&playerList);
+				return new JoinAccept(
+					&playerList,
+					atoi(parts[parts.size()-3].c_str()),
+					atoi(parts[parts.size()-2].c_str()),
+					atoi(parts[parts.size()-1].c_str())
+				);
 			case JOINREFUSE:
 				return new JoinRefuse(parts[2]);
 			case PLAYERJOINED:
@@ -158,12 +164,15 @@ namespace NetworkMessage{
 
 	NetworkMessage *NetworkMessageFactory::buildMessage(
 		MessageType type,
-		PlayerList *playerList
+		PlayerList *playerList,
+		unsigned int mapHeight,
+		unsigned int mapWidth,
+		time_t seed
 	){
 
 		switch(type){
 			case JOINACCEPT:
-				return new JoinAccept(playerList);
+				return new JoinAccept(playerList, mapHeight, mapWidth, seed);
 			default:
 				break;
 		}

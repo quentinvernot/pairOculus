@@ -76,7 +76,7 @@ $(OBJDIR)BlockFactory.o: $(SRCDIR)BlockFactory.hpp $(SRCDIR)BlockFactory.cpp
 $(OBJDIR)NetworkIO.o: $(SRCDIR)NetworkIO.hpp $(SRCDIR)NetworkIO.cpp $(OBJDIR)NetworkMessage
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)NetworkIO.cpp -o $(OBJDIR)NetworkIO.o
 
-SERVEROBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)GameServer/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(MESSAGEOBJ) 
+SERVEROBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)GameServer/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(OBJDIR)Map.o $(MESSAGEOBJ) 
 $(BINDIR)server: server.cpp $(OBJDIR)GameServer
 	$(CC) $(CFLAGS) server.cpp $(SERVEROBJ) $(LIBBOOST) -o $(BINDIR)server
 
@@ -91,7 +91,7 @@ $(OBJDIR)GameClient: .FORCE $(OBJDIR)NetworkIO.o $(OBJDIR)NetworkMessage $(OBJDI
 	cd $(SRCDIR)GameClient/ && make
 
 MESSAGEOBJ=$(OBJDIR)NetworkMessage/*.o
-$(OBJDIR)NetworkMessage: .FORCE $(OBJDIR)Player.o $(OBJDIR)PlayerList.o
+$(OBJDIR)NetworkMessage: .FORCE $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(OBJDIR)Map.o
 	cd $(SRCDIR)NetworkMessage/ && make
 
 clean:

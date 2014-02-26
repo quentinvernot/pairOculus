@@ -7,8 +7,9 @@ namespace GameServer{
 		mAcceptor(mIo_service, tcp::endpoint(tcp::v4(), port)),
 		mSession(0),
 		mSessionList(new SessionList),
-		mPlayerList(new PlayerList()),
 		mNMFactory(new NetworkMessage::NetworkMessageFactory()),
+		mPlayerList(new PlayerList()),
+		mMap(new Map(17, 17)),
 		mOpenedSessions(0),
 		mGameStarted(false)
 	{
@@ -275,7 +276,13 @@ namespace GameServer{
 		using namespace NetworkMessage;
 		std::cout << "Sending JOINACCEPT to source" << std::endl;
 		sourceSession->sendMessage(
-			mNMFactory->buildMessage(JOINACCEPT, mPlayerList)
+			mNMFactory->buildMessage(
+				JOINACCEPT,
+				mPlayerList,
+				mMap->getHeight(),
+				mMap->getWidth(),
+				mMap->getSeed()
+			)
 		);
 
 	}

@@ -7,14 +7,16 @@ Map::Map() {
 Map::Map(unsigned int width, unsigned int height) {
 	setWidth(width);
 	setHeight(height);
+	mSeed = time(0);
 	generateMap();
 }
 
-Map::Map(PrintType** mapData, unsigned int width, unsigned int height)
-	:
-	mMap(mapData) {
+Map::Map(unsigned int height, unsigned int width, time_t seed):
+	mSeed(seed)
+{
 	setWidth(width);
 	setHeight(height);
+	generateMap();
 }
 
 Map::~Map() {
@@ -23,14 +25,14 @@ Map::~Map() {
 }
 
 Map::PrintType** Map::generateMap() {
-	int result;
-	time_t seed = time(0);
 
-	std::cout << "Seed: " << seed << std::endl;
+	int result;
+
+	std::cout << "Seed: " << mSeed << std::endl;
 
 	// Init random
 	typedef boost::mt19937 RNGType;
-	RNGType rng(seed);
+	RNGType rng(mSeed);
 	boost::uniform_int<> block_type(0,99);	// d100
 	boost::variate_generator< RNGType, boost::uniform_int<> >dice(rng, block_type);
 
@@ -116,6 +118,9 @@ bool Map::Break(int i, int j)
 	return false;	// You must never come here
 }
 */
+
+time_t Map::getSeed(){return mSeed;}
+
 void Map::printMap() {
 	for (unsigned int i = 0; i < mHeight; i++) {
 		for (unsigned int j = 0; j < mWidth; j++) {

@@ -7,6 +7,7 @@
 #include "NetworkMessage.hpp"
 #include "../Player.hpp"
 #include "../PlayerList.hpp"
+#include "../Map.hpp"
 
 namespace NetworkMessage{
 
@@ -15,8 +16,10 @@ namespace NetworkMessage{
 		public:
 			//methods
 			JoinAccept(
-				PlayerList *playerList
-				//map
+				PlayerList *playerList,
+				unsigned int mMapHeight,
+				unsigned int mMapWidth,
+				time_t mSeed
 			);
 			~JoinAccept();
 
@@ -26,6 +29,9 @@ namespace NetworkMessage{
 			//methods
 			//arguments
 			PlayerList mPlayerList;
+			unsigned int mMapHeight;
+			unsigned int mMapWidth;
+			time_t mSeed;
 
 	};
 

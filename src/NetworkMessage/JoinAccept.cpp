@@ -3,11 +3,16 @@
 namespace NetworkMessage{
 
 	JoinAccept::JoinAccept(
-		PlayerList *playerList
-		//map
+		PlayerList *playerList,
+		unsigned int mapHeight,
+		unsigned int mapWidth,
+		time_t seed
 	):
 		NetworkMessage(JOINACCEPT),
-		mPlayerList(*playerList)
+		mPlayerList(*playerList),
+		mMapHeight(mapHeight),
+		mMapWidth(mapWidth),
+		mSeed(seed)
 	{
 
 		std::ostringstream convert;
@@ -18,6 +23,10 @@ namespace NetworkMessage{
 			convert << mPlayerList[i]->getNodePositionY() << "\n";
 			convert << mPlayerList[i]->getNodePositionZ() << "\n";
 		}
+
+		convert << mMapHeight << "\n";
+		convert << mMapWidth << "\n";
+		convert << mSeed << "\n";
 
 		mBody = convert.str();
 
