@@ -144,12 +144,7 @@ Ogre::Vector3 CameraManager::getUpDirection(){
 
 }
 
-#include <iostream>
-
 Ogre::Vector3 CameraManager::getRightDirection(){
-
-	using namespace std;
-	cout << "a" <<endl;
 
 	Ogre::Vector3 direction;
 
@@ -162,7 +157,6 @@ Ogre::Vector3 CameraManager::getRightDirection(){
 	direction.normalise();
 
 	return direction;
-
 
 }
 

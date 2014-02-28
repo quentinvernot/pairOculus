@@ -14,10 +14,12 @@ re: clean all
 $(OBJDIRC):
 	mkdir -p $(OBJDIRC)
 
+DEP=$(OBJDIR)NetworkIO.o $(OBJDIR)NetworkMessage $(OBJDIR)PlayerList.o $(OBJDIR)Map.o 
+
 $(OBJDIRC)Listener.o: $(SRCDIR)Listener.hpp $(SRCDIR)Listener.cpp $(OBJDIRC)Connector.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)Listener.cpp -o $(OBJDIRC)Listener.o
 
-$(OBJDIRC)Connector.o: $(SRCDIR)Connector.hpp $(SRCDIR)Connector.cpp $(OBJDIRN)*.o $(OBJDIR)NetworkIO.o
+$(OBJDIRC)Connector.o: $(SRCDIR)Connector.hpp $(SRCDIR)Connector.cpp $(DEP)
 	$(CC) $(CFLAGS) -c $(SRCDIR)Connector.cpp -o $(OBJDIRC)Connector.o
 
 clean:

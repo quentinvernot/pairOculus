@@ -3,6 +3,7 @@
 
 #include "Player.hpp"
 #include "CameraManager.hpp"
+#include "NetworkMessage/PlayerInput.hpp"
 
 #include <OgreCamera.h>
 #include <OgreEntity.h>
@@ -22,7 +23,7 @@ class LocalPlayer : public Player{
 
 	public:
 		//Methods
-		LocalPlayer(std::string name, CameraManager *cameraManager);
+		LocalPlayer(std::string name, CameraManager *cameraManager=0);
 		~LocalPlayer();
 
 		bool injectMouseMove(const OIS::MouseEvent &arg);
@@ -30,8 +31,13 @@ class LocalPlayer : public Player{
 		bool injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 		bool injectKeyDown(const OIS::KeyEvent &arg);
 		bool injectKeyUp(const OIS::KeyEvent &arg);
+		void injectPlayerInput(NetworkMessage::PlayerInput *message);
 
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
+		
+		Ogre::Vector3 getForwardDirection();
+		Ogre::Vector3 getUpDirection();
+		Ogre::Vector3 getRightDirection();
 
 	private:
 		//Attributes

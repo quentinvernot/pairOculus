@@ -143,6 +143,7 @@ namespace GameServer{
 			mPlayerList->getPlayerByName(nickname) == 0 &&
 			sourceSession->getPlayer() == 0
 		){
+
 			mPlayerList->addPlayer(nickname);
 			Player *np = mPlayerList->getPlayerByName(nickname);
 			sourceSession->setPlayer(np);
@@ -275,6 +276,7 @@ namespace GameServer{
 
 		using namespace NetworkMessage;
 		std::cout << "Sending JOINACCEPT to source" << std::endl;
+		std::cout << (*mPlayerList)[0]->getNickname() << std::endl;
 		sourceSession->sendMessage(
 			mNMFactory->buildMessage(
 				JOINACCEPT,

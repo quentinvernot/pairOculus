@@ -20,6 +20,9 @@ Player::Player(std::string nickname):
 {
 }
 
+Player::~Player(){
+}
+
 std::string Player::getNickname(){return mNickname;}
 
 double Player::getNodeYaw(){return mNodeYaw;}

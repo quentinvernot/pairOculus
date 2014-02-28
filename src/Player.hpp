@@ -6,7 +6,9 @@
 class Player{
 
 	public:
+		//Methods
 		Player(std::string nickname);
+		virtual ~Player();
 
 		std::string getNickname();
 
@@ -29,8 +31,6 @@ class Player{
 		bool getGoingDown();
 
 	protected:
-		//Methods
-		
 		//Attributes
 		std::string mNickname;
 

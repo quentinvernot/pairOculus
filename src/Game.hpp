@@ -2,6 +2,7 @@
 #define __GAME_H
 
 #include <iostream>
+#include <deque>
 
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
@@ -20,17 +21,20 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
-#include "LocalMap.hpp"
 #include "CameraManager.hpp"
-#include "LocalPlayer.hpp"
 #include "Input.hpp"
 #include "GameWindow.hpp"
+
+#include "LocalPlayerList.hpp"
+#include "LocalMap.hpp"
+
+#include "GameClient/Listener.hpp"
 
 class Game : public Ogre::FrameListener{
 
 	public:
 		//Methods
-		Game();
+		Game(std::string nickname, std::string address="", std::string port="");
 		~Game();
 
 		void go();
@@ -45,13 +49,24 @@ class Game : public Ogre::FrameListener{
 		);
 		bool injectKeyDown(const OIS::KeyEvent &arg);
 		bool injectKeyUp(const OIS::KeyEvent &arg);
+		void injectClientClose();
+		void injectJoinAccept(NetworkMessage::JoinAccept *message);
+		void injectJoinRefuse(NetworkMessage::JoinRefuse *message);
+		void injectPlayerJoined(NetworkMessage::PlayerJoined *message);
+		void injectPlayerLeft(NetworkMessage::PlayerLeft *message);
+		void injectGameStart(NetworkMessage::GameStart *message);
+		void injectGameEnd(NetworkMessage::GameEnd *message);
+		void injectPlayerInput(NetworkMessage::PlayerInput *message);
 
 	private:
 		//Methods
 		bool setup();
-		bool configure();
 		void chooseSceneManager();
+		bool configure();
+		bool networkSetup();
+		bool offlineSetup();
 
+		void createNetworkListener();
 		void createFrameListener();
 		void createScene();
 		void destroyScene();
@@ -63,17 +78,32 @@ class Game : public Ogre::FrameListener{
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		//Attributes
-		Ogre::Root *ogreRoot;
-		Ogre::String ogreResourcesCfg;
-		Ogre::String ogrePluginsCfg;
-		Ogre::SceneManager *sceneMgr;
+		Ogre::Root *mOgreRoot;
+		Ogre::String mOgreResourcesCfg;
+		Ogre::String mOgrePluginsCfg;
+		Ogre::SceneManager *mSceneMgr;
 
-		CameraManager *cameraManager;
-		LocalPlayer *localPlayer;
-		GameWindow *gameWindow;
-		Input *input;
+		CameraManager *mCameraManager;
+		GameWindow *mGameWindow;
+		Input *mInput;
 
-		bool shutDownFlag;
+		std::string mNickname;
+		LocalPlayer *mLocalPlayer;
+		LocalPlayerList *mPlayerList;
+		Map *mMap;
+		LocalMap *mLocalMap;
+
+		std::string mAddress;
+		std::string mPort;
+		NetworkMessage::NetworkMessageFactory *mNMFactory;
+		GameClient::Listener *mGCListener;
+
+		bool mOnlineMode;
+		bool mServerJoined;
+		bool mGameSetUp;
+		bool mSceneCreated;
+		bool mGameRunning;
+		bool mShutDownFlag;
 
 };
 

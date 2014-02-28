@@ -11,18 +11,17 @@ class PlayerList{
 		PlayerList();
 		~PlayerList();
 
-		void addPlayer(Player *player);
+		virtual void addPlayer(Player *player);
 		void addPlayer(std::string nickname);
 		void removePlayer(std::string nickname);
-		void removePlayer(Player *player);
-		Player *get(unsigned int i);
-		Player *operator[](unsigned int i);
-		Player *getPlayerByName(std::string nickname);
+		virtual void removePlayer(Player *player);
+		void clear();
+		virtual Player *get(unsigned int i);
+		virtual Player *operator[](unsigned int i);
+		virtual Player *getPlayerByName(std::string nickname);
 		unsigned int size();
 
 	private:
-		//Methods
-
 		//Attributes
 		std::deque<Player*> mPlayerList;
 

@@ -32,7 +32,7 @@ namespace NetworkMessage{
 			~PlayerInput();
 			
 			std::string getNickname();
-			
+
 			double getNodeYaw();
 			double getNodePitch();
 			double getNodeRoll();

@@ -22,6 +22,7 @@ namespace GameClient{
 			Connector(
 				boost::asio::io_service &io_service,
 				tcp::resolver::iterator iterator,
+				boost::function<void ()> close,
 				boost::function<
 					void (NetworkMessage::NetworkMessage *message)
 				> receive
@@ -29,6 +30,7 @@ namespace GameClient{
 			~Connector();
 			
 			void start();
+			void close();
 
 		private:
 			//Methods
@@ -36,6 +38,7 @@ namespace GameClient{
 
 			//Attributes
 			tcp::resolver::iterator mIterator;
+			boost::function<void ()> mClose;
 			boost::function<
 				void (NetworkMessage::NetworkMessage *message)
 			> mReceive;

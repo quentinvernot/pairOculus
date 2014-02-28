@@ -17,12 +17,14 @@ LocalPlayer::~LocalPlayer(){
 
 bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 
-	mNodeYaw = (-arg.state.X.rel * 0.15f);
-	mNodePitch = (-arg.state.Y.rel * 0.15f);
+	mNodeYaw += (-arg.state.X.rel * 0.15f);
+	mNodePitch += (-arg.state.Y.rel * 0.15f);
 	//mNodeRoll = Ogre::Degree(-arg.state.Z.rel * 0.15f);
 
-	mCameraManager->yaw(Ogre::Degree(mNodeYaw));
-	mCameraManager->pitch(Ogre::Degree(mNodePitch));
+	if(mCameraManager){
+		mCameraManager->yaw(Ogre::Degree(-arg.state.X.rel * 0.15f));
+		mCameraManager->pitch(Ogre::Degree(-arg.state.Y.rel * 0.15f));
+	}
 
 	return true;
 
@@ -78,8 +80,27 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 
 }
 
-bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
+void LocalPlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
+	mNodeYaw = message->getNodeYaw();
+	mNodePitch = message->getNodePitch();
+	mNodeRoll = message->getNodeRoll();
+
+	mNodePositionX = message->getNodePositionX();
+	mNodePositionY = message->getNodePositionY();
+	mNodePositionZ = message->getNodePositionZ();
+
+	mGoingForward = message->getGoingForward();
+	mGoingBack = message->getGoingBack();
+	mGoingLeft = message->getGoingLeft();
+	mGoingRight = message->getGoingRight();
+	mGoingUp = message->getGoingUp();
+	mGoingDown = message->getGoingDown();
+
+}
+
+bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
+std::cout << "a" << std::endl;
 	if(mGoingForward && mAccelForward < mTopAccel) mAccelForward += 1;
 	else if(!mGoingForward && mAccelForward > 0) mAccelForward -= 1;
 
@@ -101,20 +122,21 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	Ogre::Vector3 mVelocity = Ogre::Vector3::ZERO;
 
 	if(mGoingForward || mAccelForward)
-		mVelocity += mAccelForward * mCameraManager->getForwardDirection() / mTopAccel;
+		mVelocity += mAccelForward * getForwardDirection() / mTopAccel;
 	if(mGoingLeft || mAccelLeft)
-		mVelocity -= mAccelLeft * mCameraManager->getRightDirection() / mTopAccel;
+		mVelocity -= mAccelLeft * getRightDirection() / mTopAccel;
 	if(mGoingBack || mAccelBack)
-		mVelocity -= mAccelBack * mCameraManager->getForwardDirection() / mTopAccel;
+		mVelocity -= mAccelBack * getForwardDirection() / mTopAccel;
 	if(mGoingRight || mAccelRight)
-		mVelocity += mAccelRight * mCameraManager->getRightDirection() / mTopAccel;
+		mVelocity += mAccelRight * getRightDirection() / mTopAccel;
 
 	if(mGoingUp || mAccelUp)
-		mVelocity += mAccelUp * mCameraManager->getUpDirection()  / mTopAccel;
+		mVelocity += mAccelUp * getUpDirection()  / mTopAccel;
 	if(mGoingDown || mAccelDown)
-		mVelocity -= mAccelDown * mCameraManager->getUpDirection()  / mTopAccel;
+		mVelocity -= mAccelDown * getUpDirection()  / mTopAccel;
 
-	mCameraManager->move(mVelocity * evt.timeSinceLastFrame * mTopSpeed);
+	//if(mCameraManager)
+		mCameraManager->move(mVelocity * evt.timeSinceLastFrame * mTopSpeed);
 
 	mNodePositionX += (mVelocity.x * evt.timeSinceLastFrame * mTopSpeed);
 	mNodePositionY += (mVelocity.y * evt.timeSinceLastFrame * mTopSpeed);
@@ -122,4 +144,18 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 	return true;
 
+}
+
+Ogre::Vector3 LocalPlayer::getForwardDirection(){
+	using namespace Ogre;
+	return Quaternion(Degree(mNodeYaw), Vector3::UNIT_Y) * Vector3::UNIT_Z * -1;
+}
+
+Ogre::Vector3 LocalPlayer::getUpDirection(){
+	return Ogre::Vector3::UNIT_Y;
+}
+
+Ogre::Vector3 LocalPlayer::getRightDirection(){
+	using namespace Ogre;
+	return Quaternion(Degree(mNodeYaw), Vector3::UNIT_Y) * Vector3::UNIT_X;
 }

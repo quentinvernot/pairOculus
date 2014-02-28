@@ -5,18 +5,19 @@ namespace GameClient{
 	Connector::Connector(
 		boost::asio::io_service &io_service,
 		tcp::resolver::iterator iterator,
+		boost::function<void ()> close,
 		boost::function<
 			void (NetworkMessage::NetworkMessage *message)
 		> receive
 	):
 		NetworkIO(io_service),
 		mIterator(iterator),
+		mClose(close),
 		mReceive(receive)
 	{
 	}
-#include <cstdlib>
+
 	Connector::~Connector(){
-		mSocket.close();
 	}
 
 	void Connector::start(){
@@ -29,6 +30,10 @@ namespace GameClient{
 				boost::asio::placeholders::error
 			)
 		);
+	}
+
+	void Connector::close(){
+		mClose();
 	}
 
 	void Connector::handleReceive(NetworkMessage::NetworkMessage *message){

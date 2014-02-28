@@ -7,6 +7,7 @@ NetworkIO::NetworkIO(boost::asio::io_service& io_service):
 	mMessageBuffer(""),
 	mNMFactory(new NetworkMessage::NetworkMessageFactory()),
 	mMessageList(),
+	mIsClosed(false),
 	mWriting(false)
 {
 	mHeaderBuffer = new char[NetworkMessage::HEADERLENGTH+1];
@@ -20,12 +21,14 @@ NetworkIO::~NetworkIO(){
 }
 
 tcp::socket &NetworkIO::getSocket(){return mSocket;}
+bool NetworkIO::isClosed(){return mIsClosed;}
 
 void NetworkIO::start(){
 	handleReadBody(boost::system::error_code());
 }
 
 void NetworkIO::close(){
+	mIsClosed = true;
 }
 
 void NetworkIO::sendMessage(NetworkMessage::NetworkMessage *message){
@@ -39,11 +42,11 @@ void NetworkIO::sendMessage(NetworkMessage::NetworkMessage *message){
 
 void NetworkIO::handleReadHeader(const boost::system::error_code& error){
 
-	std::cout << "#" << mHeaderBuffer << "#" << std::endl;
-	mMessageBuffer = mHeaderBuffer;
-	std::fill_n(mBodyBuffer, (int)NetworkMessage::MAXBODYLENGTH+1, 0);
-
 	if(!error){
+		
+		mMessageBuffer = mHeaderBuffer;
+		std::fill_n(mBodyBuffer, (int)NetworkMessage::MAXBODYLENGTH+1, 0);
+
 		boost::asio::async_read(
 			mSocket,
 			boost::asio::buffer(
@@ -56,6 +59,7 @@ void NetworkIO::handleReadHeader(const boost::system::error_code& error){
 				boost::asio::placeholders::error
 			)
 		);
+
 	}
 	else{
 		close();
@@ -69,6 +73,7 @@ void NetworkIO::handleReadBody(const boost::system::error_code& error){
 
 		if(mMessageBuffer != ""){
 			mMessageBuffer += mBodyBuffer;
+			std::cout << mMessageBuffer << std::endl;
 			handleReceive(mNMFactory->buildMessage(mMessageBuffer));
 			mMessageBuffer = "";
 			std::fill_n(mHeaderBuffer, (int)NetworkMessage::HEADERLENGTH+1, 0);
@@ -97,16 +102,17 @@ void NetworkIO::handleWrite(const boost::system::error_code& error){
 
 	using namespace NetworkMessage;
 
-	if(mMessageList.size() == 0){
-		mWriting = false;
-		return;
-	}
-
-	NetworkMessage::NetworkMessage nm = mMessageList.front();
-	mMessageList.pop_front();
-	mWriting = true;
-
 	if(!error){
+
+		if(mMessageList.size() == 0){
+			mWriting = false;
+			return;
+		}
+
+		NetworkMessage::NetworkMessage nm = mMessageList.front();
+		mMessageList.pop_front();
+		mWriting = true;
+
 		boost::asio::async_write(
 			mSocket,
 			boost::asio::buffer(

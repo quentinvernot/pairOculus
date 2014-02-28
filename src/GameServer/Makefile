@@ -14,10 +14,12 @@ re: clean all
 $(OBJDIRS):
 	mkdir -p $(OBJDIRS)
 
+DEP=$(OBJDIR)NetworkIO.o $(OBJDIR)NetworkMessage $(OBJDIR)PlayerList.o $(OBJDIR)Map.o 
+
 $(OBJDIRS)Instance.o: $(SRCDIR)Instance.hpp $(SRCDIR)Instance.cpp $(OBJDIRS)Session.o $(OBJDIRS)SessionList.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)Instance.cpp -o $(OBJDIRS)Instance.o
 
-$(OBJDIRS)Session.o: $(SRCDIR)Session.hpp $(SRCDIR)Session.cpp $(OBJDIRN)*.o $(OBJDIR)NetworkIO.o
+$(OBJDIRS)Session.o: $(SRCDIR)Session.hpp $(SRCDIR)Session.cpp $(OBJDIRN)*.o $(DEP)
 	$(CC) $(CFLAGS) -c $(SRCDIR)Session.cpp -o $(OBJDIRS)Session.o
 
 $(OBJDIRS)SessionList.o: $(SRCDIR)SessionList.hpp $(SRCDIR)SessionList.cpp $(OBJDIRS)Session.o

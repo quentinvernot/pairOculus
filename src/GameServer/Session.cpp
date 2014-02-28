@@ -26,6 +26,7 @@ namespace GameServer{
 	}
 
 	void Session::close(){
+		mSocket.close();
 		mClose(this);
 	}
 

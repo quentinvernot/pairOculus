@@ -1,9 +1,12 @@
 #include "PlayerList.hpp"
 
-PlayerList::PlayerList(){
+PlayerList::PlayerList():
+	mPlayerList()
+{
 }
 
 PlayerList::~PlayerList(){
+	clear();
 }
 
 void PlayerList::addPlayer(Player *player){
@@ -28,6 +31,10 @@ void PlayerList::removePlayer(Player *player){
 		if(mPlayerList[i] == player)
 			mPlayerList.erase(mPlayerList.begin() + i);
 
+}
+
+void PlayerList::clear(){
+	mPlayerList.clear();
 }
 
 Player *PlayerList::get(unsigned int i){

@@ -17,13 +17,16 @@ namespace NetworkMessage{
 			//methods
 			JoinAccept(
 				PlayerList *playerList,
-				unsigned int mMapHeight,
-				unsigned int mMapWidth,
-				time_t mSeed
+				unsigned int mapHeight,
+				unsigned int mapWidth,
+				time_t seed
 			);
 			~JoinAccept();
 
 			PlayerList *getPlayerList();
+			unsigned int getMapHeight();
+			unsigned int getMapWidth();
+			time_t getSeed();
 
 		private:
 			//methods

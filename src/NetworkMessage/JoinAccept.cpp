@@ -36,5 +36,8 @@ namespace NetworkMessage{
 	}
 	
 	PlayerList *JoinAccept::getPlayerList(){return &mPlayerList;}
+	unsigned int JoinAccept::getMapHeight(){return mMapHeight;}
+	unsigned int JoinAccept::getMapWidth(){return mMapWidth;}
+	time_t JoinAccept::getSeed(){return mSeed;}
 
 };

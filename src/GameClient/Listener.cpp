@@ -19,15 +19,17 @@ namespace GameClient{
 		mCallbackPlayerInput(0),
 		mCallbackPlayerKilled(0)
 	{
+
 		tcp::resolver resolver(mIo_service);
 		tcp::resolver::query query(address, port);
 		tcp::resolver::iterator iterator = resolver.resolve(query);
 		mConnector = new Connector(
 			mIo_service,
 			iterator,
+			boost::bind(&Listener::onClose, this),
 			boost::bind(&Listener::handleReceive, this, _1)
 		);
-		
+
 	}
 
 	Listener::~Listener(){
@@ -40,7 +42,7 @@ namespace GameClient{
 
 	void Listener::stop(){
 		delete mConnector;
-		mThread->join();
+		//mThread->join();
 	}
 
 	void Listener::sendMessage(NetworkMessage::NetworkMessage *message){
@@ -88,9 +90,15 @@ namespace GameClient{
 
 	}
 
+	bool Listener::isClosed(){return mConnector->isClosed();}
+
+	void Listener::setCallbackClose(boost::function<void (void)> callbackClose){
+		mCallbackClose = callbackClose;
+	}
+
 	void Listener::setCallbackJoin(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::Join *message)
 		> callbackJoin
 	){
 		mCallbackJoin = callbackJoin;
@@ -98,7 +106,7 @@ namespace GameClient{
 
 	void Listener::setCallbackLeave(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::Leave *message)
 		> callbackLeave
 	){
 		mCallbackLeave = callbackLeave;
@@ -106,7 +114,7 @@ namespace GameClient{
 
 	void Listener::setCallbackJoinAccept(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::JoinAccept *message)
 		> callbackJoinAccept
 	){
 		mCallbackJoinAccept = callbackJoinAccept;
@@ -114,7 +122,7 @@ namespace GameClient{
 
 	void Listener::setCallbackJoinRefuse(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::JoinRefuse *message)
 		> callbackJoinRefuse
 	){
 		mCallbackJoinRefuse = callbackJoinRefuse;
@@ -122,7 +130,7 @@ namespace GameClient{
 
 	void Listener::setCallbackPlayerJoined(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::PlayerJoined *message)
 		> callbackPlayerJoined
 	){
 		mCallbackPlayerJoined = callbackPlayerJoined;
@@ -130,7 +138,7 @@ namespace GameClient{
 
 	void Listener::setCallbackPlayerLeft(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::PlayerLeft *message)
 		> callbackPlayerLeft
 	){
 		mCallbackPlayerLeft = callbackPlayerLeft;
@@ -138,7 +146,7 @@ namespace GameClient{
 
 	void Listener::setCallbackGameStart(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::GameStart *message)
 		> callbackGameStart
 	){
 		mCallbackGameStart = callbackGameStart;
@@ -146,7 +154,7 @@ namespace GameClient{
 
 	void Listener::setCallbackGameEnd(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::GameEnd *message)
 		> callbackGameEnd
 	){
 		mCallbackGameEnd = callbackGameEnd;
@@ -154,7 +162,7 @@ namespace GameClient{
 
 	void Listener::setCallbackPlayerInput(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::PlayerInput *message)
 		> callbackPlayerInput
 	){
 		mCallbackPlayerInput = callbackPlayerInput;
@@ -162,10 +170,15 @@ namespace GameClient{
 
 	void Listener::setCallbackPlayerKilled(
 		boost::function<
-			void (NetworkMessage::NetworkMessage *message)
+			void (NetworkMessage::PlayerKilled *message)
 		> callbackPlayerKilled
 	){
 		mCallbackPlayerKilled = callbackPlayerKilled;
+	}
+
+	void Listener::onClose(){
+		if(mCallbackClose != 0)
+			mCallbackClose();
 	}
 
 	void Listener::onJoin(NetworkMessage::Join *message){

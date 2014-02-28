@@ -1,47 +1,62 @@
 #include "Game.hpp"
 
-Game::Game() :
-	ogreRoot(0),
-	ogreResourcesCfg(Ogre::StringUtil::BLANK),
-	ogrePluginsCfg(Ogre::StringUtil::BLANK),
-	sceneMgr(0),
-	cameraManager(0),
-	localPlayer(0),
-	gameWindow(0),
-	input(0),
-	shutDownFlag(false)
+Game::Game(std::string nickname, std::string address, std::string port):
+	mOgreRoot(0),
+	mOgreResourcesCfg(Ogre::StringUtil::BLANK),
+	mOgrePluginsCfg(Ogre::StringUtil::BLANK),
+	mSceneMgr(0),
+	mCameraManager(0),
+	mGameWindow(0),
+	mInput(0),
+	mNickname(nickname),
+	mLocalPlayer(0),
+	mPlayerList(new LocalPlayerList()),
+	mMap(0),
+	mLocalMap(0),
+	mAddress(address),
+	mPort(port),
+	mNMFactory(new NetworkMessage::NetworkMessageFactory()),
+	mGCListener(0),
+	mOnlineMode(false),
+	mServerJoined(false),
+	mGameSetUp(false),
+	mSceneCreated(false),
+	mGameRunning(false),
+	mShutDownFlag(false)
 {
+	if(mAddress != "")
+		mOnlineMode = true;
 }
 
 Game::~Game(){
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Inputs");
-	delete input;
+	delete mInput;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Camera Manager");
-	delete cameraManager;
+	delete mCameraManager;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Local Player");
-	delete localPlayer;
-	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting GameWindow");
-	delete gameWindow;
+	delete mLocalPlayer;
+	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Game Window");
+	delete mGameWindow;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting OGRE Root");
-	delete ogreRoot;
+	delete mOgreRoot;
 
 }
 
 void Game::go(){
 
 #ifdef _DEBUG
-	ogreResourcesCfg = "resources_d.cfg";
-	ogrePluginsCfg = "plugins_d.cfg";
+	mOgreResourcesCfg = "resources_d.cfg";
+	mOgrePluginsCfg = "plugins_d.cfg";
 #else
-	ogreResourcesCfg = "resources.cfg";
-	ogrePluginsCfg = "plugins.cfg";
+	mOgreResourcesCfg = "resources.cfg";
+	mOgrePluginsCfg = "plugins.cfg";
 #endif
 
 	if (!setup())
 		return;
 
-	ogreRoot->startRendering();
+	mOgreRoot->startRendering();
 
 	// clean up
 	destroyScene();
@@ -49,41 +64,145 @@ void Game::go(){
 }
 
 void Game::shutDown(){
-	shutDownFlag = true;
+	mShutDownFlag = true;
 }
 
 bool Game::injectMouseMove(const OIS::MouseEvent &arg){
-	return localPlayer->injectMouseMove(arg);
+
+	if(mGameSetUp)
+		return mLocalPlayer->injectMouseMove(arg);
+
+	return true;
+
 }
 
 bool Game::injectMouseDown(
 	const OIS::MouseEvent &arg, OIS::MouseButtonID id
 ){
-	return localPlayer->injectMouseDown(arg, id);
+
+	if(mGameSetUp)
+		return mLocalPlayer->injectMouseDown(arg, id);
+
+	return true;
+
 }
 
 bool Game::injectMouseUp(
 	const OIS::MouseEvent &arg, OIS::MouseButtonID id
 ){
-	return localPlayer->injectMouseUp(arg, id);
+
+	if(mGameSetUp)
+		return mLocalPlayer->injectMouseUp(arg, id);
+
+	return true;
+
 }
 
 bool Game::injectKeyDown(const OIS::KeyEvent &arg){
 
 	if(arg.key == OIS::KC_ESCAPE)
-		shutDownFlag = true;
+		mShutDownFlag = true;
 
-	return localPlayer->injectKeyDown(arg);
+	if(mGameSetUp)
+		return mLocalPlayer->injectKeyDown(arg);
+
+	return true;
 
 }
 
 bool Game::injectKeyUp(const OIS::KeyEvent &arg){
-	return localPlayer->injectKeyUp(arg);
+
+	if(mGameSetUp)
+		return mLocalPlayer->injectKeyUp(arg);
+	
+	return true;
+
+}
+
+void Game::injectClientClose(){
+
+	if(!mGameSetUp){
+		if(mServerJoined)
+			shutDown();
+		else{
+			Ogre::LogManager::getSingletonPtr()->logMessage("Error while joining server, setting up the game as single player");
+			offlineSetup();
+		}
+	}
+
+}
+
+void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
+
+	mServerJoined = true;
+
+	PlayerList *pl = message->getPlayerList();
+	LocalPlayer *tmp;
+
+	Ogre::LogManager::getSingletonPtr()->logMessage("Filling player list");
+	for(unsigned int i = 0; i < pl->size(); i++){
+		if((*pl)[i]->getNickname() == mNickname)
+			tmp = new LocalPlayer(mNickname, mCameraManager);
+		else
+			tmp = new LocalPlayer(mNickname);
+		mPlayerList->addPlayer(tmp);
+	}
+
+	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
+	mLocalPlayer = mPlayerList->getPlayerByName(mNickname);
+	std::cout << pl->size() << std::endl;
+	std::cout << mPlayerList->size() << std::endl;
+
+	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
+
+	mMap = new Map(
+		message->getMapHeight(),
+		message->getMapWidth(),
+		message->getSeed()
+	);
+
+	mGameSetUp = true;
+
+	mGCListener->sendMessage(
+		mNMFactory->buildMessage(NetworkMessage::GAMESTART)
+	);
+
+}
+
+void Game::injectJoinRefuse(NetworkMessage::JoinRefuse *message){
+	
+}
+
+void Game::injectPlayerJoined(NetworkMessage::PlayerJoined *message){
+	
+}
+
+void Game::injectPlayerLeft(NetworkMessage::PlayerLeft *message){
+	
+}
+
+void Game::injectGameStart(NetworkMessage::GameStart *message){
+	Ogre::LogManager::getSingletonPtr()->logMessage("Starting game");
+	mGameRunning = true;
+}
+
+void Game::injectGameEnd(NetworkMessage::GameEnd *message){
+	Ogre::LogManager::getSingletonPtr()->logMessage("Ending game");
+	mGameRunning = false;
+}
+
+void Game::injectPlayerInput(NetworkMessage::PlayerInput *message){
+
+	std::string nickname = message->getNickname();
+	
+	if(nickname != mNickname)
+		mPlayerList->getPlayerByName(nickname)->injectPlayerInput(message);
+
 }
 
 bool Game::setup(){
 
-	ogreRoot = new Ogre::Root(ogrePluginsCfg);
+	mOgreRoot = new Ogre::Root(mOgrePluginsCfg);
 
 	setupResources();
 
@@ -96,35 +215,42 @@ bool Game::setup(){
 	createResourceListener();
 	// Load resources
 	loadResources();
-	gameWindow->setViewMode("oculus");
+	mGameWindow->setViewMode("oculus");
 
 	// Create the scene
 	createScene();
-
+	// Create the frame listener
 	createFrameListener();
 
 	return true;
 
-};
+}
+
+void Game::chooseSceneManager(){
+	// Get the SceneManager, in this case a generic one
+	mSceneMgr = mOgreRoot->createSceneManager(Ogre::ST_GENERIC);
+}
 
 bool Game::configure(){
 
 	// Show the configuration dialog and initialise the system
 	// You can skip this and use root.restoreConfig() to load configuration
 	// settings if you were sure there are valid ones saved in ogre.cfg
-	if(ogreRoot->showConfigDialog()){
+	if(mOgreRoot->showConfigDialog()){
 
 		Ogre::LogManager::getSingletonPtr()->logMessage("Creating Camera Manager");
-		cameraManager = new CameraManager(sceneMgr);
+		mCameraManager = new CameraManager(mSceneMgr);
 
 		Ogre::LogManager::getSingletonPtr()->logMessage("Creating Game Window");
-		gameWindow = new GameWindow(
-			cameraManager,
-			ogreRoot->initialise(true, "Game Render Window")
+		mGameWindow = new GameWindow(
+			mCameraManager,
+			mOgreRoot->initialise(true, "Game Render Window")
 		);
-
-		Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
-		localPlayer = new LocalPlayer("Player 1", cameraManager);
+		
+		if(mOnlineMode)
+			networkSetup();
+		else
+			offlineSetup();
 
 		return true;
 
@@ -134,45 +260,96 @@ bool Game::configure(){
 
 }
 
-void Game::chooseSceneManager(){
-	// Get the SceneManager, in this case a generic one
-	sceneMgr = ogreRoot->createSceneManager(Ogre::ST_GENERIC);
+bool Game::networkSetup(){
+	
+	Ogre::LogManager::getSingletonPtr()->logMessage("Starting Game Client");
+	mGCListener = new GameClient::Listener(mAddress, mPort);
+	createNetworkListener();
+	mGCListener->start();
+
+	mGCListener->sendMessage(mNMFactory->buildMessage(NetworkMessage::JOIN, mNickname));
+
+	return true;
+
+}
+
+bool Game::offlineSetup(){
+
+	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
+	mLocalPlayer = new LocalPlayer(mNickname, mCameraManager);
+	mPlayerList->addPlayer(mLocalPlayer);
+
+	mGameSetUp = true;
+	mGameRunning = true;
+
+	return true;
+
+}
+
+void Game::createNetworkListener(){
+
+	mGCListener->setCallbackClose(boost::bind(&Game::injectClientClose, this));
+	mGCListener->setCallbackJoinAccept(
+		boost::bind(&Game::injectJoinAccept, this, _1)
+	);
+	mGCListener->setCallbackJoinRefuse(
+		boost::bind(&Game::injectJoinRefuse, this, _1)
+	);
+	mGCListener->setCallbackPlayerJoined(
+		boost::bind(&Game::injectPlayerJoined, this, _1)
+	);
+	mGCListener->setCallbackPlayerLeft(
+		boost::bind(&Game::injectPlayerLeft, this, _1)
+	);
+	mGCListener->setCallbackGameStart(
+		boost::bind(&Game::injectGameStart, this, _1)
+	);
+	mGCListener->setCallbackGameEnd(
+		boost::bind(&Game::injectGameEnd, this, _1)
+	);
+	mGCListener->setCallbackPlayerInput(
+		boost::bind(&Game::injectPlayerInput, this, _1)
+	);
+
 }
 
 void Game::createFrameListener(){
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Input");
-	input = new Input(gameWindow->getWindow());
+	mInput = new Input(mGameWindow->getWindow());
 
-	input->setMouseListener(
+	mInput->setMouseListener(
 		boost::bind(&Game::injectMouseMove, this, _1),
 		boost::bind(&Game::injectMouseDown, this, _1, _2),
 		boost::bind(&Game::injectMouseUp, this, _1, _2)
 	);
 
-	input->setKeyboardListener(
+	mInput->setKeyboardListener(
 		boost::bind(&Game::injectKeyDown, this, _1),
 		boost::bind(&Game::injectKeyUp, this, _1)
 	);
 
-	ogreRoot->addFrameListener(this);
+	mOgreRoot->addFrameListener(this);
 
 }
 
 void Game::createScene(){
-	unsigned int width = 10, height = 20, scale = 10;
 
-	// Data part
-	Map *map = new Map(width, height);
+	//TODO : display player models
 
-	// Representation part
-	LocalMap(map, sceneMgr, scale);
+	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
+	if(mOnlineMode)
+		mLocalMap = new LocalMap(mMap, mSceneMgr, 100);
+	else
+		mLocalMap = new LocalMap(new Map(17, 17), mSceneMgr, 100);
 
 	// Lights
-	sceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
 
-	Ogre::Light* light = sceneMgr->createLight("MainLight");
+	Ogre::Light* light = mSceneMgr->createLight("MainLight");
 	light->setPosition(0, 80, 0);
+	
+	mSceneCreated = true;
 
 }
 
@@ -182,7 +359,7 @@ void Game::setupResources(){
 
 	// Load resource paths from config file
 	Ogre::ConfigFile cf;
-	cf.load(ogreResourcesCfg);
+	cf.load(mOgreResourcesCfg);
 
 	// Go through all sections & settings in the file
 	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
@@ -216,12 +393,18 @@ void Game::loadResources(){
 
 bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
-	if(shutDownFlag)
+	if(mShutDownFlag)
 		return false;
 
-	input->capture();
+	if(mOnlineMode && mGameSetUp && !mSceneCreated)
+		createScene();
 
-	localPlayer->frameRenderingQueued(evt);
+	mInput->capture();
+
+	if(mGameRunning){
+		for(unsigned int i = 0; i < mPlayerList->size(); i++)
+			(*mPlayerList)[i]->frameRenderingQueued(evt);
+	}
 
 	return true;
 

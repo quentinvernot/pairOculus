@@ -19,6 +19,8 @@ class NetworkIO{
 		virtual ~NetworkIO();
 
 		tcp::socket &getSocket();
+		bool isClosed();
+
 		virtual void start();
 		virtual void close();
 		void sendMessage(NetworkMessage::NetworkMessage *message);
@@ -39,6 +41,7 @@ class NetworkIO{
 		std::string mMessageBuffer;
 		NetworkMessage::NetworkMessageFactory *mNMFactory;
 		std::list<NetworkMessage::NetworkMessage> mMessageList;
+		bool mIsClosed;
 		bool mWriting;
 
 };

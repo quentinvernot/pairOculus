@@ -2,7 +2,6 @@
 #define __GAMECLIENTLISTENER_H
 
 #include "Connector.hpp"
-#include "../NetworkMessage/NetworkMessage.hpp"
 #include "../NetworkMessage/NetworkMessageFactory.hpp"
 
 #include <iostream>
@@ -26,62 +25,67 @@ namespace GameClient{
 				std::string port
 			);
 			~Listener();
-			
+
 			void start();
 			void stop();
 			void sendMessage(NetworkMessage::NetworkMessage *message);
 			void handleReceive(NetworkMessage::NetworkMessage *message);
 
+			bool isClosed();
+
+			void setCallbackClose(boost::function<void (void)> callbackClose);
 			void setCallbackJoin(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::Join *message)
 				> callbackJoin
 			);
 			void setCallbackLeave(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::Leave *message)
 				> callbackLeave
 			);
 			void setCallbackJoinAccept(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::JoinAccept *message)
 				> callbackJoinAccept
 			);
 			void setCallbackJoinRefuse(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::JoinRefuse *message)
 				> callbackJoinRefuse
 			);
 			void setCallbackPlayerJoined(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::PlayerJoined *message)
 				> callbackPlayerJoined
 			);
 			void setCallbackPlayerLeft(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::PlayerLeft *message)
 				> callbackPlayerLeft
 			);
 			void setCallbackGameStart(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::GameStart *message)
 				> callbackGameStart
 			);
 			void setCallbackGameEnd(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::GameEnd *message)
 				> callbackGameEnd
 			);
 			void setCallbackPlayerInput(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::PlayerInput *message)
 				> callbackPlayerInput
 			);
 			void setCallbackPlayerKilled(
 				boost::function<
-					void (NetworkMessage::NetworkMessage *message)
+					void (NetworkMessage::PlayerKilled *message)
 				> callbackPlayerKilled
 			);
+			
+			void onClose();
 
 		private:
 			//Methods
@@ -101,35 +105,36 @@ namespace GameClient{
 			Connector *mConnector;
 			boost::thread *mThread;
 
+			boost::function<void (void)> mCallbackClose;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::Join *message)
 			> mCallbackJoin;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::Leave *message)
 			> mCallbackLeave;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::JoinAccept *message)
 			> mCallbackJoinAccept;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::JoinRefuse *message)
 			> mCallbackJoinRefuse;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::PlayerJoined *message)
 			> mCallbackPlayerJoined;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::PlayerLeft *message)
 			> mCallbackPlayerLeft;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::GameStart *message)
 			> mCallbackGameStart;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::GameEnd *message)
 			> mCallbackGameEnd;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::PlayerInput *message)
 			> mCallbackPlayerInput;
 			boost::function<
-				void (NetworkMessage::NetworkMessage *message)
+				void (NetworkMessage::PlayerKilled *message)
 			> mCallbackPlayerKilled;
 
 	};
