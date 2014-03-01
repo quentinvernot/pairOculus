@@ -13,10 +13,12 @@ namespace NetworkMessage{
 			//methods
 			PlayerLeft(std::string nickname);
 			~PlayerLeft();
+			std::string getNickname();
 
 		private:
 			//methods
 			//arguments
+			std::string mNickname;
 
 	};
 

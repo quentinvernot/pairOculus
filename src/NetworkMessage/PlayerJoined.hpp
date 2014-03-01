@@ -20,6 +20,11 @@ namespace NetworkMessage{
 				long z
 			);
 			~PlayerJoined();
+			
+			std::string getNickname();
+			long getPositionX();
+			long getPositionY();
+			long getPositionZ();
 
 		private:
 			//methods

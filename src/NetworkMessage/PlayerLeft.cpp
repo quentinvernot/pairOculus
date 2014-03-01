@@ -10,5 +10,7 @@ namespace NetworkMessage{
 
 	PlayerLeft::~PlayerLeft(){
 	}
+	
+	std::string PlayerLeft::getNickname(){return mNickname;}
 
 };

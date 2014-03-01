@@ -34,7 +34,9 @@ class LocalPlayer : public Player{
 		void injectPlayerInput(NetworkMessage::PlayerInput *message);
 
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
-		
+
+		bool hadUsefulInput();
+
 		Ogre::Vector3 getForwardDirection();
 		Ogre::Vector3 getUpDirection();
 		Ogre::Vector3 getRightDirection();
@@ -49,6 +51,13 @@ class LocalPlayer : public Player{
 		int mAccelRight;
 		int mAccelUp;
 		int mAccelDown;
+		
+		bool mInputWasUseful;
+
+		Ogre::Degree mYawCorrection;
+		Ogre::Degree mPitchCorrection;
+		Ogre::Degree mRollCorrection;
+		Ogre::Vector3 mPositionCorrection;
 
 };
 

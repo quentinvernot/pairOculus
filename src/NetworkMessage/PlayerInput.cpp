@@ -2,7 +2,7 @@
 
 namespace NetworkMessage{
 
-	PlayerInput::PlayerInput(Player *player, long timestamp):
+	PlayerInput::PlayerInput(Player *player):
 		NetworkMessage(PLAYERINPUT),
 		mNickname(player->getNickname()),
 		mNodeYaw(player->getNodeYaw()),
@@ -16,9 +16,9 @@ namespace NetworkMessage{
 		mGoingLeft(player->getGoingLeft()),
 		mGoingRight(player->getGoingRight()),
 		mGoingUp(player->getGoingUp()),
-		mGoingDown(player->getGoingDown()),
-		mTimestamp(timestamp)
+		mGoingDown(player->getGoingDown())
 	{
+		buildSelf();
 	}
 
 	PlayerInput::PlayerInput(
@@ -34,8 +34,7 @@ namespace NetworkMessage{
 		bool goingLeft,
 		bool goingRight,
 		bool goingUp,
-		bool goingDown,
-		long timestamp
+		bool goingDown
 	):
 		NetworkMessage(PLAYERINPUT),
 		mNickname(nickname),
@@ -50,9 +49,9 @@ namespace NetworkMessage{
 		mGoingLeft(goingLeft),
 		mGoingRight(goingRight),
 		mGoingUp(goingUp),
-		mGoingDown(goingDown),
-		mTimestamp(timestamp)
+		mGoingDown(goingDown)
 	{
+		buildSelf();
 	}
 
 	PlayerInput::~PlayerInput(){
@@ -76,9 +75,28 @@ namespace NetworkMessage{
 	bool PlayerInput::getGoingDown(){return mGoingDown;}
 
 	void PlayerInput::buildSelf(){
-		
-		
-		
+
+		std::ostringstream convert;
+
+		convert << mNickname << "\n";
+
+		convert << mNodeYaw << "\n";
+		convert << mNodePitch << "\n";
+		convert << mNodeRoll << "\n";
+
+		convert << mNodePositionX << "\n";
+		convert << mNodePositionY << "\n";
+		convert << mNodePositionZ << "\n";
+
+		convert << mGoingForward << "\n";
+		convert << mGoingBack << "\n";
+		convert << mGoingLeft << "\n";
+		convert << mGoingRight << "\n";
+		convert << mGoingUp << "\n";
+		convert << mGoingDown << "\n";
+
+		mBody = convert.str();
+
 	}
 
 };

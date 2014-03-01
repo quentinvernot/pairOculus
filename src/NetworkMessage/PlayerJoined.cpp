@@ -32,6 +32,11 @@ namespace NetworkMessage{
 	PlayerJoined::~PlayerJoined(){
 	}
 	
+	std::string PlayerJoined::getNickname(){return mNickname;}
+	long PlayerJoined::getPositionX(){return mX;}
+	long PlayerJoined::getPositionY(){return mY;}
+	long PlayerJoined::getPositionZ(){return mZ;}
+	
 	void PlayerJoined::buildSelf(){
 		std::ostringstream convert;
 		convert << mNickname << "\n";

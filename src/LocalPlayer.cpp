@@ -8,7 +8,12 @@ LocalPlayer::LocalPlayer(std::string name, CameraManager *cameraManager):
 	mAccelLeft(0),
 	mAccelRight(0),
 	mAccelUp(0),
-	mAccelDown(0)
+	mAccelDown(0),
+	mInputWasUseful(false),
+	mYawCorrection(0),
+	mPitchCorrection(0),
+	mRollCorrection(0),
+	mPositionCorrection(Ogre::Vector3::ZERO)
 {
 }
 
@@ -22,9 +27,20 @@ bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 	//mNodeRoll = Ogre::Degree(-arg.state.Z.rel * 0.15f);
 
 	if(mCameraManager){
+
+		mCameraManager->yaw(mYawCorrection);
+		mYawCorrection = 0;
+		mCameraManager->pitch(mPitchCorrection);
+		mPitchCorrection = 0;
+		mCameraManager->roll(mRollCorrection);
+		mRollCorrection = 0;
+
 		mCameraManager->yaw(Ogre::Degree(-arg.state.X.rel * 0.15f));
 		mCameraManager->pitch(Ogre::Degree(-arg.state.Y.rel * 0.15f));
+
 	}
+	
+	mInputWasUseful = true;
 
 	return true;
 
@@ -55,6 +71,20 @@ bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 	else if (arg.key == OIS::KC_LSHIFT)
 		mFastMove = true;
 
+	if(
+		arg.key == OIS::KC_Z ||
+		arg.key == OIS::KC_UP ||
+		arg.key == OIS::KC_S ||
+		arg.key == OIS::KC_DOWN ||
+		arg.key == OIS::KC_Q ||
+		arg.key == OIS::KC_LEFT ||
+		arg.key == OIS::KC_D ||
+		arg.key == OIS::KC_RIGHT ||
+		arg.key == OIS::KC_PGUP ||
+		arg.key == OIS::KC_PGDOWN
+	)
+		mInputWasUseful = true;
+
 	return true;
 
 }
@@ -76,15 +106,39 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 	else if (arg.key == OIS::KC_LSHIFT)
 		mFastMove = false;
 
+	if(
+		arg.key == OIS::KC_Z ||
+		arg.key == OIS::KC_UP ||
+		arg.key == OIS::KC_S ||
+		arg.key == OIS::KC_DOWN ||
+		arg.key == OIS::KC_Q ||
+		arg.key == OIS::KC_LEFT ||
+		arg.key == OIS::KC_D ||
+		arg.key == OIS::KC_RIGHT ||
+		arg.key == OIS::KC_PGUP ||
+		arg.key == OIS::KC_PGDOWN
+	)
+		mInputWasUseful = true;
+
 	return true;
 
 }
 
 void LocalPlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
+	if(mCameraManager){
+		mYawCorrection += Ogre::Degree(message->getNodeYaw() - mNodeYaw);
+		mPitchCorrection += Ogre::Degree(message->getNodePitch() - mNodePitch);
+		mRollCorrection += Ogre::Degree(message->getNodeRoll() - mNodeRoll);
+	}
+
 	mNodeYaw = message->getNodeYaw();
 	mNodePitch = message->getNodePitch();
 	mNodeRoll = message->getNodeRoll();
+	
+	mPositionCorrection.x += message->getNodePositionX() - mNodePositionX;
+	mPositionCorrection.y += message->getNodePositionY() - mNodePositionY;
+	mPositionCorrection.z += message->getNodePositionZ() - mNodePositionZ;
 
 	mNodePositionX = message->getNodePositionX();
 	mNodePositionY = message->getNodePositionY();
@@ -100,7 +154,7 @@ void LocalPlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 }
 
 bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
-std::cout << "a" << std::endl;
+
 	if(mGoingForward && mAccelForward < mTopAccel) mAccelForward += 1;
 	else if(!mGoingForward && mAccelForward > 0) mAccelForward -= 1;
 
@@ -119,29 +173,42 @@ std::cout << "a" << std::endl;
 	if(mGoingDown && mAccelDown < mTopAccel) mAccelDown += 1;
 	else if(!mGoingDown && mAccelDown > 0) mAccelDown -= 1;
 
-	Ogre::Vector3 mVelocity = Ogre::Vector3::ZERO;
+	Ogre::Vector3 velocity = Ogre::Vector3::ZERO;
 
 	if(mGoingForward || mAccelForward)
-		mVelocity += mAccelForward * getForwardDirection() / mTopAccel;
+		velocity += mAccelForward * getForwardDirection() / mTopAccel;
 	if(mGoingLeft || mAccelLeft)
-		mVelocity -= mAccelLeft * getRightDirection() / mTopAccel;
+		velocity -= mAccelLeft * getRightDirection() / mTopAccel;
 	if(mGoingBack || mAccelBack)
-		mVelocity -= mAccelBack * getForwardDirection() / mTopAccel;
+		velocity -= mAccelBack * getForwardDirection() / mTopAccel;
 	if(mGoingRight || mAccelRight)
-		mVelocity += mAccelRight * getRightDirection() / mTopAccel;
+		velocity += mAccelRight * getRightDirection() / mTopAccel;
 
 	if(mGoingUp || mAccelUp)
-		mVelocity += mAccelUp * getUpDirection()  / mTopAccel;
+		velocity += mAccelUp * getUpDirection()  / mTopAccel;
 	if(mGoingDown || mAccelDown)
-		mVelocity -= mAccelDown * getUpDirection()  / mTopAccel;
+		velocity -= mAccelDown * getUpDirection()  / mTopAccel;
 
-	//if(mCameraManager)
-		mCameraManager->move(mVelocity * evt.timeSinceLastFrame * mTopSpeed);
+	if(mCameraManager){
+		mCameraManager->move(mPositionCorrection);
+		mPositionCorrection = Ogre::Vector3::ZERO;
+		mCameraManager->move(velocity * evt.timeSinceLastFrame * mTopSpeed);
+	}
 
-	mNodePositionX += (mVelocity.x * evt.timeSinceLastFrame * mTopSpeed);
-	mNodePositionY += (mVelocity.y * evt.timeSinceLastFrame * mTopSpeed);
-	mNodePositionZ += (mVelocity.z * evt.timeSinceLastFrame * mTopSpeed);
+	mNodePositionX += (velocity.x * evt.timeSinceLastFrame * mTopSpeed);
+	mNodePositionY += (velocity.y * evt.timeSinceLastFrame * mTopSpeed);
+	mNodePositionZ += (velocity.z * evt.timeSinceLastFrame * mTopSpeed);
 
+	return true;
+
+}
+
+bool LocalPlayer::hadUsefulInput(){
+
+	if(!mInputWasUseful)
+		return false;
+	
+	mInputWasUseful = false;
 	return true;
 
 }

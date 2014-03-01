@@ -103,6 +103,8 @@ bool Game::injectKeyDown(const OIS::KeyEvent &arg){
 	if(arg.key == OIS::KC_ESCAPE)
 		mShutDownFlag = true;
 
+	mGameWindow->injectKeyDown(arg);
+
 	if(mGameSetUp)
 		return mLocalPlayer->injectKeyDown(arg);
 
@@ -170,15 +172,31 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 }
 
 void Game::injectJoinRefuse(NetworkMessage::JoinRefuse *message){
-	
+	shutDown();
 }
 
 void Game::injectPlayerJoined(NetworkMessage::PlayerJoined *message){
-	
+
+	if(!mGameRunning){
+
+		Ogre::LogManager::getSingletonPtr()->logMessage("Adding new player");
+		LocalPlayer *lp = new LocalPlayer(message->getNickname());
+		lp->setNodePositionX(message->getPositionX());
+		lp->setNodePositionY(message->getPositionY());
+		lp->setNodePositionZ(message->getPositionZ());
+		mPlayerList->addPlayer(lp);
+
+	}
+
 }
 
 void Game::injectPlayerLeft(NetworkMessage::PlayerLeft *message){
-	
+
+	Ogre::LogManager::getSingletonPtr()->logMessage("Removing player");
+	mPlayerList->removePlayer(
+		mPlayerList->getPlayerByName(message->getNickname())
+	);
+
 }
 
 void Game::injectGameStart(NetworkMessage::GameStart *message){
@@ -279,6 +297,7 @@ bool Game::offlineSetup(){
 	mLocalPlayer = new LocalPlayer(mNickname, mCameraManager);
 	mPlayerList->addPlayer(mLocalPlayer);
 
+	mOnlineMode = false;
 	mGameSetUp = true;
 	mGameRunning = true;
 
@@ -405,7 +424,18 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
 	}
+	
+	if(mLocalPlayer->hadUsefulInput())
+		sendPlayerInput();
 
 	return true;
+
+}
+
+void Game::sendPlayerInput(){
+
+	mGCListener->sendMessage(
+		mNMFactory->buildMessage(NetworkMessage::PLAYERINPUT, mLocalPlayer)
+	);
 
 }

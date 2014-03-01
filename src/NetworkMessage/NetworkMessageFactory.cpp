@@ -25,9 +25,9 @@ namespace NetworkMessage{
 
 		switch(type){
 			case JOIN:
-				return new Join(parts[2]);
+				return buildMessage(JOIN, parts[2]);
 			case LEAVE:
-				return new Leave();
+				return buildMessage(LEAVE);
 			case JOINACCEPT:
 				for(; j < (parts.size()-2)/4; j++){
 
@@ -42,27 +42,29 @@ namespace NetworkMessage{
 
 				}
 
-				return new JoinAccept(
+				return buildMessage(
+					JOINACCEPT,
 					&playerList,
 					atoi(parts[parts.size()-3].c_str()),
 					atoi(parts[parts.size()-2].c_str()),
 					atoi(parts[parts.size()-1].c_str())
 				);
 			case JOINREFUSE:
-				return new JoinRefuse(parts[2]);
+				return buildMessage(JOINREFUSE, parts[2]);
 			case PLAYERJOINED:
 				x = atoi(parts[3].c_str());
 				y = atoi(parts[4].c_str());
 				z = atoi(parts[5].c_str());
-				return new PlayerJoined(parts[2], x, y, z);
+				return buildMessage(PLAYERJOINED, parts[2], x, y, z);
 			case PLAYERLEFT:
-				return new PlayerLeft(parts[2]);
+				return buildMessage(PLAYERLEFT, parts[2]);
 			case GAMESTART:
-				return new GameStart();
+				return buildMessage(GAMESTART);
 			case GAMEEND:
-				return new GameEnd();
+				return buildMessage(GAMEEND);
 			case PLAYERINPUT:
-				return new PlayerInput(
+				return buildMessage(
+					PLAYERINPUT,
 					parts[2],
 					atof(parts[3].c_str()),
 					atof(parts[4].c_str()),
@@ -75,11 +77,10 @@ namespace NetworkMessage{
 					atoi(parts[11].c_str()),
 					atoi(parts[12].c_str()),
 					atoi(parts[13].c_str()),
-					atoi(parts[14].c_str()),
-					atoi(parts[15].c_str())
+					atoi(parts[14].c_str())
 				);
 			case PLAYERKILLED:
-				return new PlayerKilled();
+				return buildMessage(PLAYERKILLED);
 			default:
 				break;
 		}
@@ -154,6 +155,8 @@ namespace NetworkMessage{
 		switch(type){
 			case PLAYERJOINED:
 				return new PlayerJoined(player);
+			case PLAYERINPUT:
+				return new PlayerInput(player);
 			default:
 				break;
 		}
@@ -195,8 +198,7 @@ namespace NetworkMessage{
 		bool goingLeft,
 		bool goingRight,
 		bool goingUp,
-		bool goingDown,
-		long timestamp
+		bool goingDown
 	){
 
 		switch(type){
@@ -214,26 +216,8 @@ namespace NetworkMessage{
 					goingLeft,
 					goingRight,
 					goingUp,
-					goingDown,
-					timestamp
+					goingDown
 				);
-			default:
-				break;
-		}
-		
-		return 0;
-
-	}
-
-	NetworkMessage *NetworkMessageFactory::buildMessage(
-		MessageType type,
-		Player *player,
-		long timestamp
-	){
-
-		switch(type){
-			case PLAYERINPUT:
-				return new PlayerInput(player, timestamp);
 			default:
 				break;
 		}

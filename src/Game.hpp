@@ -76,6 +76,8 @@ class Game : public Ogre::FrameListener{
 		void loadResources();
 
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
+		
+		void sendPlayerInput();
 
 		//Attributes
 		Ogre::Root *mOgreRoot;

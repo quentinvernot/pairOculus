@@ -22,7 +22,7 @@ MAINOBJ=$(OBJDIR)Game.o $(OBJDIR)GameWindow.o $(OBJDIR)Input.o $(OBJDIR)CameraMa
 $(BINDIR)main: main.cpp $(OBJDIR)Game.o
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) main.cpp $(MAINOBJ) $(LIBOGRE) $(LIBBOOST) -o $(BINDIR)main
 
-$(OBJDIR)Game.o: $(SRCDIR)Game.hpp $(SRCDIR)Game.cpp $(OBJDIR)CameraManager.o $(OBJDIR)PlayerList.o $(OBJDIR)LocalPlayer.o $(OBJDIR)LocalPlayerList.o $(OBJDIR)Input.o $(OBJDIR)GameWindow.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)LocalMap.o $(OBJDIR)GameClient
+$(OBJDIR)Game.o: $(SRCDIR)Game.hpp $(SRCDIR)Game.cpp $(OBJDIR)CameraManager.o $(OBJDIR)PlayerList.o $(OBJDIR)LocalPlayerList.o $(OBJDIR)Input.o $(OBJDIR)GameWindow.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)LocalMap.o $(OBJDIR)GameClient
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)Game.cpp -o $(OBJDIR)Game.o
 
 $(OBJDIR)GameWindow.o: $(SRCDIR)GameWindow.hpp $(SRCDIR)GameWindow.cpp $(OBJDIR)CameraManager.o
@@ -49,7 +49,7 @@ $(OBJDIR)OculusCamera.o: $(SRCDIR)OculusCamera.hpp $(SRCDIR)OculusCamera.cpp
 $(OBJDIR)LocalPlayer.o: $(SRCDIR)LocalPlayer.hpp $(SRCDIR)LocalPlayer.cpp $(OBJDIR)Player.o $(OBJDIR)CameraManager.o $(OBJDIR)NetworkMessage
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)LocalPlayer.cpp -o $(OBJDIR)LocalPlayer.o
 
-$(OBJDIR)LocalPlayerList.o: $(SRCDIR)LocalPlayerList.hpp $(SRCDIR)LocalPlayerList.cpp $(OBJDIR)PlayerList.o $(OBJDIR)LocalPlayer.o
+$(OBJDIR)LocalPlayerList.o: $(SRCDIR)LocalPlayerList.hpp $(SRCDIR)LocalPlayerList.cpp $(OBJDIR)LocalPlayer.o
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)LocalPlayerList.cpp -o $(OBJDIR)LocalPlayerList.o
 
 $(OBJDIR)RemotePlayer.o: $(SRCDIR)RemotePlayer.hpp $(SRCDIR)RemotePlayer.cpp $(OBJDIR)Player.o
