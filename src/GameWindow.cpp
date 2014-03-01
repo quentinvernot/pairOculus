@@ -23,9 +23,9 @@ GameWindow::~GameWindow(){
 void GameWindow::switchViewMode(){
 
 	if(mViewMode == "default")
-		setViewMode("default");
-	else if(mViewMode == "oculus")
 		setViewMode("oculus");
+	else if(mViewMode == "oculus")
+		setViewMode("default");
 
 }
 
@@ -47,6 +47,15 @@ void GameWindow::setViewMode(Ogre::String mode){
 		createOculusViewports();
 
 	}
+
+}
+
+bool GameWindow::injectKeyDown(const OIS::KeyEvent &arg){
+
+	if(arg.key == OIS::KC_A)
+		switchViewMode();
+
+	return true;
 
 }
 

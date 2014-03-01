@@ -12,6 +12,9 @@
 #include <OgreRenderWindow.h>
 #include <OgreCompositorManager.h>
 
+#include <OISEvents.h>
+#include <OISKeyboard.h>
+
 class GameWindow{
 
 	public:
@@ -25,6 +28,8 @@ class GameWindow{
 		void switchViewMode();
 		void setViewMode(Ogre::String mode);
 		Ogre::RenderWindow *getWindow();
+		
+		bool injectKeyDown(const OIS::KeyEvent &arg);
 
 	private:
 		//Methods
