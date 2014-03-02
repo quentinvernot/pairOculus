@@ -17,9 +17,8 @@ class OculusCamera{
 		void roll(Ogre::Radian ang);
 
 		void setPosition(Ogre::Vector3 pos);
-		Ogre::Vector3 getPosition();
 		void setOrientation(Ogre::Quaternion pos);
-		Ogre::Quaternion getOrientation();
+
 		void setCameras(Ogre::Camera *leftCam, Ogre::Camera *rightCam);
 		void setLeftCamera(Ogre::Camera *cam);
 		void setRightCamera(Ogre::Camera *cam);

@@ -6,7 +6,7 @@ OculusCamera::OculusCamera(Ogre::Camera *leftCam, Ogre::Camera *rightCam):
 	mNodeYaw(0),
 	mNodePitch(0),
 	mNodeRoll(0),
-	mNodePosition(0,0,50),
+	mNodePosition(0,0,0),
 	mLeftCameraOffset(-0.32, 0.5, -0.5),
 	mRightCameraOffset(0.32, 0.5, -0.5)
 {
@@ -87,7 +87,6 @@ void OculusCamera::roll(Ogre::Radian ang){
 
 	mLeftCamera->roll(ang);
 	mRightCamera->roll(ang);
-
 	mNodeRoll = ang;
 
 	mLeftCameraOffset =
@@ -107,6 +106,24 @@ void OculusCamera::roll(Ogre::Radian ang){
 
 	mRightCamera->setPosition(mNodePosition);
 	mRightCamera->move(mRightCameraOffset);
+
+}
+
+void OculusCamera::setPosition(Ogre::Vector3 pos){
+
+	mLeftCamera->setPosition(pos);
+	mLeftCamera->move(mLeftCameraOffset);
+	mRightCamera->setPosition(pos);
+	mRightCamera->move(mRightCameraOffset);
+	mNodePosition = pos;
+
+}
+
+void OculusCamera::setOrientation(Ogre::Quaternion ori){
+
+	yaw(ori.getYaw() - mNodeYaw);
+	pitch(ori.getPitch() - mNodeYaw);
+	roll(ori.getRoll() - mNodeYaw);
 
 }
 

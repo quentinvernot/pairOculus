@@ -30,6 +30,9 @@ class CameraManager{
 		void pitch(Ogre::Radian ang);
 		void roll(Ogre::Radian ang);
 
+		void setPosition(Ogre::Vector3 pos);
+		void setOrientation(Ogre::Quaternion ori);
+
 		Ogre::Vector3 getDirection();
 		Ogre::Vector3 getUp();
 		Ogre::Vector3 getRight();
@@ -58,6 +61,11 @@ class CameraManager{
 
 		SimpleCamera *mSimpleCamera;
 		OculusCamera *mOculusCamera;
+		
+		Ogre::Radian mNodeYaw;
+		Ogre::Radian mNodePitch;
+		Ogre::Radian mNodeRoll;
+		Ogre::Vector3 mNodePosition;
 
 };
 

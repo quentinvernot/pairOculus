@@ -4,7 +4,11 @@ CameraManager::CameraManager(Ogre::SceneManager *_sceneMgr) :
 	mSceneMgr(_sceneMgr),
 	mCameraMode("default"),
 	mSimpleCamera(NULL),
-	mOculusCamera(NULL)
+	mOculusCamera(NULL),
+	mNodeYaw(0),
+	mNodePitch(0),
+	mNodeRoll(0),
+	mNodePosition(0, 0, 0)
 {
 }
 
@@ -22,17 +26,17 @@ void CameraManager::createSimpleCamera(){
 	// Create the camera
 	Ogre::Camera *camera = mSceneMgr->createCamera("PlayerCam");
 
-	// Position it at 500 in Z direction
-	camera->setPosition(Ogre::Vector3(0,0,80));
-
-	// Look back along -Z
-	camera->lookAt(Ogre::Vector3(0,0,-300));
-	camera->setNearClipDistance(1);
+	camera->setNearClipDistance(0.5);
 
 	if(mSimpleCamera == NULL)
 		mSimpleCamera = new SimpleCamera(camera);
 	else
 		mSimpleCamera->setCamera(camera);
+	
+	mSimpleCamera->setPosition(mNodePosition);
+	mSimpleCamera->yaw(mNodeYaw);
+	mSimpleCamera->pitch(mNodePitch);
+	mSimpleCamera->roll(mNodeRoll);
 
 }
 
@@ -41,11 +45,6 @@ void CameraManager::createOculusCamera(){
 	Ogre::Camera *cameraLeft = mSceneMgr->createCamera("PlayerCamLeft");
 	Ogre::Camera *cameraRight = mSceneMgr->createCamera("PlayerCamRight");
 
-	cameraLeft->setPosition(Ogre::Vector3(0,0,80));
-	cameraRight->setPosition(Ogre::Vector3(0,0,80));
-
-	cameraLeft->lookAt(Ogre::Vector3(0,0,-300));
-	cameraRight->lookAt(Ogre::Vector3(0,0,-300));
 	cameraLeft->setNearClipDistance(0.5);
 	cameraRight->setNearClipDistance(0.5);
 
@@ -55,6 +54,11 @@ void CameraManager::createOculusCamera(){
 		mOculusCamera->setLeftCamera(cameraLeft);
 		mOculusCamera->setRightCamera(cameraRight);
 	}
+	
+	mOculusCamera->setPosition(mNodePosition);
+	mOculusCamera->yaw(mNodeYaw);
+	mOculusCamera->pitch(mNodePitch);
+	mOculusCamera->roll(mNodeRoll);
 
 }
 
@@ -63,6 +67,8 @@ void CameraManager::destroyCameras(){
 }
 
 void CameraManager::move(const Ogre::Vector3 vec){
+
+	mNodePosition += vec;
 
 	if(mCameraMode == "oculus")
 		mOculusCamera->move(vec);
@@ -73,6 +79,8 @@ void CameraManager::move(const Ogre::Vector3 vec){
 
 void CameraManager::yaw(Ogre::Radian ang){
 
+	mNodeYaw += ang;
+
 	if(mCameraMode == "oculus")
 		mOculusCamera->yaw(ang);
 	else
@@ -81,6 +89,8 @@ void CameraManager::yaw(Ogre::Radian ang){
 }
 
 void CameraManager::pitch(Ogre::Radian ang){
+
+	mNodePitch += ang;
 
 	if(mCameraMode == "oculus")
 		mOculusCamera->pitch(ang);
@@ -91,10 +101,36 @@ void CameraManager::pitch(Ogre::Radian ang){
 
 void CameraManager::roll(Ogre::Radian ang){
 
+	mNodeRoll += ang;
+
 	if(mCameraMode == "oculus")
 		mOculusCamera->roll(ang);
 	else
 		mSimpleCamera->roll(ang);
+
+}
+
+void CameraManager::setPosition(Ogre::Vector3 pos){
+
+	mNodePosition = pos;
+
+	if(mCameraMode == "oculus")
+		mOculusCamera->setPosition(pos);
+	else
+		mSimpleCamera->setPosition(pos);
+
+}
+
+void CameraManager::setOrientation(Ogre::Quaternion ori){
+
+	mNodeYaw = ori.getYaw();
+	mNodePitch = ori.getPitch();
+	mNodeRoll = ori.getRoll();
+
+	if(mCameraMode == "oculus")
+		mOculusCamera->setOrientation(ori);
+	else
+		mSimpleCamera->setOrientation(ori);
 
 }
 

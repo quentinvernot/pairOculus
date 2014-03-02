@@ -24,6 +24,14 @@ void SimpleCamera::roll(Ogre::Radian ang){
 	mCamera->roll(ang);
 }
 
+void SimpleCamera::setPosition(Ogre::Vector3 pos){
+	mCamera->setPosition(pos);
+}
+
+void SimpleCamera::setOrientation(Ogre::Quaternion ori){
+	mCamera->setOrientation(ori);
+}
+
 void SimpleCamera::setCamera(Ogre::Camera *cam){
 	mCamera = cam;
 }
