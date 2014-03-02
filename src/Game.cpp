@@ -102,6 +102,10 @@ bool Game::injectKeyDown(const OIS::KeyEvent &arg){
 
 	if(arg.key == OIS::KC_ESCAPE)
 		mShutDownFlag = true;
+	if(mOnlineMode && arg.key == OIS::KC_R)
+		mGCListener->sendMessage(
+			mNMFactory->buildMessage(NetworkMessage::GAMESTART)
+		);
 
 	mGameWindow->injectKeyDown(arg);
 
@@ -164,10 +168,6 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 	);
 
 	mGameSetUp = true;
-
-	mGCListener->sendMessage(
-		mNMFactory->buildMessage(NetworkMessage::GAMESTART)
-	);
 
 }
 
