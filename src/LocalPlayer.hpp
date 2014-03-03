@@ -52,7 +52,7 @@ class LocalPlayer : public Player{
 		int mAccelUp;
 		int mAccelDown;
 		
-		bool mInputWasUseful;
+		bool mHadInputUseful;
 
 		Ogre::Degree mYawCorrection;
 		Ogre::Degree mPitchCorrection;

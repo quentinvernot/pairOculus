@@ -9,7 +9,7 @@ LocalPlayer::LocalPlayer(std::string name, CameraManager *cameraManager):
 	mAccelRight(0),
 	mAccelUp(0),
 	mAccelDown(0),
-	mInputWasUseful(false),
+	mHadInputUseful(false),
 	mYawCorrection(0),
 	mPitchCorrection(0),
 	mRollCorrection(0),
@@ -40,7 +40,7 @@ bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 
 	}
 	
-	mInputWasUseful = true;
+	mHadInputUseful = true;
 
 	return true;
 
@@ -83,7 +83,7 @@ bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 		arg.key == OIS::KC_PGUP ||
 		arg.key == OIS::KC_PGDOWN
 	)
-		mInputWasUseful = true;
+		mHadInputUseful = true;
 
 	return true;
 
@@ -118,7 +118,7 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 		arg.key == OIS::KC_PGUP ||
 		arg.key == OIS::KC_PGDOWN
 	)
-		mInputWasUseful = true;
+		mHadInputUseful = true;
 
 	return true;
 
@@ -205,10 +205,10 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 bool LocalPlayer::hadUsefulInput(){
 
-	if(!mInputWasUseful)
+	if(!mHadInputUseful)
 		return false;
 	
-	mInputWasUseful = false;
+	mHadInputUseful = false;
 	return true;
 
 }

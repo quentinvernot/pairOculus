@@ -30,10 +30,14 @@ Game::Game(std::string nickname, std::string address, std::string port):
 
 Game::~Game(){
 
+	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Client Listener");
+	delete mGCListener;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Inputs");
 	delete mInput;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Camera Manager");
 	delete mCameraManager;
+	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Local Map");
+	delete mLocalMap;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Local Player");
 	delete mLocalPlayer;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Game Window");
@@ -128,8 +132,10 @@ bool Game::injectKeyUp(const OIS::KeyEvent &arg){
 void Game::injectClientClose(){
 
 	if(!mGameSetUp){
-		if(mServerJoined)
+		if(mServerJoined){
+			Ogre::LogManager::getSingletonPtr()->logMessage("Lost connection to the server, shutting down");
 			shutDown();
+		}
 		else{
 			Ogre::LogManager::getSingletonPtr()->logMessage("Error while joining server, setting up the game as single player");
 			offlineSetup();
@@ -413,6 +419,9 @@ void Game::loadResources(){
 bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 	if(mShutDownFlag)
+		return false;
+
+	if(mOnlineMode && mGCListener->isClosed())
 		return false;
 
 	if(mOnlineMode && mGameSetUp && !mSceneCreated)
