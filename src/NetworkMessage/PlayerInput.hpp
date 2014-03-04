@@ -29,8 +29,9 @@ namespace NetworkMessage{
 				bool goingDown
 			);
 			~PlayerInput();
-			
+
 			std::string getNickname();
+			int getId();
 
 			double getNodeYaw();
 			double getNodePitch();

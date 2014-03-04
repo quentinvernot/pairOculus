@@ -123,11 +123,11 @@ namespace NetworkMessage{
 			default:
 				break;
 		}
-		
+
 		return 0;
 
 	}
-	
+
 	NetworkMessage *NetworkMessageFactory::buildMessage(
 		MessageType type,
 		std::string data,
@@ -142,7 +142,7 @@ namespace NetworkMessage{
 			default:
 				break;
 		}
-		
+
 		return 0;
 
 	}
@@ -160,7 +160,7 @@ namespace NetworkMessage{
 			default:
 				break;
 		}
-		
+
 		return 0;
 
 	}
@@ -179,7 +179,7 @@ namespace NetworkMessage{
 			default:
 				break;
 		}
-		
+
 		return 0;
 
 	}
@@ -221,7 +221,7 @@ namespace NetworkMessage{
 			default:
 				break;
 		}
-		
+
 		return 0;
 
 	}

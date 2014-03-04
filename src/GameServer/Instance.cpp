@@ -9,7 +9,7 @@ namespace GameServer{
 		mSessionList(new SessionList),
 		mNMFactory(new NetworkMessage::NetworkMessageFactory()),
 		mPlayerList(new PlayerList()),
-		mMap(new Map(17, 17)),
+		mMap(new Map(15, 15)),
 		mOpenedSessions(0),
 		mGameStarted(false)
 	{
@@ -45,7 +45,7 @@ namespace GameServer{
 				boost::asio::placeholders::error
 			)
 		);
-		
+
 		mIo_service.run();
 
 	}
@@ -123,7 +123,7 @@ namespace GameServer{
 
 		if(sourceSession->getPlayer() != 0)
 			sendPlayerLeft(sourceSession->getPlayer()->getNickname());
-		
+
 		mSessionList->removeSession(sourceSession);
 
 	}
@@ -144,7 +144,7 @@ namespace GameServer{
 			sourceSession->getPlayer() == 0
 		){
 
-			mPlayerList->addPlayer(nickname);
+			mPlayerList->addPlayer(nickname);	//TODO check if the numerotation is working properly
 			Player *np = mPlayerList->getPlayerByName(nickname);
 			sourceSession->setPlayer(np);
 			sendJoinAccept(sourceSession);
@@ -221,12 +221,12 @@ namespace GameServer{
 		std::cout << message->getMessage() << std::endl;
 
 		sourceSession->setIsReady(true);
-		
+
 		unsigned int readyCount = 0;
 		for(unsigned int i = 0; i < mSessionList->size(); i++)
 			if((*mSessionList)[i]->getIsReady())
 				readyCount++;
-		
+
 		if(readyCount == mPlayerList->size()){
 			std::cout << "Everyone is ready to start" << std::endl;
 			sendGameStart();
@@ -304,7 +304,7 @@ namespace GameServer{
 		using namespace NetworkMessage;
 		std::cout << "Sending PLAYERJOINED to everyone else" << std::endl;
 		std::string nickname = player->getNickname();
-		
+
 		for(unsigned int i = 0; i < mSessionList->size(); i++){
 
 			if(
@@ -367,7 +367,7 @@ namespace GameServer{
 
 		using namespace NetworkMessage;
 		std::cout << "Sending GAMEEND to everyone" << std::endl;
-		
+
 		for(unsigned int i = 0; i < mSessionList->size(); i++){
 
 			if((*mSessionList)[i]->getPlayer() != 0){
@@ -399,5 +399,5 @@ namespace GameServer{
 		}
 
 	}
-	
+
 };

@@ -7,7 +7,6 @@ LocalMap::LocalMap(Map* mmap, Ogre::SceneManager* sceneMgr, unsigned int scale) 
 
 	Ogre::ManualObject *object;
 
-//	fp->generateFloor();
 	object = fp->GetManualFloor();
 	sceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(object);
 

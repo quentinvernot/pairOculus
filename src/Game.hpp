@@ -76,7 +76,7 @@ class Game : public Ogre::FrameListener{
 		void loadResources();
 
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
-		
+
 		void sendPlayerInput();
 
 		//Attributes
@@ -90,6 +90,7 @@ class Game : public Ogre::FrameListener{
 		Input *mInput;
 
 		std::string mNickname;
+		int mId;
 		LocalPlayer *mLocalPlayer;
 		LocalPlayerList *mPlayerList;
 		Map *mMap;

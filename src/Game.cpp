@@ -124,7 +124,7 @@ bool Game::injectKeyUp(const OIS::KeyEvent &arg){
 
 	if(mGameSetUp)
 		return mLocalPlayer->injectKeyUp(arg);
-	
+
 	return true;
 
 }
@@ -218,7 +218,7 @@ void Game::injectGameEnd(NetworkMessage::GameEnd *message){
 void Game::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
 	std::string nickname = message->getNickname();
-	
+
 	if(nickname != mNickname)
 		mPlayerList->getPlayerByName(nickname)->injectPlayerInput(message);
 
@@ -242,7 +242,7 @@ bool Game::setup(){
 	mGameWindow->setViewMode("oculus");
 
 	// Create the scene
-	createScene();
+	//createScene();
 	// Create the frame listener
 	createFrameListener();
 
@@ -270,7 +270,7 @@ bool Game::configure(){
 			mCameraManager,
 			mOgreRoot->initialise(true, "Game Render Window")
 		);
-		
+
 		if(mOnlineMode)
 			networkSetup();
 		else
@@ -285,7 +285,7 @@ bool Game::configure(){
 }
 
 bool Game::networkSetup(){
-	
+
 	Ogre::LogManager::getSingletonPtr()->logMessage("Starting Game Client");
 	mGCListener = new GameClient::Listener(mAddress, mPort);
 	createNetworkListener();
@@ -359,9 +359,16 @@ void Game::createFrameListener(){
 }
 
 void Game::createScene(){
-
 	//TODO : display player models
+	unsigned int height = 20, width = 10;
 
+/*	Animation::setDefaultInterpolationMode(Animation::IM_LINEAR);
+	Animation::setDefaultRotationInterpolationMode(Animation::RIM_LINEAR);
+
+	Ogre::Entity *bomberman = mSceneMgr->createEntity("Bomberman", "bomberman.mesh");
+	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(bomberman);
+*/
+	// Data part
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
 	if(mOnlineMode)
 		mLocalMap = new LocalMap(mMap, mSceneMgr, 100);
@@ -373,7 +380,7 @@ void Game::createScene(){
 
 	Ogre::Light* light = mSceneMgr->createLight("MainLight");
 	light->setPosition(0, 80, 0);
-	
+
 	mSceneCreated = true;
 
 }
@@ -433,8 +440,8 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
 	}
-	
-	if(mLocalPlayer->hadUsefulInput())
+
+	if(mOnlineMode && mLocalPlayer->hadUsefulInput())
 		sendPlayerInput();
 
 	return true;

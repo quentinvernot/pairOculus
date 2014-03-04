@@ -39,8 +39,13 @@ bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 		mCameraManager->pitch(Ogre::Degree(-arg.state.Y.rel * 0.15f));
 
 	}
+<<<<<<< HEAD
 	
 	mHadInputUseful = true;
+=======
+
+	mInputWasUseful = true;
+>>>>>>> e8238e0831af7c56685182ba77c3728d057f76cb
 
 	return true;
 
@@ -135,7 +140,7 @@ void LocalPlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 	mNodeYaw = message->getNodeYaw();
 	mNodePitch = message->getNodePitch();
 	mNodeRoll = message->getNodeRoll();
-	
+
 	mPositionCorrection.x += message->getNodePositionX() - mNodePositionX;
 	mPositionCorrection.y += message->getNodePositionY() - mNodePositionY;
 	mPositionCorrection.z += message->getNodePositionZ() - mNodePositionZ;
@@ -207,8 +212,9 @@ bool LocalPlayer::hadUsefulInput(){
 
 	if(!mHadInputUseful)
 		return false;
-	
+
 	mHadInputUseful = false;
+
 	return true;
 
 }
