@@ -13,8 +13,8 @@ void PlayerList::addPlayer(Player *player){
 	mPlayerList.push_back(player);
 }
 
-void PlayerList::addPlayer(std::string nickname, int id){
-	mPlayerList.push_back(new Player(nickname, id));
+void PlayerList::addPlayer(std::string nickname){
+	mPlayerList.push_back(new Player(nickname));
 }
 
 void PlayerList::removePlayer(std::string nickname){

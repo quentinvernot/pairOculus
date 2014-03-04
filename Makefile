@@ -34,7 +34,7 @@ $(OBJDIR)Input.o: $(SRCDIR)Input.hpp $(SRCDIR)Input.cpp
 $(OBJDIR)Player.o: $(SRCDIR)Player.hpp $(SRCDIR)Player.cpp
 	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)Player.cpp -o $(OBJDIR)Player.o
 
-$(OBJDIR)PlayerList.o: $(SRCDIR)PlayerList.hpp $(SRCDIR)PlayerList.cpp $(OBJDIR)Player.o
+$(OBJDIR)PlayerList.o: $(SRCDIR)PlayerList.hpp $(SRCDIR)PlayerList.cpp
 	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)PlayerList.cpp -o $(OBJDIR)PlayerList.o
 
 $(OBJDIR)CameraManager.o: $(SRCDIR)CameraManager.hpp $(SRCDIR)CameraManager.cpp $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o

@@ -7,7 +7,7 @@ class Player{
 
 	public:
 		//Methods
-		Player(std::string nickname);
+		Player(std::string name);
 		virtual ~Player();
 
 		std::string getNickname();

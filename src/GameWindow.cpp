@@ -101,15 +101,15 @@ void GameWindow::createOculusViewports(){
 	Ogre::CompositorManager::getSingleton().addCompositor(
 		mCameraManager->getOculusCameraLeft()->getViewport(), "Oculus"
 	);
-	Ogre::CompositorManager::getSingleton().setCompositorEnabled(
-		mCameraManager->getOculusCameraLeft()->getViewport(), "Oculus", true
-	);
+	//Ogre::CompositorManager::getSingleton().setCompositorEnabled(
+		//mCameraManager->getOculusCameraLeft()->getViewport(), "Oculus", true
+	//);
 	Ogre::CompositorManager::getSingleton().addCompositor(
 		mCameraManager->getOculusCameraRight()->getViewport(), "Oculus"
 	);
-	Ogre::CompositorManager::getSingleton().setCompositorEnabled(
-		mCameraManager->getOculusCameraRight()->getViewport(), "Oculus", true
-	);
+	//Ogre::CompositorManager::getSingleton().setCompositorEnabled(
+		//mCameraManager->getOculusCameraRight()->getViewport(), "Oculus", true
+	//);
 
 }
 

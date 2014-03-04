@@ -51,7 +51,7 @@ class LocalPlayer : public Player{
 		int mAccelRight;
 		int mAccelUp;
 		int mAccelDown;
-		
+
 		bool mInputWasUseful;
 
 		Ogre::Degree mYawCorrection;
