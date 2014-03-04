@@ -39,13 +39,8 @@ bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 		mCameraManager->pitch(Ogre::Degree(-arg.state.Y.rel * 0.15f));
 
 	}
-<<<<<<< HEAD
-	
-	mHadInputUseful = true;
-=======
 
-	mInputWasUseful = true;
->>>>>>> e8238e0831af7c56685182ba77c3728d057f76cb
+	mHadInputUseful = true;
 
 	return true;
 

@@ -360,7 +360,6 @@ void Game::createFrameListener(){
 
 void Game::createScene(){
 	//TODO : display player models
-	unsigned int height = 20, width = 10;
 
 /*	Animation::setDefaultInterpolationMode(Animation::IM_LINEAR);
 	Animation::setDefaultRotationInterpolationMode(Animation::RIM_LINEAR);
@@ -373,7 +372,7 @@ void Game::createScene(){
 	if(mOnlineMode)
 		mLocalMap = new LocalMap(mMap, mSceneMgr, 100);
 	else
-		mLocalMap = new LocalMap(new Map(17, 17), mSceneMgr, 100);
+		mLocalMap = new LocalMap(new Map(15, 15), mSceneMgr, 100);
 
 	// Lights
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
@@ -431,7 +430,7 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	if(mOnlineMode && mGCListener->isClosed())
 		return false;
 
-	if(mOnlineMode && mGameSetUp && !mSceneCreated)
+	if(mGameSetUp && !mSceneCreated)
 		createScene();
 
 	mInput->capture();

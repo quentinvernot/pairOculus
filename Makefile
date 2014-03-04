@@ -34,7 +34,7 @@ $(OBJDIR)Input.o: $(SRCDIR)Input.hpp $(SRCDIR)Input.cpp
 $(OBJDIR)Player.o: $(SRCDIR)Player.hpp $(SRCDIR)Player.cpp
 	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)Player.cpp -o $(OBJDIR)Player.o
 
-$(OBJDIR)PlayerList.o: $(SRCDIR)PlayerList.hpp $(SRCDIR)PlayerList.cpp
+$(OBJDIR)PlayerList.o: $(SRCDIR)PlayerList.hpp $(SRCDIR)PlayerList.cpp $(OBJDIR)Player.o
 	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)PlayerList.cpp -o $(OBJDIR)PlayerList.o
 
 $(OBJDIR)CameraManager.o: $(SRCDIR)CameraManager.hpp $(SRCDIR)CameraManager.cpp $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o
@@ -64,7 +64,7 @@ $(OBJDIR)Cube.o: $(SRCDIR)Cube.hpp $(SRCDIR)Cube.cpp $(OBJDIR)Block.o
 $(OBJDIR)Pyramid.o: $(SRCDIR)Pyramid.hpp $(SRCDIR)Pyramid.cpp $(OBJDIR)Block.o
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)Pyramid.cpp -o $(OBJDIR)Pyramid.o
 
-$(OBJDIR)Map.o: $(SRCDIR)Map.hpp $(SRCDIR)Map.cpp
+$(OBJDIR)Map.o: $(SRCDIR)Map.hpp $(SRCDIR)Map.cpp $(OBJDIR)Player.o
 	$(CC) $(OIS) $(CFLAGS) -c $(SRCDIR)Map.cpp -o $(OBJDIR)Map.o
 
 $(OBJDIR)LocalMap.o: $(SRCDIR)LocalMap.hpp $(SRCDIR)LocalMap.cpp $(OBJDIR)FloorPanel.o $(OBJDIR)BlockFactory.o $(OBJDIR)Map.o
