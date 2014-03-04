@@ -1,21 +1,18 @@
 #include "Map.hpp"
 
-Map::Map() {
-	Map(DEFAULT_HEIGHT, DEFAULT_WIDTH);
-}
-
-Map::Map(unsigned int width, unsigned int height) {
-	setWidth(width);
-	setHeight(height);
+Map::Map(unsigned int height, unsigned int width) {
 	mSeed = time(0);
+	setWidth(height);
+	setHeight(width);
+	mScale = 200;
 	generateMap();
 }
 
 Map::Map(unsigned int height, unsigned int width, time_t seed):
-	mSeed(seed)
-{
-	setWidth(width);
-	setHeight(height);
+	mSeed(seed) {
+	setWidth(height);
+	setHeight(width);
+	mScale = 200;
 	generateMap();
 }
 
@@ -120,6 +117,33 @@ bool Map::Break(int i, int j)
 */
 
 time_t Map::getSeed(){return mSeed;}
+
+void Map::getStartPosition(int pos, Player player) {
+	switch (pos) {
+		case 1:
+			player.setNodePositionX(mScale + mScale/2);
+			player.setNodePositionY(mScale/2);
+			player.setNodePositionZ(mScale + mScale/2);
+			break;
+		case 2:
+			player.setNodePositionX(mHeight-1 * mScale - mScale/2);
+			player.setNodePositionY(mScale/2);
+			player.setNodePositionZ(mWidth-1 * mScale - mScale/2);
+			break;
+		case 3:
+			player.setNodePositionX(mHeight-1 * mScale - mScale/2);
+			player.setNodePositionY(mScale/2);
+			player.setNodePositionZ(mScale + mScale/2);
+			break;
+		case 4:
+			player.setNodePositionX(mScale + mScale/2);
+			player.setNodePositionY(mScale/2);
+			player.setNodePositionZ(mWidth-1 * mScale - mScale/2);
+			break;
+		default:
+			std::cerr << "ERROR Position \"" << pos << "\" is invalid." << std::endl;
+	}
+}
 
 void Map::printMap() {
 	for (unsigned int i = 0; i < mHeight; i++) {

@@ -4,8 +4,7 @@
 #include <iostream>
 #include <boost/random.hpp>
 
-#define DEFAULT_HEIGHT 8
-#define DEFAULT_WIDTH 8
+#include "Player.hpp"
 
 class Map {
 	public:
@@ -15,8 +14,6 @@ class Map {
 			UNBREAKABLE = 2
 		};
 
-		/** Default constructor */
-		Map();
 		/** Server constructor */
 		Map(unsigned int height, unsigned int width);
 		/** Client constructor */
@@ -33,10 +30,13 @@ class Map {
 		 * \return true if a block is breakable here
 		 */
 		bool isBreakable(int i, int j);
+		/** set in Player the start position
+		 * \param The player witch we are asking the starting position
+		 */
+		void getStartPosition(int pos, Player player);
 		/** Access mMap
 		 * \return The current value of mMap
 		 */
-
 //		int** getMap() { return mMap; }
 		/** Set mMap
 		 * \param val New value to set
@@ -82,8 +82,8 @@ class Map {
 		PrintType** mMap;
 		unsigned int mWidth;
 		unsigned int mHeight;
+		unsigned int mScale;
 		time_t mSeed;
-
 };
 
 #endif // MAP_H

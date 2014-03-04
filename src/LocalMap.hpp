@@ -7,7 +7,7 @@
 #include "FloorPanel.hpp"
 #include "BlockFactory.hpp"
 
-class LocalMap {
+class LocalMap {//: public Map {
 	public:
 		/** Default constructor */
 		LocalMap(Map* mmap, Ogre::SceneManager* sceneMgr, unsigned int scale);

@@ -1,0 +1,26 @@
+material bombLine
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.54902 0.382937 0.161476 1
+			specular 0 0 0 1
+			emissive 0 0 0
+		}
+	}
+}
+material bombBody
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.0196078 0.011534 0.011534 1
+			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
+		}
+	}
+}
