@@ -64,7 +64,6 @@ class Map {
 		time_t getSeed();
 
 	protected:
-	private:
 		//Methods
 		/** Print the map in the console for debug
 		 */
@@ -84,6 +83,8 @@ class Map {
 		unsigned int mHeight;
 		unsigned int mScale;
 		time_t mSeed;
+
+	private:
 };
 
 #endif // MAP_H

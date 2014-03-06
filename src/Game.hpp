@@ -85,12 +85,13 @@ class Game : public Ogre::FrameListener{
 		Ogre::String mOgrePluginsCfg;
 		Ogre::SceneManager *mSceneMgr;
 
+		AnimationState *mBombermanAnimationState;
+
 		CameraManager *mCameraManager;
 		GameWindow *mGameWindow;
 		Input *mInput;
 
 		std::string mNickname;
-		int mId;
 		LocalPlayer *mLocalPlayer;
 		LocalPlayerList *mPlayerList;
 		Map *mMap;
