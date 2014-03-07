@@ -10,7 +10,6 @@
 class LocalMap : public Map {
 	public:
 		/** Default constructor */
-//		LocalMap(Map* mmap, Ogre::SceneManager* sceneMgr, unsigned int scale);
 		LocalMap(unsigned int height, unsigned int width, time_t seed = time(0));
 		/** Default destructor */
 		virtual ~LocalMap();
