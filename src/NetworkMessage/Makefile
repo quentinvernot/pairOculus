@@ -27,13 +27,13 @@ $(OBJDIRN)Join.o: $(SRCDIR)Join.hpp $(SRCDIR)Join.cpp $(OBJDIRN)NetworkMessage.o
 $(OBJDIRN)Leave.o: $(SRCDIR)Leave.hpp $(SRCDIR)Leave.cpp $(OBJDIRN)NetworkMessage.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)Leave.cpp -o $(OBJDIRN)Leave.o
 
-$(OBJDIRN)JoinAccept.o: $(SRCDIR)JoinAccept.hpp $(SRCDIR)JoinAccept.cpp $(OBJDIRN)NetworkMessage.o
+$(OBJDIRN)JoinAccept.o: $(SRCDIR)JoinAccept.hpp $(SRCDIR)JoinAccept.cpp $(OBJDIRN)NetworkMessage.o $(OBJDIR)PlayerList.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)JoinAccept.cpp -o $(OBJDIRN)JoinAccept.o
 
 $(OBJDIRN)JoinRefuse.o: $(SRCDIR)JoinRefuse.hpp $(SRCDIR)JoinRefuse.cpp $(OBJDIRN)NetworkMessage.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)JoinRefuse.cpp -o $(OBJDIRN)JoinRefuse.o
 
-$(OBJDIRN)PlayerJoined.o: $(SRCDIR)PlayerJoined.hpp $(SRCDIR)PlayerJoined.cpp $(OBJDIRN)NetworkMessage.o
+$(OBJDIRN)PlayerJoined.o: $(SRCDIR)PlayerJoined.hpp $(SRCDIR)PlayerJoined.cpp $(OBJDIRN)NetworkMessage.o $(OBJDIR)Player.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)PlayerJoined.cpp -o $(OBJDIRN)PlayerJoined.o
 
 $(OBJDIRN)PlayerLeft.o: $(SRCDIR)PlayerLeft.hpp $(SRCDIR)PlayerLeft.cpp $(OBJDIRN)NetworkMessage.o
@@ -45,7 +45,7 @@ $(OBJDIRN)GameStart.o: $(SRCDIR)GameStart.hpp $(SRCDIR)GameStart.cpp $(OBJDIRN)N
 $(OBJDIRN)GameEnd.o: $(SRCDIR)GameEnd.hpp $(SRCDIR)GameEnd.cpp $(OBJDIRN)NetworkMessage.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)GameEnd.cpp -o $(OBJDIRN)GameEnd.o
 
-$(OBJDIRN)PlayerInput.o: $(SRCDIR)PlayerInput.hpp $(SRCDIR)PlayerInput.cpp $(OBJDIRN)NetworkMessage.o
+$(OBJDIRN)PlayerInput.o: $(SRCDIR)PlayerInput.hpp $(SRCDIR)PlayerInput.cpp $(OBJDIRN)NetworkMessage.o $(OBJDIR)Player.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)PlayerInput.cpp -o $(OBJDIRN)PlayerInput.o
 
 $(OBJDIRN)PlayerKilled.o: $(SRCDIR)PlayerKilled.hpp $(SRCDIR)PlayerKilled.cpp $(OBJDIRN)NetworkMessage.o

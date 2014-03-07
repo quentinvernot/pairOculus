@@ -110,6 +110,10 @@ void CameraManager::roll(Ogre::Radian ang){
 
 }
 
+void CameraManager::setPosition(Ogre::Real x, Ogre::Real y, Ogre::Real z){
+	setPosition(Ogre::Vector3(x, y, z));
+}
+
 void CameraManager::setPosition(Ogre::Vector3 pos){
 
 	mNodePosition = pos;

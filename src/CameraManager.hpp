@@ -30,6 +30,7 @@ class CameraManager{
 		void pitch(Ogre::Radian ang);
 		void roll(Ogre::Radian ang);
 
+		void setPosition(Ogre::Real x, Ogre::Real y, Ogre::Real z);
 		void setPosition(Ogre::Vector3 pos);
 		void setOrientation(Ogre::Quaternion ori);
 

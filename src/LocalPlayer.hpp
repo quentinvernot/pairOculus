@@ -19,12 +19,23 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
+#include <OgreBulletDynamicsRigidBody.h>
+#include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
+#include "Shapes/OgreBulletCollisionsBoxShape.h"
+
 class LocalPlayer : public Player{
 
 	public:
 		//Methods
-		LocalPlayer(std::string name, CameraManager *cameraManager=0);
+		LocalPlayer(
+			std::string name,
+			Ogre::SceneManager *sceneMgr,
+			OgreBulletDynamics::DynamicsWorld *world,
+			CameraManager *cameraManager=0
+		);
 		~LocalPlayer();
+
+		void generateGraphics();
 
 		bool injectMouseMove(const OIS::MouseEvent &arg);
 		bool injectMouseDown(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
@@ -36,6 +47,13 @@ class LocalPlayer : public Player{
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		bool hadUsefulInput();
+		
+		double getNodePositionX();
+		double getNodePositionY();
+		double getNodePositionZ();
+		void setNodePositionX(double nodePositionX);
+		void setNodePositionY(double nodePositionY);
+		void setNodePositionZ(double nodePositionZ);
 
 		Ogre::Vector3 getForwardDirection();
 		Ogre::Vector3 getUpDirection();
@@ -43,7 +61,14 @@ class LocalPlayer : public Player{
 
 	private:
 		//Attributes
+		Ogre::SceneManager *mSceneMgr;
+		OgreBulletDynamics::DynamicsWorld *mWorld;
+
+		OgreBulletDynamics::RigidBody *mBody;
+
 		CameraManager *mCameraManager;
+
+		Ogre::Vector3 mPreviousVelocity;
 
 		int mAccelForward;
 		int mAccelBack;
@@ -52,6 +77,7 @@ class LocalPlayer : public Player{
 		int mAccelUp;
 		int mAccelDown;
 
+		bool mGraphicsSetUp;
 		bool mHadInputUseful;
 
 		Ogre::Degree mYawCorrection;
