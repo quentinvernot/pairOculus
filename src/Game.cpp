@@ -439,21 +439,22 @@ void Game::createFrameListener(){
 void Game::createScene(){
 	//TODO : display player models
 
-/*	Animation::setDefaultInterpolationMode(Animation::IM_LINEAR);
+	Animation::setDefaultInterpolationMode(Animation::IM_LINEAR);
 	Animation::setDefaultRotationInterpolationMode(Animation::RIM_LINEAR);
 
 	Ogre::Entity *bomberman = mSceneMgr->createEntity("Bomberman", "bomberman.mesh");
 	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(bomberman);
-*/
 	
 	for(unsigned int i = 0; i < mPlayerList->size(); i++)
 		(*mPlayerList)[i]->generateGraphics();
-	
+
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
 	if(mOnlineMode)
-		mLocalMap = new LocalMap(mMap, mSceneMgr, 100);
+		mLocalMap = new LocalMap(15, 15);	// TODO add the seed, put the H and W of the server
 	else
-		mLocalMap = new LocalMap(new Map(15, 15), mSceneMgr, 100);
+		mLocalMap = new LocalMap(15, 15);
+
+	mLocalMap->generate(mSceneMgr);
 
 	// Lights
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));

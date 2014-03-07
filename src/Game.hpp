@@ -92,14 +92,14 @@ class Game : public Ogre::FrameListener{
 
 		OgreBulletDynamics::DynamicsWorld *mWorld;
 		OgreBulletCollisions::DebugDrawer *debugDrawer;
-		int mNumEntitiesInstanced;
+
+		AnimationState *mBombermanAnimationState;
 
 		CameraManager *mCameraManager;
 		GameWindow *mGameWindow;
 		Input *mInput;
 
 		std::string mNickname;
-		int mId;
 		LocalPlayer *mLocalPlayer;
 		LocalPlayerList *mPlayerList;
 		Map *mMap;
