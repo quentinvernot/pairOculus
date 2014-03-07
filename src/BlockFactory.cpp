@@ -1,28 +1,52 @@
 #include "BlockFactory.hpp"
 
 BlockFactory::BlockFactory(Ogre::SceneManager* sceneMgr) :
-	mSceneMgr(sceneMgr) {
-	//ctor
+	mSceneMgr(sceneMgr)
+{
 }
 
 BlockFactory::~BlockFactory() {
-	//dtor
 }
 
-Ogre::ManualObject* BlockFactory::createBlock(Map::PrintType cellType, unsigned int i, unsigned int j, unsigned int scale) {
+Ogre::ManualObject* BlockFactory::createBlock(
+	Map::PrintType cellType,
+	unsigned int i,
+	unsigned int j,
+	unsigned int scale
+) {
+
 	stringstream genName;
 	genName << "manualBlock_" << i << "_" << j;
+
 	switch (cellType) {
 		case Map::EMPTY:
 			return NULL;
 			break;
 		case Map::BREAKABLE: {
-			Pyramid *myPyramid = new Pyramid(mSceneMgr->createManualObject(genName.str()), Block::COMPLETE, i*scale, 0.0, j*scale, scale, scale, scale);
+			Pyramid *myPyramid = new Pyramid(
+				mSceneMgr->createManualObject(genName.str()),
+				Block::COMPLETE,
+				0.0f,
+				0.0f,
+				0.0f,
+				scale,
+				scale,
+				scale
+			);
 			return myPyramid->GetManualBlock();
 			break;
 		}
 		case Map::UNBREAKABLE: {
-			Cube *myCube = new Cube(mSceneMgr->createManualObject(genName.str()), Block::COMPLETE, i*scale, 0.0, j*scale, scale, scale, scale);
+			Cube *myCube = new Cube(
+				mSceneMgr->createManualObject(genName.str()),
+				Block::COMPLETE,
+				0.0f,
+				0.0f,
+				0.0f,
+				scale,
+				scale,
+				scale
+			);
 			return myCube->GetManualBlock();
 			break;
 		}

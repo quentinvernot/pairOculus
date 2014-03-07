@@ -166,8 +166,9 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 	std::cout << mPlayerList->size() << std::endl;
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
-
-	mMap = new Map(
+	mLocalMap = new LocalMap(
+		mSceneMgr,
+		mWorld,
 		message->getMapHeight(),
 		message->getMapWidth(),
 		message->getSeed()
@@ -302,6 +303,9 @@ bool Game::offlineSetup(){
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
 	mLocalPlayer = new LocalPlayer(mNickname, mSceneMgr, mWorld, mCameraManager);
 	mPlayerList->addPlayer(mLocalPlayer);
+	
+	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
+	mLocalMap = new LocalMap(mSceneMgr, mWorld, 15, 15);
 
 	mOnlineMode = false;
 	mGameSetUp = true;
@@ -479,13 +483,8 @@ void Game::createScene(){
 	mBombermanAnimationState->setEnabled(true);
 	mBombermanAnimationState->setLoop(true);
 
-	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
-	if(mOnlineMode)
-		mLocalMap = new LocalMap(15, 15);	// TODO add the seed, put the H and W of the server
-	else
-		mLocalMap = new LocalMap(15, 15);
-
-	mLocalMap->generate(mSceneMgr);
+	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
+	mLocalMap->generate();
 
 	// Lights
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));

@@ -67,12 +67,12 @@ $(OBJDIR)Map.o: $(SRCDIR)Map.hpp $(SRCDIR)Map.cpp $(OBJDIR)Player.o
 	$(CC) $(OIS) $(CFLAGS) -c $(SRCDIR)Map.cpp -o $(OBJDIR)Map.o
 
 $(OBJDIR)LocalMap.o: $(SRCDIR)LocalMap.hpp $(SRCDIR)LocalMap.cpp $(OBJDIR)FloorPanel.o $(OBJDIR)BlockFactory.o $(OBJDIR)Map.o
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)LocalMap.cpp -o $(OBJDIR)LocalMap.o
+	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c $(SRCDIR)LocalMap.cpp -o $(OBJDIR)LocalMap.o
 
 $(OBJDIR)FloorPanel.o: $(SRCDIR)FloorPanel.hpp $(SRCDIR)FloorPanel.cpp
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)FloorPanel.cpp -o $(OBJDIR)FloorPanel.o
 
-$(OBJDIR)BlockFactory.o: $(SRCDIR)BlockFactory.hpp $(SRCDIR)BlockFactory.cpp
+$(OBJDIR)BlockFactory.o: $(SRCDIR)BlockFactory.hpp $(SRCDIR)BlockFactory.cpp $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)BlockFactory.cpp -o $(OBJDIR)BlockFactory.o
 
 $(OBJDIR)NetworkIO.o: $(SRCDIR)NetworkIO.hpp $(SRCDIR)NetworkIO.cpp $(OBJDIR)NetworkMessage
