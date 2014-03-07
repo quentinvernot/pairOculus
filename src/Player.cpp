@@ -10,7 +10,7 @@ Player::Player(std::string nickname):
 	mNodeRoll(0),
 	mNodePositionX(0),
 	mNodePositionY(0),
-	mNodePositionZ(50),
+	mNodePositionZ(0),
 	mGoingForward(false),
 	mGoingBack(false),
 	mGoingLeft(false),
@@ -29,16 +29,16 @@ double Player::getNodeYaw(){return mNodeYaw;}
 double Player::getNodePitch(){return mNodePitch;}
 double Player::getNodeRoll(){return mNodeRoll;}
 
-long Player::getNodePositionX(){return mNodePositionX;}
-long Player::getNodePositionY(){return mNodePositionY;}
-long Player::getNodePositionZ(){return mNodePositionZ;}
-void Player::setNodePositionX(long nodePositionX){
+double Player::getNodePositionX(){return mNodePositionX;}
+double Player::getNodePositionY(){return mNodePositionY;}
+double Player::getNodePositionZ(){return mNodePositionZ;}
+void Player::setNodePositionX(double nodePositionX){
 	mNodePositionX = nodePositionX;
 }
-void Player::setNodePositionY(long nodePositionY){
+void Player::setNodePositionY(double nodePositionY){
 	mNodePositionY = nodePositionY;
 }
-void Player::setNodePositionZ(long nodePositionZ){
+void Player::setNodePositionZ(double nodePositionZ){
 	mNodePositionZ = nodePositionZ;
 }
 

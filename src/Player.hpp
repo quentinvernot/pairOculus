@@ -16,12 +16,12 @@ class Player{
 		double getNodePitch();
 		double getNodeRoll();
 
-		long getNodePositionX();
-		long getNodePositionY();
-		long getNodePositionZ();
-		void setNodePositionX(long nodePositionX);
-		void setNodePositionY(long nodePositionY);
-		void setNodePositionZ(long nodePositionZ);
+		virtual double getNodePositionX();
+		virtual double getNodePositionY();
+		virtual double getNodePositionZ();
+		virtual void setNodePositionX(double nodePositionX);
+		virtual void setNodePositionY(double nodePositionY);
+		virtual void setNodePositionZ(double nodePositionZ);
 
 		bool getGoingForward();
 		bool getGoingBack();
@@ -43,9 +43,9 @@ class Player{
 		double mNodePitch;
 		double mNodeRoll;
 
-		long mNodePositionX;
-		long mNodePositionY;
-		long mNodePositionZ;
+		double mNodePositionX;
+		double mNodePositionY;
+		double mNodePositionZ;
 
 		bool mGoingForward;
 		bool mGoingBack;

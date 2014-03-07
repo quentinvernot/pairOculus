@@ -21,6 +21,10 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
+#include <OgreBulletDynamicsRigidBody.h>
+#include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
+#include "Shapes/OgreBulletCollisionsBoxShape.h"
+
 #include "CameraManager.hpp"
 #include "Input.hpp"
 #include "GameWindow.hpp"
@@ -65,6 +69,7 @@ class Game : public Ogre::FrameListener{
 		bool configure();
 		bool networkSetup();
 		bool offlineSetup();
+		bool bulletSetup();
 
 		void createNetworkListener();
 		void createFrameListener();
@@ -84,6 +89,9 @@ class Game : public Ogre::FrameListener{
 		Ogre::String mOgreResourcesCfg;
 		Ogre::String mOgrePluginsCfg;
 		Ogre::SceneManager *mSceneMgr;
+
+		OgreBulletDynamics::DynamicsWorld *mWorld;
+		OgreBulletCollisions::DebugDrawer *debugDrawer;
 
 		AnimationState *mBombermanAnimationState;
 

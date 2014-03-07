@@ -6,11 +6,13 @@ LIBDIR=lib/
 BINDIR=dist/bin/
 
 BOOST=-I/usr/include/boost
-OGRE=-I/usr/include/OGRE -I/usr/local/include/OGRE
+OGRE=`pkg-config --cflags OGRE`
 OIS=-I/usr/include/OIS
+BULLET=`pkg-config --cflags bullet` -I/usr/local/include/OgreBullet/Dynamics  -I/usr/local/include/OgreBullet/Collisions
 
 LIBBOOST=-lboost_date_time -lboost_system -lboost_thread
 LIBOGRE=-lGL -lOgreMain -lOIS -lOgreTerrain -lX11 -lXinerama -ludev -lGLU
+LIBBULLET=`pkg-config --libs bullet` /usr/local/lib/libOgreBulletDynamics.a /usr/local/lib/libOgreBulletCollisions.a
 
 all: $(OBJDIR) $(BINDIR)main $(BINDIR)server $(BINDIR)client
 re: clean all
@@ -20,10 +22,10 @@ $(OBJDIR):
 
 MAINOBJ=$(OBJDIR)Game.o $(OBJDIR)GameWindow.o $(OBJDIR)Input.o $(OBJDIR)CameraManager.o $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o $(OBJDIR)LocalPlayer.o $(OBJDIR)LocalPlayerList.o $(OBJDIR)Block.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)Map.o $(OBJDIR)LocalMap.o $(OBJDIR)FloorPanel.o $(OBJDIR)BlockFactory.o $(CLIENTOBJ)
 $(BINDIR)main: main.cpp $(OBJDIR)Game.o
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) main.cpp $(MAINOBJ) $(LIBOGRE) $(LIBBOOST) -o $(BINDIR)main
+	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) main.cpp $(MAINOBJ) $(LIBOGRE) $(LIBBOOST) $(LIBBULLET) -o $(BINDIR)main
 
 $(OBJDIR)Game.o: $(SRCDIR)Game.hpp $(SRCDIR)Game.cpp $(OBJDIR)CameraManager.o $(OBJDIR)PlayerList.o $(OBJDIR)LocalPlayerList.o $(OBJDIR)Input.o $(OBJDIR)GameWindow.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)LocalMap.o $(OBJDIR)GameClient
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)Game.cpp -o $(OBJDIR)Game.o
+	$(CC) $(OGRE) $(OIS)  $(BULLET) $(CFLAGS) -c $(SRCDIR)Game.cpp -o $(OBJDIR)Game.o
 
 $(OBJDIR)GameWindow.o: $(SRCDIR)GameWindow.hpp $(SRCDIR)GameWindow.cpp $(OBJDIR)CameraManager.o
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)GameWindow.cpp -o $(OBJDIR)GameWindow.o
@@ -32,10 +34,10 @@ $(OBJDIR)Input.o: $(SRCDIR)Input.hpp $(SRCDIR)Input.cpp
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)Input.cpp -o $(OBJDIR)Input.o
 
 $(OBJDIR)Player.o: $(SRCDIR)Player.hpp $(SRCDIR)Player.cpp
-	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)Player.cpp -o $(OBJDIR)Player.o
+	$(CC) $(CFLAGS) -c $(SRCDIR)Player.cpp -o $(OBJDIR)Player.o
 
 $(OBJDIR)PlayerList.o: $(SRCDIR)PlayerList.hpp $(SRCDIR)PlayerList.cpp $(OBJDIR)Player.o
-	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)PlayerList.cpp -o $(OBJDIR)PlayerList.o
+	$(CC) $(CFLAGS) -c $(SRCDIR)PlayerList.cpp -o $(OBJDIR)PlayerList.o
 
 $(OBJDIR)CameraManager.o: $(SRCDIR)CameraManager.hpp $(SRCDIR)CameraManager.cpp $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)CameraManager.cpp -o $(OBJDIR)CameraManager.o
@@ -47,13 +49,10 @@ $(OBJDIR)OculusCamera.o: $(SRCDIR)OculusCamera.hpp $(SRCDIR)OculusCamera.cpp
 	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)OculusCamera.cpp -o $(OBJDIR)OculusCamera.o
 
 $(OBJDIR)LocalPlayer.o: $(SRCDIR)LocalPlayer.hpp $(SRCDIR)LocalPlayer.cpp $(OBJDIR)Player.o $(OBJDIR)CameraManager.o $(OBJDIR)NetworkMessage
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)LocalPlayer.cpp -o $(OBJDIR)LocalPlayer.o
+	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c $(SRCDIR)LocalPlayer.cpp -o $(OBJDIR)LocalPlayer.o
 
 $(OBJDIR)LocalPlayerList.o: $(SRCDIR)LocalPlayerList.hpp $(SRCDIR)LocalPlayerList.cpp $(OBJDIR)LocalPlayer.o
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)LocalPlayerList.cpp -o $(OBJDIR)LocalPlayerList.o
-
-$(OBJDIR)RemotePlayer.o: $(SRCDIR)RemotePlayer.hpp $(SRCDIR)RemotePlayer.cpp $(OBJDIR)Player.o
-	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)RemotePlayer.cpp -o $(OBJDIR)RemotePlayer.o
+	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c $(SRCDIR)LocalPlayerList.cpp -o $(OBJDIR)LocalPlayerList.o
 
 $(OBJDIR)Block.o: $(SRCDIR)Block.hpp $(SRCDIR)Block.cpp
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c $(SRCDIR)Block.cpp -o $(OBJDIR)Block.o
