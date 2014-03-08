@@ -68,8 +68,6 @@ class LocalPlayer : public Player{
 
 		CameraManager *mCameraManager;
 
-		Ogre::Vector3 mPreviousVelocity;
-
 		int mAccelForward;
 		int mAccelBack;
 		int mAccelLeft;

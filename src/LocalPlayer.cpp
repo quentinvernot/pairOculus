@@ -24,10 +24,10 @@ LocalPlayer::LocalPlayer(
 	mRollCorrection(0),
 	mPositionCorrection(Ogre::Vector3::ZERO)
 {
-	//mTopSpeed = 1000;
-	mNodePositionX = 500;
-	mNodePositionY = 500;
-	mNodePositionZ = 500;
+	mTopSpeed = 100;
+	mNodePositionX = 100;
+	mNodePositionY = 100;
+	mNodePositionZ = 100;
 }
 
 LocalPlayer::~LocalPlayer(){
@@ -42,8 +42,11 @@ void LocalPlayer::generateGraphics(){
 	entity->setCastShadows(true);
 	AxisAlignedBox boundingB = entity->getBoundingBox();
 	Vector3 size = boundingB.getSize();
-	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	//node->attachObject(entity);
+	size /= 2;
+	SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//SceneNode *entityNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//entityNode->attachObject(entity);
+	//entityNode->setPosition(0, -3, 0);
 	BoxCollisionShape *boxShape = new BoxCollisionShape(size);
 	mBody = new OgreBulletDynamics::RigidBody("PlayerHitbox", mWorld);
 
@@ -53,20 +56,16 @@ void LocalPlayer::generateGraphics(){
 		mNodePositionZ
 	);
 
-	Quaternion orientation(0, 0, 1, 1);
-
 	mBody->setShape(
-		node,
+		bodyNode,
 		boxShape,
-		0.6f,
-		0.6f,
-		1.0f,
-		position,
-		orientation
+		0.0f,
+		0.0f,
+		50.0f,
+		position
 	);
 
 	mBody->disableDeactivation();
-
 	mGraphicsSetUp = true;
 
 }
@@ -250,12 +249,10 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	mNodePositionY += (velocity.y * evt.timeSinceLastFrame * mTopSpeed);
 	mNodePositionZ += (velocity.z * evt.timeSinceLastFrame * mTopSpeed);
 
-	Ogre::Vector3 pos(mNodePositionX, mNodePositionY, mNodePositionZ);
-	Ogre::Vector3 currentVelocity;
+	Ogre::Vector3 pos(mNodePositionX, mNodePositionY + 7, mNodePositionZ);
 
 	if(mGraphicsSetUp){
 
-		currentVelocity = mBody->getLinearVelocity() - mPreviousVelocity;
 		mBody->getBulletRigidBody()->translate(
 			btVector3(
 				mPositionCorrection.x,
@@ -263,12 +260,12 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 				mPositionCorrection.z
 			)
 		);
-		mBody->getBulletRigidBody()->setAngularFactor(btVector3(0.0f,0.0f,0.0f));
-		mBody->setLinearVelocity(currentVelocity + velocity * mTopSpeed);
-		mPreviousVelocity = velocity * mTopSpeed;
+
+		mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
+		mBody->setLinearVelocity(velocity * mTopSpeed);
 
 		if(mCameraManager)
-			mCameraManager->setPosition(mPositionCorrection + pos + Ogre::Vector3(0, 10, 0));
+			mCameraManager->setPosition(mPositionCorrection + pos);
 
 		mPositionCorrection = Ogre::Vector3::ZERO;
 
