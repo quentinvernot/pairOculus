@@ -26,11 +26,11 @@ Ogre::ManualObject* BlockFactory::createBlock(
 			Pyramid *myPyramid = new Pyramid(
 				mSceneMgr->createManualObject(genName.str()),
 				Block::COMPLETE,
-				0.0f,
-				0.0f,
-				0.0f,
+				-(double)(scale/2),
+				-(double)(scale/6),
+				-(double)(scale/2),
 				scale,
-				scale,
+				scale/2,
 				scale
 			);
 			return myPyramid->GetManualBlock();
@@ -40,11 +40,11 @@ Ogre::ManualObject* BlockFactory::createBlock(
 			Cube *myCube = new Cube(
 				mSceneMgr->createManualObject(genName.str()),
 				Block::COMPLETE,
-				0.0f,
-				0.0f,
-				0.0f,
+				-(double)(scale/2),
+				-(double)(scale/6),
+				-(double)(scale/2),
 				scale,
-				scale,
+				scale/3,
 				scale
 			);
 			return myCube->GetManualBlock();

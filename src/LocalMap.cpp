@@ -18,6 +18,8 @@ LocalMap::~LocalMap() {
 
 void LocalMap::generate() {
 
+	using namespace OgreBulletCollisions;
+
 	FloorPanel* fp = new FloorPanel(
 		mSceneMgr->createManualObject("floor"),
 		mScale*mHeight,
@@ -25,14 +27,22 @@ void LocalMap::generate() {
 	);
 	BlockFactory* bf = new BlockFactory(mSceneMgr);
 
-	//mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(fp->GetManualFloor());
+	CollisionShape *Shape;
+	Shape = new StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 0);
+	OgreBulletDynamics::RigidBody *planeBody;
+	planeBody = new OgreBulletDynamics::RigidBody("MapFloor", mWorld);
+	planeBody->setStaticShape(Shape, 0.6f, 0.6f);
+
+	SceneNode *floorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	floorNode->attachObject(fp->GetManualFloor());
+
 	Ogre::ManualObject *object;
 
-	Ogre::Vector3 size(mScale/2, mScale/2, mScale/2);
+	Ogre::Vector3 size(mScale/2, mScale/6, mScale/2);
 	Ogre::Vector3 pos;
 	Ogre::SceneNode *node;
 
-	OgreBulletCollisions::BoxCollisionShape *boxShape;
+	BoxCollisionShape *boxShape;
 	OgreBulletDynamics::RigidBody *body;
 	
 	stringstream genName;
@@ -44,19 +54,21 @@ void LocalMap::generate() {
 
 				node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 				node->attachObject(object);
-				node->setPosition(i*mScale, 0.0f, j*mScale);
 
-				boxShape = new OgreBulletCollisions::BoxCollisionShape(size);
+				boxShape = new BoxCollisionShape(size);
 				genName << "box_" << i << "_" << j;
 				body = new OgreBulletDynamics::RigidBody(genName.str(), mWorld);
+				genName.str("");
+				genName.clear();
 
-				pos  = Ogre::Vector3(
-					i*mScale + mScale/2,
-					mScale/2,
-					j*mScale + mScale/2
+				pos = Ogre::Vector3(
+					i*(mScale + 0.1) + mScale/2,
+					mScale/6 + 0.1,
+					j*(mScale + 0.1) + mScale/2
 				);
 
 				body->setStaticShape(
+					node,
 					boxShape,
 					0.6f,					// dynamic body restitution
 					0.6f,					// dynamic body friction

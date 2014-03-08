@@ -12,6 +12,7 @@
 #include "BlockFactory.hpp"
 
 class LocalMap : public Map {
+
 	public:
 		LocalMap(
 			Ogre::SceneManager *sceneMgr,
@@ -31,6 +32,7 @@ class LocalMap : public Map {
 		//Attributes
 		Ogre::SceneManager *mSceneMgr;
 		OgreBulletDynamics::DynamicsWorld *mWorld;
+
 };
 
 #endif // LOCALMAP_H

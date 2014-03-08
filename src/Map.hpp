@@ -14,10 +14,8 @@ class Map {
 			UNBREAKABLE = 2
 		};
 
-		/** Server constructor */
-		Map(unsigned int height, unsigned int width);
-		/** Client constructor */
-		Map(unsigned int height, unsigned int width, time_t seed);
+		/** Constructor */
+		Map(unsigned int height, unsigned int width, time_t seed = time(0));
 		/** Default destructor */
 		virtual ~Map();
 

@@ -1,24 +1,18 @@
 #include "Map.hpp"
 
-Map::Map(unsigned int height, unsigned int width) {
-	mSeed = time(0);
-	setWidth(height);
-	setHeight(width);
-	mScale = 50;
-	generateMap();
-}
-
 Map::Map(unsigned int height, unsigned int width, time_t seed):
 	mSeed(seed) {
 	setWidth(height);
 	setHeight(width);
-	mScale = 50;
+	mScale = 20;
 	generateMap();
 }
 
 Map::~Map() {
-	// TODO delete mMap
-	//dtor
+	for(unsigned int i = 0; i < mHeight; i++){
+		delete mMap[i];
+	}
+	delete mMap;
 }
 
 Map::PrintType** Map::generateMap() {
