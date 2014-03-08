@@ -20,6 +20,7 @@
 #include <OISMouse.h>
 
 #include <OgreBulletDynamicsRigidBody.h>
+//#include <btTransform.h>
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
 
@@ -82,6 +83,7 @@ class LocalPlayer : public Player{
 		Ogre::Degree mPitchCorrection;
 		Ogre::Degree mRollCorrection;
 		Ogre::Vector3 mPositionCorrection;
+		Ogre::Quaternion mOrientationCorrection;
 
 };
 
