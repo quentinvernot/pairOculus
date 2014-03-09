@@ -144,7 +144,7 @@ namespace GameServer{
 			sourceSession->getPlayer() == 0
 		){
 
-			mPlayerList->addPlayer(nickname);	//TODO check if the numerotation is working properly
+			mPlayerList->addPlayer(nickname);
 			Player *np = mPlayerList->getPlayerByName(nickname);
 			sourceSession->setPlayer(np);
 			sendJoinAccept(sourceSession);
