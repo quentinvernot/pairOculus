@@ -162,6 +162,7 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 		tmp->setNodePositionZ((*pl)[i]->getNodePositionZ());
 
 		mPlayerList->addPlayer(tmp);
+
 	}
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
@@ -310,7 +311,7 @@ bool Game::offlineSetup(){
 	
 	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
 	mLocalMap = new LocalMap(mSceneMgr, mWorld, 15, 15);
-	
+
 	mLocalMap->setStartingPosition(0, mLocalPlayer);
 
 	mOnlineMode = false;
@@ -430,6 +431,8 @@ void Game::createScene(){
 
 	for(unsigned int i = 0; i < mPlayerList->size(); i++)
 		(*mPlayerList)[i]->generateGraphics();
+
+	mLocalPlayer->lookAt(mLocalMap->getMapCenter());
 
 // Try to controle bones individualy
     Ogre::Bone* bHead = bomberman->getSkeleton()->getBone("HEAD");

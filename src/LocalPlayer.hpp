@@ -38,6 +38,8 @@ class LocalPlayer : public Player{
 
 		void generateGraphics();
 
+		void lookAt(Ogre::Vector3 vec);
+
 		bool injectMouseMove(const OIS::MouseEvent &arg);
 		bool injectMouseDown(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 		bool injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID id);

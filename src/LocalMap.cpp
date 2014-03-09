@@ -81,5 +81,9 @@ void LocalMap::generate() {
 
 }
 
+Ogre::Vector3 LocalMap::getMapCenter(){
+	return Ogre::Vector3(mHeight * (mScale+0.1f), 0, mWidth * (mScale+0.1f));
+}
+
 void LocalMap::viewMap() {
 }

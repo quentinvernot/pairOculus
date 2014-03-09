@@ -17,7 +17,9 @@ class SimpleCamera{
 		void roll(Ogre::Radian ang);
 
 		void setPosition(Ogre::Vector3 pos);
+		Ogre::Quaternion getOrientation();
 		void setOrientation(Ogre::Quaternion ori);
+		void lookAt(Ogre::Vector3 vec);
 
 		void setCamera(Ogre::Camera *cam);
 		Ogre::Camera *getCamera();
