@@ -156,6 +156,11 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 			tmp = new LocalPlayer(mNickname, mSceneMgr, mWorld, mCameraManager);
 		else
 			tmp = new LocalPlayer(mNickname, mSceneMgr, mWorld);
+
+		tmp->setNodePositionX((*pl)[i]->getNodePositionX());
+		tmp->setNodePositionY((*pl)[i]->getNodePositionY());
+		tmp->setNodePositionZ((*pl)[i]->getNodePositionZ());
+
 		mPlayerList->addPlayer(tmp);
 	}
 

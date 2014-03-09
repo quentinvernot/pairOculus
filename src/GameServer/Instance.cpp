@@ -146,6 +146,7 @@ namespace GameServer{
 
 			mPlayerList->addPlayer(nickname);
 			Player *np = mPlayerList->getPlayerByName(nickname);
+			mMap->setStartingPosition(mPlayerList->getPlayerIndex(nickname), np);
 			sourceSession->setPlayer(np);
 			sendJoinAccept(sourceSession);
 			sendPlayerJoined(np);
