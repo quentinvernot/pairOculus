@@ -48,13 +48,6 @@ class LocalPlayer : public Player{
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		bool hadUsefulInput();
-		
-		double getNodePositionX();
-		double getNodePositionY();
-		double getNodePositionZ();
-		void setNodePositionX(double nodePositionX);
-		void setNodePositionY(double nodePositionY);
-		void setNodePositionZ(double nodePositionZ);
 
 		Ogre::Vector3 getForwardDirection();
 		Ogre::Vector3 getUpDirection();
