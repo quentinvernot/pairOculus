@@ -31,7 +31,7 @@ class Map {
 		/** set in Player the start position
 		 * \param The player witch we are asking the starting position
 		 */
-		void getStartPosition(int pos, Player player);
+		void setStartingPosition(int pos, Player *player);
 		/** Access mMap
 		 * \return The current value of mMap
 		 */
