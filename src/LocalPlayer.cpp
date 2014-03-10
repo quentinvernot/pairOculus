@@ -22,12 +22,13 @@ LocalPlayer::LocalPlayer(
 	mYawCorrection(0),
 	mPitchCorrection(0),
 	mRollCorrection(0),
-	mPositionCorrection(Ogre::Vector3::ZERO)
+	mPositionCorrection(Ogre::Vector3::ZERO),
+	mOrientationCorrection(Ogre::Quaternion::ZERO)
 {
-	//mTopSpeed = 1000;
-	mNodePositionX = 500;
-	mNodePositionY = 500;
-	mNodePositionZ = 500;
+	mTopSpeed = 100;
+	//mNodePositionX = 100;
+	//mNodePositionY = 100;
+	//mNodePositionZ = 100;
 }
 
 LocalPlayer::~LocalPlayer(){
@@ -38,14 +39,21 @@ void LocalPlayer::generateGraphics(){
 	using namespace OgreBulletCollisions;
 	using namespace Ogre;
 
-	Entity *entity = mSceneMgr->createEntity("PlayerMesh", "bomberman.mesh");
+	Entity *entity = mSceneMgr->createEntity("bomberman.mesh");
 	entity->setCastShadows(true);
 	AxisAlignedBox boundingB = entity->getBoundingBox();
 	Vector3 size = boundingB.getSize();
-	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	//node->attachObject(entity);
+	size /= 2;
+	SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+
+	if(!mCameraManager){
+		SceneNode *entityNode = bodyNode->createChildSceneNode();
+		entityNode->attachObject(entity);
+		entityNode->setPosition(0, -3, 0);
+	}
+
 	BoxCollisionShape *boxShape = new BoxCollisionShape(size);
-	mBody = new OgreBulletDynamics::RigidBody("PlayerHitbox", mWorld);
+	mBody = new OgreBulletDynamics::RigidBody(mNickname + "box", mWorld);
 
 	Vector3 position(
 		mNodePositionX,
@@ -53,19 +61,18 @@ void LocalPlayer::generateGraphics(){
 		mNodePositionZ
 	);
 
-	Quaternion orientation(0, 0, 1, 1);
-
 	mBody->setShape(
-		node,
+		bodyNode,
 		boxShape,
-		0.6f,
-		0.6f,
-		1.0f,
-		position,
-		orientation
+		0.0f,
+		0.0f,
+		50.0f,
+		position
 	);
 
 	mBody->disableDeactivation();
+	mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
+	mBody->getBulletRigidBody()->setGravity(btVector3(0, 0, 0));
 
 	mPAS = new PlayerAnimation(mSceneMgr, entity);
 
@@ -73,25 +80,25 @@ void LocalPlayer::generateGraphics(){
 
 }
 
-bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
-
-	mNodeYaw += (-arg.state.X.rel * 0.15f);
-	mNodePitch += (-arg.state.Y.rel * 0.15f);
-	//mNodeRoll = Ogre::Degree(-arg.state.Z.rel * 0.15f);
+void LocalPlayer::lookAt(Ogre::Vector3 vec){
 
 	if(mCameraManager){
 
-		mCameraManager->yaw(mYawCorrection);
-		mYawCorrection = 0;
-		mCameraManager->pitch(mPitchCorrection);
-		mPitchCorrection = 0;
-		mCameraManager->roll(mRollCorrection);
-		mRollCorrection = 0;
+		mCameraManager->lookAt(vec);
 
-		mCameraManager->yaw(Ogre::Degree(-arg.state.X.rel * 0.15f));
-		mCameraManager->pitch(Ogre::Degree(-arg.state.Y.rel * 0.15f));
+		mNodeYaw = mCameraManager->getOrientation().getYaw().valueDegrees();
+		mNodePitch = mCameraManager->getOrientation().getPitch().valueDegrees();
+		mNodeRoll = mCameraManager->getOrientation().getRoll().valueDegrees();
 
 	}
+
+}
+
+bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
+
+	mYawCorrection += Ogre::Degree(-arg.state.X.rel * 0.15f);
+	mPitchCorrection  += Ogre::Degree(-arg.state.Y.rel * 0.15f);;
+	//mRollCorrection += Ogre::Degree(-arg.state.Z.rel * 0.15f);
 
 	mHadInputUseful = true;
 
@@ -179,23 +186,13 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 
 void LocalPlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
-	if(mCameraManager){
-		mYawCorrection += Ogre::Degree(message->getNodeYaw() - mNodeYaw);
-		mPitchCorrection += Ogre::Degree(message->getNodePitch() - mNodePitch);
-		mRollCorrection += Ogre::Degree(message->getNodeRoll() - mNodeRoll);
-	}
-
-	mNodeYaw = message->getNodeYaw();
-	mNodePitch = message->getNodePitch();
-	mNodeRoll = message->getNodeRoll();
+	mYawCorrection += Ogre::Degree(message->getNodeYaw() - mNodeYaw);
+	mPitchCorrection += Ogre::Degree(message->getNodePitch() - mNodePitch);
+	mRollCorrection += Ogre::Degree(message->getNodeRoll() - mNodeRoll);
 
 	mPositionCorrection.x += message->getNodePositionX() - mNodePositionX;
 	mPositionCorrection.y += message->getNodePositionY() - mNodePositionY;
 	mPositionCorrection.z += message->getNodePositionZ() - mNodePositionZ;
-
-	mNodePositionX = message->getNodePositionX();
-	mNodePositionY = message->getNodePositionY();
-	mNodePositionZ = message->getNodePositionZ();
 
 	mGoingForward = message->getGoingForward();
 	mGoingBack = message->getGoingBack();
@@ -248,33 +245,47 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		mNodePositionZ = mBody->getSceneNode()->getPosition().z;
 	}
 
-	mNodePositionX += (velocity.x * evt.timeSinceLastFrame * mTopSpeed);
-	mNodePositionY += (velocity.y * evt.timeSinceLastFrame * mTopSpeed);
-	mNodePositionZ += (velocity.z * evt.timeSinceLastFrame * mTopSpeed);
+	mNodePositionX += velocity.x * evt.timeSinceLastFrame * mTopSpeed;
+	mNodePositionY += velocity.y * evt.timeSinceLastFrame * mTopSpeed;
+	mNodePositionZ += velocity.z * evt.timeSinceLastFrame * mTopSpeed;
 
-	Ogre::Vector3 pos(mNodePositionX, mNodePositionY, mNodePositionZ);
-	Ogre::Vector3 currentVelocity;
+	mNodeYaw += mYawCorrection.valueDegrees();
+	mNodePitch += mPitchCorrection.valueDegrees();
+	mNodeRoll += mRollCorrection.valueDegrees();
+
+	mNodePositionX += mPositionCorrection.x;
+	mNodePositionY += mPositionCorrection.y;
+	mNodePositionZ += mPositionCorrection.z;
 
 	if(mGraphicsSetUp){
 
-		currentVelocity = mBody->getLinearVelocity() - mPreviousVelocity;
-		mBody->getBulletRigidBody()->translate(
-			btVector3(
-				mPositionCorrection.x,
-				mPositionCorrection.y,
-				mPositionCorrection.z
+		mBody->getBulletRigidBody()->proceedToTransform(
+			btTransform(
+				btQuaternion(Ogre::Degree(mNodeYaw + 180).valueRadians(), 0, 0),
+				btVector3(mNodePositionX, mNodePositionY, mNodePositionZ)
 			)
 		);
-		mBody->getBulletRigidBody()->setAngularFactor(btVector3(0.0f,0.0f,0.0f));
-		mBody->setLinearVelocity(currentVelocity + velocity * mTopSpeed);
-		mPreviousVelocity = velocity * mTopSpeed;
 
-		if(mCameraManager)
-			mCameraManager->setPosition(mPositionCorrection + pos + Ogre::Vector3(0, 10, 0));
-
-		mPositionCorrection = Ogre::Vector3::ZERO;
+		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
 
 	}
+
+	if(mCameraManager){
+
+		mCameraManager->setPosition(
+			Ogre::Vector3(mNodePositionX, mNodePositionY + 7, mNodePositionZ)
+		);
+
+		mCameraManager->yaw(mYawCorrection);
+		mCameraManager->pitch(mPitchCorrection);
+		mCameraManager->roll(mRollCorrection);
+
+	}
+
+	mYawCorrection = 0;
+	mPitchCorrection = 0;
+	mRollCorrection = 0;
+	mPositionCorrection = Ogre::Vector3::ZERO;
 
 	mPAS->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 
@@ -291,25 +302,6 @@ bool LocalPlayer::hadUsefulInput(){
 
 	return true;
 
-}
-
-double LocalPlayer::getNodePositionX(){
-	return mBody->getSceneNode()->getPosition().x;
-}
-double LocalPlayer::getNodePositionY(){
-	return mBody->getSceneNode()->getPosition().y;
-}
-double LocalPlayer::getNodePositionZ(){
-	return mBody->getSceneNode()->getPosition().z;
-}
-void LocalPlayer::setNodePositionX(double nodePositionX){
-	mPositionCorrection.x += mBody->getSceneNode()->getPosition().x - nodePositionX;
-}
-void LocalPlayer::setNodePositionY(double nodePositionY){
-	mPositionCorrection.x += mBody->getSceneNode()->getPosition().y - nodePositionY;
-}
-void LocalPlayer::setNodePositionZ(double nodePositionZ){
-	mPositionCorrection.x += mBody->getSceneNode()->getPosition().z - nodePositionZ;
 }
 
 Ogre::Vector3 LocalPlayer::getForwardDirection(){

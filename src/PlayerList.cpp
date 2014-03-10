@@ -55,6 +55,16 @@ Player *PlayerList::getPlayerByName(std::string nickname){
 
 }
 
+unsigned int PlayerList::getPlayerIndex(std::string nickname){
+
+	for(unsigned int i = 0; i < mPlayerList.size(); i++)
+		if(mPlayerList[i]->getNickname() == nickname)
+			return i;
+
+	return -1;
+
+}
+
 unsigned int PlayerList::size(){
 	return mPlayerList.size();
 }

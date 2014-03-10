@@ -21,6 +21,7 @@
 #include <OISMouse.h>
 
 #include <OgreBulletDynamicsRigidBody.h>
+//#include <btTransform.h>
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
 
@@ -38,6 +39,8 @@ class LocalPlayer : public Player{
 
 		void generateGraphics();
 
+		void lookAt(Ogre::Vector3 vec);
+
 		bool injectMouseMove(const OIS::MouseEvent &arg);
 		bool injectMouseDown(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 		bool injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
@@ -48,14 +51,14 @@ class LocalPlayer : public Player{
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		bool hadUsefulInput();
-
+/*
 		double getNodePositionX();
 		double getNodePositionY();
 		double getNodePositionZ();
 		void setNodePositionX(double nodePositionX);
 		void setNodePositionY(double nodePositionY);
 		void setNodePositionZ(double nodePositionZ);
-
+*/
 		Ogre::Vector3 getForwardDirection();
 		Ogre::Vector3 getUpDirection();
 		Ogre::Vector3 getRightDirection();
@@ -68,8 +71,6 @@ class LocalPlayer : public Player{
 		OgreBulletDynamics::RigidBody *mBody;
 
 		CameraManager *mCameraManager;
-
-		Ogre::Vector3 mPreviousVelocity;
 
 		PlayerAnimation *mPAS;
 
@@ -87,6 +88,7 @@ class LocalPlayer : public Player{
 		Ogre::Degree mPitchCorrection;
 		Ogre::Degree mRollCorrection;
 		Ogre::Vector3 mPositionCorrection;
+		Ogre::Quaternion mOrientationCorrection;
 
 };
 

@@ -32,7 +32,9 @@ class CameraManager{
 
 		void setPosition(Ogre::Real x, Ogre::Real y, Ogre::Real z);
 		void setPosition(Ogre::Vector3 pos);
+		Ogre::Quaternion getOrientation();
 		void setOrientation(Ogre::Quaternion ori);
+		void lookAt(Ogre::Vector3 vec);
 
 		Ogre::Vector3 getDirection();
 		Ogre::Vector3 getUp();

@@ -32,9 +32,9 @@ namespace NetworkMessage{
 				for(; j < (parts.size()-2)/4; j++){
 
 					playerList.addPlayer(new Player(parts[4*j+2]));
-					x = atoi(parts[4*j+3].c_str());
-					y = atoi(parts[4*j+4].c_str());
-					z = atoi(parts[4*j+5].c_str());
+					x = atof(parts[4*j+3].c_str());
+					y = atof(parts[4*j+4].c_str());
+					z = atof(parts[4*j+5].c_str());
 
 					playerList[j]->setNodePositionX(x);
 					playerList[j]->setNodePositionY(y);

@@ -14,10 +14,8 @@ class Map {
 			UNBREAKABLE = 2
 		};
 
-		/** Server constructor */
-		Map(unsigned int height, unsigned int width);
-		/** Client constructor */
-		Map(unsigned int height, unsigned int width, time_t seed);
+		/** Constructor */
+		Map(unsigned int height, unsigned int width, time_t seed = time(0));
 		/** Default destructor */
 		virtual ~Map();
 
@@ -33,7 +31,7 @@ class Map {
 		/** set in Player the start position
 		 * \param The player witch we are asking the starting position
 		 */
-		void getStartPosition(int pos, Player player);
+		void setStartingPosition(int pos, Player *player);
 		/** Access mMap
 		 * \return The current value of mMap
 		 */

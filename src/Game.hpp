@@ -100,7 +100,6 @@ class Game : public Ogre::FrameListener{
 		std::string mNickname;
 		LocalPlayer *mLocalPlayer;
 		LocalPlayerList *mPlayerList;
-		Map *mMap;
 		LocalMap *mLocalMap;
 
 		std::string mAddress;

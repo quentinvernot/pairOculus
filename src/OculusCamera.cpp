@@ -119,11 +119,28 @@ void OculusCamera::setPosition(Ogre::Vector3 pos){
 
 }
 
+Ogre::Quaternion OculusCamera::getOrientation(){
+	return mLeftCamera->getOrientation();
+}
+
 void OculusCamera::setOrientation(Ogre::Quaternion ori){
 
 	yaw(ori.getYaw() - mNodeYaw);
 	pitch(ori.getPitch() - mNodeYaw);
 	roll(ori.getRoll() - mNodeYaw);
+
+}
+
+void OculusCamera::lookAt(Ogre::Vector3 vec){
+
+	mLeftCamera->setPosition(mNodePosition);
+	mRightCamera->setPosition(mNodePosition);
+
+	mLeftCamera->lookAt(vec);
+	mRightCamera->lookAt(vec);
+
+	mLeftCamera->move(mLeftCameraOffset);
+	mRightCamera->move(mRightCameraOffset);
 
 }
 

@@ -11,7 +11,6 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mNickname(nickname),
 	mLocalPlayer(0),
 	mPlayerList(new LocalPlayerList()),
-	mMap(0),
 	mLocalMap(0),
 	mAddress(address),
 	mPort(port),
@@ -156,18 +155,23 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 		if((*pl)[i]->getNickname() == mNickname)
 			tmp = new LocalPlayer(mNickname, mSceneMgr, mWorld, mCameraManager);
 		else
-			tmp = new LocalPlayer(mNickname, mSceneMgr, mWorld);
+			tmp = new LocalPlayer((*pl)[i]->getNickname(), mSceneMgr, mWorld);
+
+		tmp->setNodePositionX((*pl)[i]->getNodePositionX());
+		tmp->setNodePositionY((*pl)[i]->getNodePositionY());
+		tmp->setNodePositionZ((*pl)[i]->getNodePositionZ());
+
 		mPlayerList->addPlayer(tmp);
+
 	}
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
 	mLocalPlayer = mPlayerList->getPlayerByName(mNickname);
-	std::cout << pl->size() << std::endl;
-	std::cout << mPlayerList->size() << std::endl;
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
-
-	mMap = new Map(
+	mLocalMap = new LocalMap(
+		mSceneMgr,
+		mWorld,
 		message->getMapHeight(),
 		message->getMapWidth(),
 		message->getSeed()
@@ -303,6 +307,11 @@ bool Game::offlineSetup(){
 	mLocalPlayer = new LocalPlayer(mNickname, mSceneMgr, mWorld, mCameraManager);
 	mPlayerList->addPlayer(mLocalPlayer);
 
+	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
+	mLocalMap = new LocalMap(mSceneMgr, mWorld, 15, 15);
+
+	mLocalMap->setStartingPosition(0, mLocalPlayer);
+
 	mOnlineMode = false;
 	mGameSetUp = true;
 	mGameRunning = true;
@@ -317,7 +326,7 @@ bool Game::bulletSetup(){
 		Ogre::Vector3 (-10000, -10000, -10000),
 		Ogre::Vector3 (10000,  10000,  10000)
 	);
-	Vector3 gravityVector(0,-9.81,0);
+	Vector3 gravityVector(0,-98.1,0);
 
 	mWorld = new OgreBulletDynamics::DynamicsWorld(mSceneMgr, bounds, gravityVector);
 	debugDrawer = new OgreBulletCollisions::DebugDrawer();
@@ -328,42 +337,17 @@ bool Game::bulletSetup(){
 	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
 	node->attachObject(static_cast <SimpleRenderable *> (debugDrawer));
 
-	// Define a floor plane mesh
-	Entity *ent;
-	Plane p;
-	p.normal = Vector3(0,1,0); p.d = 0;
-	MeshManager::getSingleton().createPlane(
-		"FloorPlane",
-		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		p,
-		200000,
-		200000,
-		20,
-		20,
-		true,
-		1,
-		9000,
-		9000,
-		Vector3::UNIT_Z
-	);
-	// Create an entity (the floor)
-	ent = mSceneMgr->createEntity("floor", "FloorPlane");
-	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(ent);
-
-	// add collision detection to it
-	OgreBulletCollisions::CollisionShape *Shape;
-	Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 0); // (normal vector, distance)
-	// a body is needed for the shape
-	OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody("BasePlane", mWorld);
-	defaultPlaneBody->setStaticShape(Shape, 0.1, 0.8);// (shape, restitution, friction)
-
+	//bomberman test mesh
 	Ogre::Entity *entity = mSceneMgr->createEntity("Box", "bomberman.mesh");
 	entity->setCastShadows(true);
 	// we need the bounding box of the box to be able to set the size of the Bullet-box
 	Ogre::AxisAlignedBox boundingB = entity->getBoundingBox();
 	Ogre::Vector3 size = boundingB.getSize();
-	Ogre::SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	node2->attachObject(entity);
+	size /= 2;
+	Ogre::SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	Ogre::SceneNode *entityNode = bodyNode->createChildSceneNode();
+	entityNode->setPosition(0, -3, 0);
+	entityNode->attachObject(entity);
 
 	// after that create the Bullet shape with the calculated size
 	OgreBulletCollisions::BoxCollisionShape *sceneBoxShape = new OgreBulletCollisions::BoxCollisionShape(size);
@@ -372,17 +356,15 @@ bool Game::bulletSetup(){
 		"defaultBoxRigid", mWorld
 	);
 
-	Ogre::Vector3 position(-50, 1000, -50);
-	Ogre::Quaternion orientation(0, 0, 0, 1);
+	Ogre::Vector3 pos(-100, 100, -100);
 
 	defaultBody->setShape(
-		node2,
+		bodyNode,
 		sceneBoxShape,
 		0.6f,			// dynamic body restitution
 		0.6f,			// dynamic body friction
 		1.0f, 			// dynamic bodymass
-		position,		// starting position of the box
-		orientation		// orientation of the box
+		pos				// starting position of the box
 	);
 
 	return true;
@@ -437,24 +419,23 @@ void Game::createFrameListener(){
 }
 
 void Game::createScene(){
-	//TODO : display player models
 
 	Animation::setDefaultInterpolationMode(Animation::IM_LINEAR);
 	Animation::setDefaultRotationInterpolationMode(Animation::RIM_LINEAR);
 
-Ogre::Entity *bomberman = mSceneMgr->createEntity("Bomberman", "bomberman.mesh");
-mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(bomberman);
-
 	for(unsigned int i = 0; i < mPlayerList->size(); i++)
 		(*mPlayerList)[i]->generateGraphics();
-
+/*
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
 	if(mOnlineMode)
 		mLocalMap = new LocalMap(15, 15);	// TODO add the seed, put the H and W of the server
 	else
 		mLocalMap = new LocalMap(15, 15);
+*/
+	mLocalPlayer->lookAt(mLocalMap->getMapCenter());
 
-	mLocalMap->generate(mSceneMgr);
+	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
+	mLocalMap->generate();
 
 	// Lights
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
@@ -512,12 +493,12 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	if(mOnlineMode && mGCListener->isClosed())
 		return false;
 
-	if(mGameSetUp && !mSceneCreated)
-		createScene();
-
 	mInput->capture();
 
 	if(mGameRunning){
+
+		if(!mSceneCreated)
+			createScene();
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);

@@ -28,8 +28,16 @@ void SimpleCamera::setPosition(Ogre::Vector3 pos){
 	mCamera->setPosition(pos);
 }
 
+Ogre::Quaternion SimpleCamera::getOrientation(){
+	return mCamera->getOrientation();
+}
+
 void SimpleCamera::setOrientation(Ogre::Quaternion ori){
 	mCamera->setOrientation(ori);
+}
+
+void SimpleCamera::lookAt(Ogre::Vector3 vec){
+	mCamera->lookAt(vec);
 }
 
 void SimpleCamera::setCamera(Ogre::Camera *cam){

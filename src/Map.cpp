@@ -1,24 +1,18 @@
 #include "Map.hpp"
 
-Map::Map(unsigned int height, unsigned int width) {
-	mSeed = time(0);
-	setWidth(height);
-	setHeight(width);
-	mScale = 200;
-	generateMap();
-}
-
 Map::Map(unsigned int height, unsigned int width, time_t seed):
 	mSeed(seed) {
 	setWidth(height);
 	setHeight(width);
-	mScale = 200;
+	mScale = 20;
 	generateMap();
 }
 
 Map::~Map() {
-	// TODO delete mMap
-	//dtor
+	for(unsigned int i = 0; i < mHeight; i++)
+		delete mMap[i];
+
+	delete mMap;
 }
 
 Map::PrintType** Map::generateMap() {
@@ -118,31 +112,33 @@ bool Map::Break(int i, int j)
 
 time_t Map::getSeed(){return mSeed;}
 
-void Map::getStartPosition(int pos, Player player) {
+void Map::setStartingPosition(int pos, Player *player) {
+
 	switch (pos) {
+		case 0:
+			player->setNodePositionX(1.5f * (mScale + 0.1f));
+			player->setNodePositionY(1);
+			player->setNodePositionZ(1.5f * (mScale + 0.1f));
+			break;
 		case 1:
-			player.setNodePositionX(mScale + mScale/2);
-			player.setNodePositionY(mScale/2);
-			player.setNodePositionZ(mScale + mScale/2);
+			player->setNodePositionX((mHeight-1.5f) * (mScale + 0.1f));
+			player->setNodePositionY(0);
+			player->setNodePositionZ((mWidth-1.5f) * (mScale + 0.1f));
 			break;
 		case 2:
-			player.setNodePositionX(mHeight-1 * mScale - mScale/2);
-			player.setNodePositionY(mScale/2);
-			player.setNodePositionZ(mWidth-1 * mScale - mScale/2);
+			player->setNodePositionX((mHeight-1.5f) * (mScale + 0.1f));
+			player->setNodePositionY(0);
+			player->setNodePositionZ(1.5f * (mScale + 0.1f));
 			break;
 		case 3:
-			player.setNodePositionX(mHeight-1 * mScale - mScale/2);
-			player.setNodePositionY(mScale/2);
-			player.setNodePositionZ(mScale + mScale/2);
-			break;
-		case 4:
-			player.setNodePositionX(mScale + mScale/2);
-			player.setNodePositionY(mScale/2);
-			player.setNodePositionZ(mWidth-1 * mScale - mScale/2);
+			player->setNodePositionX(1.5f * (mScale + 0.1f));
+			player->setNodePositionY(0);
+			player->setNodePositionZ((mWidth-1.5f) * (mScale + 0.1f));
 			break;
 		default:
 			std::cerr << "ERROR Position \"" << pos << "\" is invalid." << std::endl;
 	}
+
 }
 
 void Map::printMap() {

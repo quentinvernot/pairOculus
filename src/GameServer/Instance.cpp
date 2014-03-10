@@ -144,8 +144,9 @@ namespace GameServer{
 			sourceSession->getPlayer() == 0
 		){
 
-			mPlayerList->addPlayer(nickname);	//TODO check if the numerotation is working properly
+			mPlayerList->addPlayer(nickname);
 			Player *np = mPlayerList->getPlayerByName(nickname);
+			mMap->setStartingPosition(mPlayerList->getPlayerIndex(nickname), np);
 			sourceSession->setPlayer(np);
 			sendJoinAccept(sourceSession);
 			sendPlayerJoined(np);

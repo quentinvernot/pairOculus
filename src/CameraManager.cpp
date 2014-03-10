@@ -125,6 +125,15 @@ void CameraManager::setPosition(Ogre::Vector3 pos){
 
 }
 
+Ogre::Quaternion CameraManager::getOrientation(){
+
+	if(mCameraMode == "oculus")
+		return mOculusCamera->getOrientation();
+	else
+		return mSimpleCamera->getOrientation();
+
+}
+
 void CameraManager::setOrientation(Ogre::Quaternion ori){
 
 	mNodeYaw = ori.getYaw();
@@ -135,6 +144,23 @@ void CameraManager::setOrientation(Ogre::Quaternion ori){
 		mOculusCamera->setOrientation(ori);
 	else
 		mSimpleCamera->setOrientation(ori);
+
+}
+
+void CameraManager::lookAt(Ogre::Vector3 vec){
+
+	if(mCameraMode == "oculus"){
+		mOculusCamera->lookAt(vec);
+		mNodeYaw = mOculusCamera->getLeftCamera()->getOrientation().getYaw();
+		mNodePitch = mOculusCamera->getLeftCamera()->getOrientation().getPitch();
+		mNodeRoll = 0;
+	}
+	else{
+		mSimpleCamera->lookAt(vec);
+		mNodeYaw = mSimpleCamera->getCamera()->getOrientation().getYaw();
+		mNodePitch = mSimpleCamera->getCamera()->getOrientation().getPitch();
+		mNodeRoll = 0;
+	}
 
 }
 
