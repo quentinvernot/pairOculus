@@ -39,18 +39,21 @@ void LocalPlayer::generateGraphics(){
 	using namespace OgreBulletCollisions;
 	using namespace Ogre;
 
-	Entity *entity = mSceneMgr->createEntity("PlayerMesh", "bomberman.mesh");
+	Entity *entity = mSceneMgr->createEntity("bomberman.mesh");
 	entity->setCastShadows(true);
 	AxisAlignedBox boundingB = entity->getBoundingBox();
 	Vector3 size = boundingB.getSize();
 	size /= 2;
 	SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	SceneNode *entityNode = bodyNode->createChildSceneNode("entity");
-	entityNode->attachObject(entity);
-	entityNode->setPosition(0, -3, 0);
-	//entityNode->roll(Degree(90));
+
+	if(!mCameraManager){
+		SceneNode *entityNode = bodyNode->createChildSceneNode();
+		entityNode->attachObject(entity);
+		entityNode->setPosition(0, -3, 0);
+	}
+
 	BoxCollisionShape *boxShape = new BoxCollisionShape(size);
-	mBody = new OgreBulletDynamics::RigidBody("PlayerHitbox", mWorld);
+	mBody = new OgreBulletDynamics::RigidBody(mNickname + "box", mWorld);
 
 	Vector3 position(
 		mNodePositionX,
@@ -69,6 +72,7 @@ void LocalPlayer::generateGraphics(){
 
 	mBody->disableDeactivation();
 	mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
+	mBody->getBulletRigidBody()->setGravity(btVector3(0, 0, 0));
 
 	mGraphicsSetUp = true;
 
@@ -180,13 +184,9 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 
 void LocalPlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
-	if(mCameraManager){
-
-		mYawCorrection += Ogre::Degree(message->getNodeYaw() - mNodeYaw);
-		mPitchCorrection += Ogre::Degree(message->getNodePitch() - mNodePitch);
-		mRollCorrection += Ogre::Degree(message->getNodeRoll() - mNodeRoll);
-
-	}
+	mYawCorrection += Ogre::Degree(message->getNodeYaw() - mNodeYaw);
+	mPitchCorrection += Ogre::Degree(message->getNodePitch() - mNodePitch);
+	mRollCorrection += Ogre::Degree(message->getNodeRoll() - mNodeRoll);
 
 	mPositionCorrection.x += message->getNodePositionX() - mNodePositionX;
 	mPositionCorrection.y += message->getNodePositionY() - mNodePositionY;

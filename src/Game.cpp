@@ -155,7 +155,7 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 		if((*pl)[i]->getNickname() == mNickname)
 			tmp = new LocalPlayer(mNickname, mSceneMgr, mWorld, mCameraManager);
 		else
-			tmp = new LocalPlayer(mNickname, mSceneMgr, mWorld);
+			tmp = new LocalPlayer((*pl)[i]->getNickname(), mSceneMgr, mWorld);
 
 		tmp->setNodePositionX((*pl)[i]->getNodePositionX());
 		tmp->setNodePositionY((*pl)[i]->getNodePositionY());
@@ -167,8 +167,6 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
 	mLocalPlayer = mPlayerList->getPlayerByName(mNickname);
-	std::cout << pl->size() << std::endl;
-	std::cout << mPlayerList->size() << std::endl;
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
 	mLocalMap = new LocalMap(
@@ -421,7 +419,6 @@ void Game::createFrameListener(){
 }
 
 void Game::createScene(){
-	//TODO : display player models
 
 	Animation::setDefaultInterpolationMode(Animation::IM_LINEAR);
 	Animation::setDefaultRotationInterpolationMode(Animation::RIM_LINEAR);
@@ -524,12 +521,12 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	if(mOnlineMode && mGCListener->isClosed())
 		return false;
 
-	if(mGameSetUp && !mSceneCreated)
-		createScene();
-
 	mInput->capture();
 
 	if(mGameRunning){
+
+		if(!mSceneCreated)
+			createScene();
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
