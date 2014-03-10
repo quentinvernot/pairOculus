@@ -93,8 +93,6 @@ class Game : public Ogre::FrameListener{
 		OgreBulletDynamics::DynamicsWorld *mWorld;
 		OgreBulletCollisions::DebugDrawer *debugDrawer;
 
-		AnimationState *mBombermanAnimationState;
-
 		CameraManager *mCameraManager;
 		GameWindow *mGameWindow;
 		Input *mInput;

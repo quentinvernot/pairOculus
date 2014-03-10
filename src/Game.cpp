@@ -442,42 +442,11 @@ void Game::createScene(){
 	Animation::setDefaultInterpolationMode(Animation::IM_LINEAR);
 	Animation::setDefaultRotationInterpolationMode(Animation::RIM_LINEAR);
 
-	Ogre::Entity *bomberman = mSceneMgr->createEntity("Bomberman", "bomberman.mesh");
-	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(bomberman);
+Ogre::Entity *bomberman = mSceneMgr->createEntity("Bomberman", "bomberman.mesh");
+mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(bomberman);
 
 	for(unsigned int i = 0; i < mPlayerList->size(); i++)
 		(*mPlayerList)[i]->generateGraphics();
-
-// Try to controle bones individualy
-    Ogre::Bone* bHead = bomberman->getSkeleton()->getBone("HEAD");
-    bHead->setManuallyControlled(true);
-//
-	Real duration=4.0;
-	Real step=duration/4.0;
-	Animation* animation = mSceneMgr->createAnimation("HeadRotate",duration);
-	animation->setInterpolationMode(Animation::IM_SPLINE);
-	NodeAnimationTrack* track = animation->createNodeTrack(0,bomberman->getSkeleton()->getBone("HEAD"));
-// Then make the animation
-	TransformKeyFrame* key;
-
-	key = track->createNodeKeyFrame(0.0f);
-	key->setRotation(Quaternion(Radian(0), Ogre::Vector3::UNIT_Y));
-
-	key = track->createNodeKeyFrame(step);
-	key->setRotation(Quaternion(Radian(3.14/2), Ogre::Vector3::UNIT_Y));
-
-	key = track->createNodeKeyFrame(2.0*step);
-	key->setRotation(Quaternion(Radian(0), Ogre::Vector3::UNIT_Y));
-
-	key = track->createNodeKeyFrame(3.0*step);
-	key->setRotation(Quaternion(Radian(-3.14/2), Ogre::Vector3::UNIT_Y));
-
-	key = track->createNodeKeyFrame(4.0*step);
-	key->setRotation(Quaternion(Radian(0), Ogre::Vector3::UNIT_Y));
-// ...
-	mBombermanAnimationState = mSceneMgr->createAnimationState("HeadRotate");
-	mBombermanAnimationState->setEnabled(true);
-	mBombermanAnimationState->setLoop(true);
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
 	if(mOnlineMode)
@@ -557,7 +526,6 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 			sendPlayerInput();
 
 		mWorld->stepSimulation(evt.timeSinceLastFrame);
-
 	}
 
 	return true;

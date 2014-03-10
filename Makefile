@@ -20,7 +20,7 @@ re: clean all
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
-MAINOBJ=$(OBJDIR)Game.o $(OBJDIR)GameWindow.o $(OBJDIR)Input.o $(OBJDIR)CameraManager.o $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o $(OBJDIR)LocalPlayer.o $(OBJDIR)LocalPlayerList.o $(OBJDIR)Block.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)Map.o $(OBJDIR)LocalMap.o $(OBJDIR)FloorPanel.o $(OBJDIR)BlockFactory.o $(CLIENTOBJ)
+MAINOBJ=$(OBJDIR)Game.o $(OBJDIR)GameWindow.o $(OBJDIR)Input.o $(OBJDIR)CameraManager.o $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o $(OBJDIR)PlayerAnimation.o $(OBJDIR)LocalPlayer.o $(OBJDIR)LocalPlayerList.o $(OBJDIR)Block.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)Map.o $(OBJDIR)LocalMap.o $(OBJDIR)FloorPanel.o $(OBJDIR)BlockFactory.o $(CLIENTOBJ)
 $(BINDIR)main: main.cpp $(OBJDIR)Game.o
 	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) main.cpp $(MAINOBJ) $(LIBOGRE) $(LIBBOOST) $(LIBBULLET) -o $(BINDIR)main
 
@@ -48,7 +48,10 @@ $(OBJDIR)SimpleCamera.o: $(SRCDIR)SimpleCamera.hpp $(SRCDIR)SimpleCamera.cpp
 $(OBJDIR)OculusCamera.o: $(SRCDIR)OculusCamera.hpp $(SRCDIR)OculusCamera.cpp
 	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)OculusCamera.cpp -o $(OBJDIR)OculusCamera.o
 
-$(OBJDIR)LocalPlayer.o: $(SRCDIR)LocalPlayer.hpp $(SRCDIR)LocalPlayer.cpp $(OBJDIR)Player.o $(OBJDIR)CameraManager.o $(OBJDIR)NetworkMessage
+$(OBJDIR)PlayerAnimation.o: $(SRCDIR)PlayerAnimation.hpp $(SRCDIR)PlayerAnimation.cpp
+	$(CC) $(OGRE) $(CFLAGS) -c $(SRCDIR)PlayerAnimation.cpp -o $(OBJDIR)PlayerAnimation.o
+
+$(OBJDIR)LocalPlayer.o: $(SRCDIR)LocalPlayer.hpp $(SRCDIR)LocalPlayer.cpp $(OBJDIR)Player.o $(OBJDIR)CameraManager.o $(OBJDIR)PlayerAnimation.o $(OBJDIR)NetworkMessage
 	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c $(SRCDIR)LocalPlayer.cpp -o $(OBJDIR)LocalPlayer.o
 
 $(OBJDIR)LocalPlayerList.o: $(SRCDIR)LocalPlayerList.hpp $(SRCDIR)LocalPlayerList.cpp $(OBJDIR)LocalPlayer.o

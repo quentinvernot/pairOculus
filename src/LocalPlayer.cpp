@@ -67,6 +67,8 @@ void LocalPlayer::generateGraphics(){
 
 	mBody->disableDeactivation();
 
+	mPAS = new PlayerAnimation(mSceneMgr, entity);
+
 	mGraphicsSetUp = true;
 
 }
@@ -273,6 +275,8 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		mPositionCorrection = Ogre::Vector3::ZERO;
 
 	}
+
+	mPAS->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 
 	return true;
 

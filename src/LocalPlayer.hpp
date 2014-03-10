@@ -2,6 +2,7 @@
 #define __LOCALPLAYER_H
 
 #include "Player.hpp"
+#include "PlayerAnimation.hpp"
 #include "CameraManager.hpp"
 #include "NetworkMessage/PlayerInput.hpp"
 
@@ -47,7 +48,7 @@ class LocalPlayer : public Player{
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		bool hadUsefulInput();
-		
+
 		double getNodePositionX();
 		double getNodePositionY();
 		double getNodePositionZ();
@@ -69,6 +70,8 @@ class LocalPlayer : public Player{
 		CameraManager *mCameraManager;
 
 		Ogre::Vector3 mPreviousVelocity;
+
+		PlayerAnimation *mPAS;
 
 		int mAccelForward;
 		int mAccelBack;
