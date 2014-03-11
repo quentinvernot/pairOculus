@@ -1,26 +1,25 @@
 CC=g++
 CFLAGS=-Wall -g -pthread
-SRCDIR=
+SRCDIR=../
+SRCDIRN=../NetworkMessage
 OBJDIR=../../obj/
 OBJDIRC=../../obj/GameClient/
 OBJDIRN=../../obj/NetworkMessage/
 LIBDIR=../lib/
 
-LIBBOOST=-lboost_date_time -lboost_system -lboost_thread
-
-all: $(OBJDIRC) $(OBJDIRC)Listener.o
+all: $(OBJDIRC) $(OBJDIRC)Listener.o $(OBJDIRC)Connector.o
 re: clean all
 
 $(OBJDIRC):
 	mkdir -p $(OBJDIRC)
 
-DEP=$(OBJDIR)NetworkIO.o $(OBJDIR)NetworkMessage $(OBJDIR)PlayerList.o $(OBJDIR)Map.o 
+DEP=$(SRCDIR)NetworkIO.hpp $(ls $(SRCDIRN).*hpp) $(SRCDIR)PlayerList.hpp $(SRCDIR)Map.hpp 
 
-$(OBJDIRC)Listener.o: $(SRCDIR)Listener.hpp $(SRCDIR)Listener.cpp $(OBJDIRC)Connector.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)Listener.cpp -o $(OBJDIRC)Listener.o
+$(OBJDIRC)Listener.o: Listener.hpp Listener.cpp Connector.hpp $(DEP)
+	$(CC) $(CFLAGS) -c $()Listener.cpp -o $(OBJDIRC)Listener.o
 
-$(OBJDIRC)Connector.o: $(SRCDIR)Connector.hpp $(SRCDIR)Connector.cpp $(DEP)
-	$(CC) $(CFLAGS) -c $(SRCDIR)Connector.cpp -o $(OBJDIRC)Connector.o
+$(OBJDIRC)Connector.o: Connector.hpp Connector.cpp $(DEP)
+	$(CC) $(CFLAGS) -c Connector.cpp -o $(OBJDIRC)Connector.o
 
 clean:
 	rm -rf $(OBJDIRC)

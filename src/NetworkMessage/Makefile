@@ -1,55 +1,56 @@
 CC=g++
 CFLAGS=-Wall -g -pthread
-SRCDIR=
+SRCDIR=../
 OBJDIR=../../obj/
 OBJDIRN=../../obj/NetworkMessage/
 LIBDIR=lib/
 
-LIBBOOST=-lboost_date_time -lboost_system -lboost_thread
-
-all: $(OBJDIRN) $(OBJDIRN)NetworkMessageFactory.o
+BASE=$(OBJDIRN)NetworkMessage.o
+SESSION=$(OBJDIRN)Join.o $(OBJDIRN)Leave.o $(OBJDIRN)JoinAccept.o $(OBJDIRN)JoinRefuse.o $(OBJDIRN)PlayerJoined.o $(OBJDIRN)PlayerLeft.o
+GAME=$(OBJDIRN)GameStart.o $(OBJDIRN)GameEnd.o $(OBJDIRN)PlayerInput.o $(OBJDIRN)PlayerKilled.o
+FACTORY=$(OBJDIRN)NetworkMessageFactory.o
+all: $(OBJDIRN) $(BASE) $(SESSION) $(GAME) $(FACTORY)
 re: clean all
 
 $(OBJDIRN):
 	mkdir -p $(OBJDIRN)
 
-MESSAGEFACTORYOBJ=$(OBJDIRN)Join.o $(OBJDIRN)Leave.o $(OBJDIRN)JoinAccept.o $(OBJDIRN)JoinRefuse.o $(OBJDIRN)PlayerJoined.o $(OBJDIRN)PlayerLeft.o $(OBJDIRN)GameStart.o $(OBJDIRN)GameEnd.o $(OBJDIRN)PlayerInput.o $(OBJDIRN)PlayerKilled.o
 
-$(OBJDIRN)NetworkMessageFactory.o: $(SRCDIR)NetworkMessageFactory.hpp $(SRCDIR)NetworkMessageFactory.cpp $(MESSAGEFACTORYOBJ)
-	$(CC) $(CFLAGS) -c $(SRCDIR)NetworkMessageFactory.cpp -o $(OBJDIRN)NetworkMessageFactory.o
+$(OBJDIRN)NetworkMessageFactory.o: NetworkMessageFactory.hpp NetworkMessageFactory.cpp $(shell ls ./*.hpp)
+	$(CC) $(CFLAGS) -c NetworkMessageFactory.cpp -o $(OBJDIRN)NetworkMessageFactory.o
 
-$(OBJDIRN)NetworkMessage.o: $(SRCDIR)NetworkMessage.hpp $(SRCDIR)NetworkMessage.cpp
-	$(CC) $(CFLAGS) -c $(SRCDIR)NetworkMessage.cpp -o $(OBJDIRN)NetworkMessage.o
+$(OBJDIRN)NetworkMessage.o: NetworkMessage.hpp NetworkMessage.cpp
+	$(CC) $(CFLAGS) -c NetworkMessage.cpp -o $(OBJDIRN)NetworkMessage.o
 
-$(OBJDIRN)Join.o: $(SRCDIR)Join.hpp $(SRCDIR)Join.cpp $(OBJDIRN)NetworkMessage.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)Join.cpp -o $(OBJDIRN)Join.o
+$(OBJDIRN)Join.o: Join.hpp Join.cpp NetworkMessage.hpp
+	$(CC) $(CFLAGS) -c Join.cpp -o $(OBJDIRN)Join.o
 
-$(OBJDIRN)Leave.o: $(SRCDIR)Leave.hpp $(SRCDIR)Leave.cpp $(OBJDIRN)NetworkMessage.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)Leave.cpp -o $(OBJDIRN)Leave.o
+$(OBJDIRN)Leave.o: Leave.hpp Leave.cpp NetworkMessage.hpp
+	$(CC) $(CFLAGS) -c Leave.cpp -o $(OBJDIRN)Leave.o
 
-$(OBJDIRN)JoinAccept.o: $(SRCDIR)JoinAccept.hpp $(SRCDIR)JoinAccept.cpp $(OBJDIRN)NetworkMessage.o $(OBJDIR)PlayerList.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)JoinAccept.cpp -o $(OBJDIRN)JoinAccept.o
+$(OBJDIRN)JoinAccept.o: JoinAccept.hpp JoinAccept.cpp NetworkMessage.hpp $(SRCDIR)PlayerList.hpp $(SRCDIR)Map.hpp
+	$(CC) $(CFLAGS) -c JoinAccept.cpp -o $(OBJDIRN)JoinAccept.o
 
-$(OBJDIRN)JoinRefuse.o: $(SRCDIR)JoinRefuse.hpp $(SRCDIR)JoinRefuse.cpp $(OBJDIRN)NetworkMessage.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)JoinRefuse.cpp -o $(OBJDIRN)JoinRefuse.o
+$(OBJDIRN)JoinRefuse.o: JoinRefuse.hpp JoinRefuse.cpp NetworkMessage.hpp
+	$(CC) $(CFLAGS) -c JoinRefuse.cpp -o $(OBJDIRN)JoinRefuse.o
 
-$(OBJDIRN)PlayerJoined.o: $(SRCDIR)PlayerJoined.hpp $(SRCDIR)PlayerJoined.cpp $(OBJDIRN)NetworkMessage.o $(OBJDIR)Player.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)PlayerJoined.cpp -o $(OBJDIRN)PlayerJoined.o
+$(OBJDIRN)PlayerJoined.o: PlayerJoined.hpp PlayerJoined.cpp NetworkMessage.hpp $(SRCDIR)Player.hpp
+	$(CC) $(CFLAGS) -c PlayerJoined.cpp -o $(OBJDIRN)PlayerJoined.o
 
-$(OBJDIRN)PlayerLeft.o: $(SRCDIR)PlayerLeft.hpp $(SRCDIR)PlayerLeft.cpp $(OBJDIRN)NetworkMessage.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)PlayerLeft.cpp -o $(OBJDIRN)PlayerLeft.o
+$(OBJDIRN)PlayerLeft.o: PlayerLeft.hpp PlayerLeft.cpp NetworkMessage.hpp
+	$(CC) $(CFLAGS) -c PlayerLeft.cpp -o $(OBJDIRN)PlayerLeft.o
 
-$(OBJDIRN)GameStart.o: $(SRCDIR)GameStart.hpp $(SRCDIR)GameStart.cpp $(OBJDIRN)NetworkMessage.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)GameStart.cpp -o $(OBJDIRN)GameStart.o
+$(OBJDIRN)GameStart.o: GameStart.hpp GameStart.cpp NetworkMessage.hpp
+	$(CC) $(CFLAGS) -c GameStart.cpp -o $(OBJDIRN)GameStart.o
 
-$(OBJDIRN)GameEnd.o: $(SRCDIR)GameEnd.hpp $(SRCDIR)GameEnd.cpp $(OBJDIRN)NetworkMessage.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)GameEnd.cpp -o $(OBJDIRN)GameEnd.o
+$(OBJDIRN)GameEnd.o: GameEnd.hpp GameEnd.cpp NetworkMessage.hpp
+	$(CC) $(CFLAGS) -c GameEnd.cpp -o $(OBJDIRN)GameEnd.o
 
-$(OBJDIRN)PlayerInput.o: $(SRCDIR)PlayerInput.hpp $(SRCDIR)PlayerInput.cpp $(OBJDIRN)NetworkMessage.o $(OBJDIR)Player.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)PlayerInput.cpp -o $(OBJDIRN)PlayerInput.o
+$(OBJDIRN)PlayerInput.o: PlayerInput.hpp PlayerInput.cpp NetworkMessage.hpp $(SRCDIR)Player.hpp
+	$(CC) $(CFLAGS) -c PlayerInput.cpp -o $(OBJDIRN)PlayerInput.o
 
-$(OBJDIRN)PlayerKilled.o: $(SRCDIR)PlayerKilled.hpp $(SRCDIR)PlayerKilled.cpp $(OBJDIRN)NetworkMessage.o
-	$(CC) $(CFLAGS) -c $(SRCDIR)PlayerKilled.cpp -o $(OBJDIRN)PlayerKilled.o
+$(OBJDIRN)PlayerKilled.o: PlayerKilled.hpp PlayerKilled.cpp NetworkMessage.hpp
+	$(CC) $(CFLAGS) -c PlayerKilled.cpp -o $(OBJDIRN)PlayerKilled.o
 
 clean:
 	rm -rf $(OBJDIRN)
