@@ -4,7 +4,7 @@ Map::Map(unsigned int height, unsigned int width, time_t seed):
 	mSeed(seed) {
 	setWidth(height);
 	setHeight(width);
-	mScale = 20;
+	mScale = 2;
 	generateMap();
 }
 

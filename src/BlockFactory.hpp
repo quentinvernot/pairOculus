@@ -21,7 +21,7 @@ class BlockFactory {
 			Map::PrintType cellType,
 			unsigned int i,
 			unsigned int j,
-			unsigned int scale
+			double scale
 		);
 
 	private:

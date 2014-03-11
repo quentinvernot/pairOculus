@@ -24,7 +24,7 @@ class LocalMap : public Map {
 		virtual ~LocalMap();
 
 		void generate();
-		
+
 		Ogre::Vector3 getMapCenter();
 
 	private:

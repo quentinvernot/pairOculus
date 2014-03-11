@@ -3,6 +3,7 @@
 
 #include "Player.hpp"
 #include "PlayerAnimation.hpp"
+#include "BombManager.hpp"
 #include "CameraManager.hpp"
 #include "NetworkMessage/PlayerInput.hpp"
 
@@ -21,8 +22,6 @@
 #include <OISMouse.h>
 
 #include <OgreBulletDynamicsRigidBody.h>
-//#include <btTransform.h>
-#include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
 
 class LocalPlayer : public Player{
@@ -31,7 +30,6 @@ class LocalPlayer : public Player{
 		//Methods
 		LocalPlayer(
 			std::string name,
-			Ogre::SceneManager *sceneMgr,
 			OgreBulletDynamics::DynamicsWorld *world,
 			CameraManager *cameraManager=0
 		);
@@ -51,27 +49,16 @@ class LocalPlayer : public Player{
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		bool hadUsefulInput();
-/*
-		double getNodePositionX();
-		double getNodePositionY();
-		double getNodePositionZ();
-		void setNodePositionX(double nodePositionX);
-		void setNodePositionY(double nodePositionY);
-		void setNodePositionZ(double nodePositionZ);
-*/
+
 		Ogre::Vector3 getForwardDirection();
 		Ogre::Vector3 getUpDirection();
 		Ogre::Vector3 getRightDirection();
 
 	private:
 		//Attributes
-		Ogre::SceneManager *mSceneMgr;
 		OgreBulletDynamics::DynamicsWorld *mWorld;
-
 		OgreBulletDynamics::RigidBody *mBody;
-
 		CameraManager *mCameraManager;
-
 		PlayerAnimation *mPAS;
 
 		int mAccelForward;

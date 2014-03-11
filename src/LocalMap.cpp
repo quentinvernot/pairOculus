@@ -49,7 +49,9 @@ void LocalMap::generate() {
 
 	for (unsigned int i = 0; i < mHeight; i++) {
 		for (unsigned int j = 0; j < mWidth; j++) {
+
 			object = bf->createBlock(mMap[i][j], i, j, mScale);
+
 			if (object != NULL){
 
 				node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
@@ -62,9 +64,9 @@ void LocalMap::generate() {
 				genName.clear();
 
 				pos = Ogre::Vector3(
-					i*(mScale + 0.1) + mScale/2,
-					mScale/6 + 0.1,
-					j*(mScale + 0.1) + mScale/2
+					i*mScale + mScale/2,
+					mScale/6,
+					j*mScale + mScale/2
 				);
 
 				body->setStaticShape(
@@ -76,8 +78,12 @@ void LocalMap::generate() {
 				);
 
 			}
+
 		}
 	}
+	
+	Ogre::Light* light = mSceneMgr->createLight("light");
+	light->setPosition(16, 80, 16);
 
 }
 

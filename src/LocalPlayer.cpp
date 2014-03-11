@@ -2,12 +2,10 @@
 
 LocalPlayer::LocalPlayer(
 	std::string name,
-	Ogre::SceneManager *sceneMgr,
 	OgreBulletDynamics::DynamicsWorld *world,
 	CameraManager *cameraManager
 ):
 	Player(name),
-	mSceneMgr(sceneMgr),
 	mWorld(world),
 	mBody(0),
 	mCameraManager(cameraManager),
@@ -25,10 +23,7 @@ LocalPlayer::LocalPlayer(
 	mPositionCorrection(Ogre::Vector3::ZERO),
 	mOrientationCorrection(Ogre::Quaternion::ZERO)
 {
-	mTopSpeed = 100;
-	//mNodePositionX = 100;
-	//mNodePositionY = 100;
-	//mNodePositionZ = 100;
+	mTopSpeed = 10;
 }
 
 LocalPlayer::~LocalPlayer(){
@@ -36,24 +31,28 @@ LocalPlayer::~LocalPlayer(){
 
 void LocalPlayer::generateGraphics(){
 
+	if(mGraphicsSetUp)
+		return;
+	
 	using namespace OgreBulletCollisions;
 	using namespace Ogre;
 
-	Entity *entity = mSceneMgr->createEntity("bomberman.mesh");
+	Entity *entity = mWorld->getSceneManager()->createEntity("bomberman.mesh");
 	entity->setCastShadows(true);
 	AxisAlignedBox boundingB = entity->getBoundingBox();
 	Vector3 size = boundingB.getSize();
-	size /= 2;
-	SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	size /= 20;
+	SceneNode *bodyNode = mWorld->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
 	if(!mCameraManager){
 		SceneNode *entityNode = bodyNode->createChildSceneNode();
 		entityNode->attachObject(entity);
-		entityNode->setPosition(0, -3, 0);
+		entityNode->scale(0.1, 0.1, 0.1);
+		entityNode->setPosition(0, -0.3, 0);
 	}
 
 	BoxCollisionShape *boxShape = new BoxCollisionShape(size);
-	mBody = new OgreBulletDynamics::RigidBody(mNickname + "box", mWorld);
+	mBody = new OgreBulletDynamics::RigidBody(mNickname + "Box", mWorld);
 
 	Vector3 position(
 		mNodePositionX,
@@ -64,7 +63,7 @@ void LocalPlayer::generateGraphics(){
 	mBody->setShape(
 		bodyNode,
 		boxShape,
-		0.0f,
+		0.6f,
 		0.0f,
 		50.0f,
 		position
@@ -74,7 +73,7 @@ void LocalPlayer::generateGraphics(){
 	mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
 	mBody->getBulletRigidBody()->setGravity(btVector3(0, 0, 0));
 
-	mPAS = new PlayerAnimation(mSceneMgr, entity);
+	mPAS = new PlayerAnimation(mWorld->getSceneManager(), entity);
 
 	mGraphicsSetUp = true;
 
@@ -273,7 +272,7 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	if(mCameraManager){
 
 		mCameraManager->setPosition(
-			Ogre::Vector3(mNodePositionX, mNodePositionY + 7, mNodePositionZ)
+			Ogre::Vector3(mNodePositionX, mNodePositionY + 0.7, mNodePositionZ)
 		);
 
 		mCameraManager->yaw(mYawCorrection);

@@ -79,7 +79,7 @@ class Map {
 		PrintType** mMap;
 		unsigned int mWidth;
 		unsigned int mHeight;
-		unsigned int mScale;
+		double mScale;
 		time_t mSeed;
 
 	private:
