@@ -8,7 +8,7 @@ PlayerAnimation::PlayerAnimation(Ogre::SceneManager *sceneMgr, Ogre::Entity *ent
 // Setup the animation
 	Ogre::Real duration=4.0;
 	Ogre::Real step=duration/4.0;
-	Ogre::Animation* animation = mSceneMgr->createAnimation("HeadRotate",duration);
+	Ogre::Animation* animation = mSceneMgr->createAnimation(entity->getName() + "HeadRotate",duration);
 	animation->setInterpolationMode(Ogre::Animation::IM_SPLINE);
 	Ogre::NodeAnimationTrack* track = animation->createNodeTrack(0,entity->getSkeleton()->getBone("HEAD"));
 // Then make the animation
@@ -29,7 +29,7 @@ PlayerAnimation::PlayerAnimation(Ogre::SceneManager *sceneMgr, Ogre::Entity *ent
 	key = track->createNodeKeyFrame(4.0*step);
 	key->setRotation(Ogre::Quaternion(Ogre::Radian(0), Ogre::Vector3::UNIT_Y));
 // Implement the animation
-	mPlayerAnimationState = mSceneMgr->createAnimationState("HeadRotate");
+	mPlayerAnimationState = mSceneMgr->createAnimationState(entity->getName() + "HeadRotate");
 	mPlayerAnimationState->setEnabled(true);
 	mPlayerAnimationState->setLoop(true);
 }
