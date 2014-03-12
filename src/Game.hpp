@@ -53,6 +53,7 @@ class Game : public Ogre::FrameListener{
 		);
 		bool injectKeyDown(const OIS::KeyEvent &arg);
 		bool injectKeyUp(const OIS::KeyEvent &arg);
+		bool injectHeadMove(const Ogre::Vector3 &evt);
 		void injectClientClose();
 		void injectJoinAccept(NetworkMessage::JoinAccept *message);
 		void injectJoinRefuse(NetworkMessage::JoinRefuse *message);

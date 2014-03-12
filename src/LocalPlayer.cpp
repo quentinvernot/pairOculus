@@ -96,7 +96,7 @@ void LocalPlayer::lookAt(Ogre::Vector3 vec){
 bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 
 	mYawCorrection += Ogre::Degree(-arg.state.X.rel * 0.15f);
-	mPitchCorrection  += Ogre::Degree(-arg.state.Y.rel * 0.15f);;
+	mPitchCorrection  += Ogre::Degree(-arg.state.Y.rel * 0.15f);
 	//mRollCorrection += Ogre::Degree(-arg.state.Z.rel * 0.15f);
 
 	mHadInputUseful = true;
@@ -178,6 +178,18 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 		arg.key == OIS::KC_PGDOWN
 	)
 		mHadInputUseful = true;
+
+	return true;
+
+}
+
+bool LocalPlayer::injectHeadMove(const Ogre::Vector3 &evt){
+
+	mYawCorrection += Ogre::Degree(evt.x);
+	mPitchCorrection  += Ogre::Degree(evt.y);
+	mRollCorrection += Ogre::Degree(evt.z);
+
+	mHadInputUseful = true;
 
 	return true;
 

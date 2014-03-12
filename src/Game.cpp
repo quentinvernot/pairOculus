@@ -129,6 +129,15 @@ bool Game::injectKeyUp(const OIS::KeyEvent &arg){
 
 }
 
+bool Game::injectHeadMove(const Ogre::Vector3 &evt){
+
+	if(mGameSetUp)
+		return mLocalPlayer->injectHeadMove(evt);
+
+	return true;
+
+}
+
 void Game::injectClientClose(){
 
 	if(!mGameSetUp){
@@ -387,6 +396,10 @@ void Game::createFrameListener(){
 	mInput->setKeyboardListener(
 		boost::bind(&Game::injectKeyDown, this, _1),
 		boost::bind(&Game::injectKeyUp, this, _1)
+	);
+
+	mInput->setSensorFusionListener(
+		boost::bind(&Game::injectHeadMove, this, _1)
 	);
 
 	mOgreRoot->addFrameListener(this);

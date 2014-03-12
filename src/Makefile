@@ -6,9 +6,10 @@ LIBDIR=../lib/
 BOOST=-I/usr/include/boost
 OGRE=`pkg-config --cflags OGRE`
 OIS=-I/usr/include/OIS
+OVR=-I/usr/local/include/OVR/Include
 BULLET=`pkg-config --cflags bullet` -I/usr/local/include/OgreBullet/Dynamics  -I/usr/local/include/OgreBullet/Collisions
 
-GAME=$(OBJDIR)Game.o $(OBJDIR)GameWindow.o $(OBJDIR)Input.o 
+GAME=$(OBJDIR)Game.o $(OBJDIR)GameWindow.o $(OBJDIR)Input.o $(OBJDIR)SensorFusionDevice.o
 PLAYER=$(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(OBJDIR)LocalPlayer.o $(OBJDIR)LocalPlayerList.o $(OBJDIR)PlayerAnimation.o
 CAMERA=$(OBJDIR)CameraManager.o $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o
 BOMB=$(OBJDIR)Bomb.o $(OBJDIR)BombManager.o
@@ -25,13 +26,16 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 $(OBJDIR)Game.o: Game.hpp Game.cpp $(shell ls *.hpp) $(shell ls NetworkMessage/*.hpp) $(shell ls GameClient/*.hpp)
-	$(CC) $(OGRE) $(OIS)  $(BULLET) $(CFLAGS) -c Game.cpp -o $(OBJDIR)Game.o
+	$(CC) $(OGRE) $(OIS) $(OVR) $(BULLET) $(CFLAGS) -c Game.cpp -o $(OBJDIR)Game.o
 
-$(OBJDIR)GameWindow.o: GameWindow.hpp GameWindow.cpp CameraManager.hpp
+$(OBJDIR)GameWindow.o: GameWindow.hpp GameWindow.cpp CameraManager.hpp SimpleCamera.hpp OculusCamera.hpp
 	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c GameWindow.cpp -o $(OBJDIR)GameWindow.o
 
-$(OBJDIR)Input.o: Input.hpp Input.cpp
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c Input.cpp -o $(OBJDIR)Input.o
+$(OBJDIR)Input.o: Input.hpp Input.cpp SensorFusionListener.hpp SensorFusionDevice.hpp
+	$(CC) $(OGRE) $(OIS) $(OVR) $(CFLAGS) -c Input.cpp -o $(OBJDIR)Input.o
+
+$(OBJDIR)SensorFusionDevice.o: SensorFusionDevice.hpp SensorFusionDevice.cpp SensorFusionListener.hpp
+	$(CC) $(OGRE) $(OVR) $(CFLAGS) -c SensorFusionDevice.cpp -o $(OBJDIR)SensorFusionDevice.o
 
 $(OBJDIR)Player.o: Player.hpp Player.cpp
 	$(CC) $(CFLAGS) -c Player.cpp -o $(OBJDIR)Player.o

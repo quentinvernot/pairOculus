@@ -44,6 +44,7 @@ class LocalPlayer : public Player{
 		bool injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 		bool injectKeyDown(const OIS::KeyEvent &arg);
 		bool injectKeyUp(const OIS::KeyEvent &arg);
+		bool injectHeadMove(const Ogre::Vector3 &evt);
 		void injectPlayerInput(NetworkMessage::PlayerInput *message);
 
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);

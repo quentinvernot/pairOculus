@@ -1,31 +1,26 @@
 #ifndef __INPUT_H
 #define __INPUT_H
 
-//#include "WindowInput.hpp"
-
-#include <list>
-
 #include <boost/function.hpp>
 
-#include <OgreCamera.h>
-#include <OgreEntity.h>
 #include <OgreLogManager.h>
-#include <OgreRoot.h>
-#include <OgreViewport.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreWindowEventUtilities.h>
-#include <OgreConfigFile.h>
 
 #include <OISEvents.h>
 #include <OISInputManager.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
+#include "SensorFusionDevice.hpp"
+#include "SensorFusionListener.hpp"
+
 class Input :
 	public Ogre::WindowEventListener,
 	public OIS::MouseListener,
-	public OIS::KeyListener
+	public OIS::KeyListener,
+	public SensorFusionListener
 {
 
 	public:
@@ -48,9 +43,9 @@ class Input :
 			boost::function<bool (const OIS::KeyEvent&)> _callbackKeyPressed,
 			boost::function<bool (const OIS::KeyEvent&)> _callbackKeyReleased
 		);
-
-		OIS::Mouse *getMouse();
-		OIS::Keyboard *getKeyboard();
+		void setSensorFusionListener(
+			boost::function<bool (const Ogre::Vector3 &evt)> callbackHeadMoved
+		);
 
 	private:
 		//Method
@@ -59,23 +54,27 @@ class Input :
 		bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 		bool keyPressed(const OIS::KeyEvent &arg);
 		bool keyReleased(const OIS::KeyEvent &arg);
+		bool headMoved(const Ogre::Vector3 &evt);
 	
 		//Arguments
-		Ogre::RenderWindow *window;
-		OIS::InputManager *inputManager;
+		Ogre::RenderWindow *mWindow;
+		OIS::InputManager *mInputManager;
 
-		OIS::Mouse *mouse;
-		boost::function<bool (const OIS::MouseEvent&)> callbackMouseMoved;
+		OIS::Mouse *mMouse;
+		boost::function<bool (const OIS::MouseEvent&)> mCallbackMouseMoved;
 		boost::function<
 			bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-		> callbackMousePressed;
+		> mCallbackMousePressed;
 		boost::function<
 			bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-		> callbackMouseReleased;
+		> mCallbackMouseReleased;
 
-		OIS::Keyboard *keyboard;
-		boost::function<bool (const OIS::KeyEvent&)> callbackKeyPressed;
-		boost::function<bool (const OIS::KeyEvent&)> callbackKeyReleased;
+		OIS::Keyboard *mKeyboard;
+		boost::function<bool (const OIS::KeyEvent&)> mCallbackKeyPressed;
+		boost::function<bool (const OIS::KeyEvent&)> mCallbackKeyReleased;
+
+		SensorFusionDevice *mSensorFusionDevice;
+		boost::function<bool (const  Ogre::Vector3 &evt)> mCallbackHeadMoved;
 
 };
 

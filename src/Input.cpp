@@ -1,21 +1,33 @@
 #include "Input.hpp"
 
-Input::Input(Ogre::RenderWindow *_window){
+Input::Input(Ogre::RenderWindow *window):
+	mCallbackMouseMoved(0),
+	mCallbackMousePressed(0),
+	mCallbackMouseReleased(0),
+	mCallbackKeyPressed(0),
+	mCallbackKeyReleased(0),
+	mCallbackHeadMoved(0)
+{
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Initializing OIS");
 
-	window = _window;
+	mWindow = window;
 
 	size_t windowHnd = 0;
 	std::ostringstream windowHndStr;
 
-	window->getCustomAttribute("WINDOW", &windowHnd);
+	mWindow->getCustomAttribute("WINDOW", &windowHnd);
 	windowHndStr << windowHnd;
 	OIS::ParamList pl;
 	pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-	inputManager = OIS::InputManager::createInputSystem(pl);
+	mInputManager = OIS::InputManager::createInputSystem(pl);
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("OIS Initialized");
+	
+	Ogre::LogManager::getSingletonPtr()->logMessage("Initializing OVR");
+	OVR::System::Init(OVR::Log::ConfigureDefaultLog(OVR::LogMask_All));
+	
+	Ogre::LogManager::getSingletonPtr()->logMessage("OVR Initialized");
 
 }
 
@@ -23,14 +35,14 @@ Input::~Input(){
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Destroying OIS");
 
-	Ogre::WindowEventUtilities::removeWindowEventListener(window, this);
+	Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
 
-	if(inputManager){
+	if(mInputManager){
 
-		inputManager->destroyInputObject(mouse);
-		inputManager->destroyInputObject(keyboard);
-		OIS::InputManager::destroyInputSystem(inputManager);
-		inputManager = 0;
+		mInputManager->destroyInputObject(mMouse);
+		mInputManager->destroyInputObject(mKeyboard);
+		OIS::InputManager::destroyInputSystem(mInputManager);
+		mInputManager = 0;
 
 	}
 
@@ -40,85 +52,101 @@ Input::~Input(){
 
 void Input::capture(){
 
-	mouse->capture();
-	keyboard->capture();
+	mMouse->capture();
+	mKeyboard->capture();
+	mSensorFusionDevice->capture();
 
 }
 
 void Input::setMouseListener(
-	boost::function<bool (const OIS::MouseEvent&)> _callbackMouseMoved,
+	boost::function<bool (const OIS::MouseEvent&)> callbackMouseMoved,
 	boost::function<
 		bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-	> _callbackMousePressed,
+	> callbackMousePressed,
 	boost::function<
 		bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-	> _callbackMouseReleased
+	> callbackMouseReleased
 ){
 
-	mouse = static_cast<OIS::Mouse*>(
-		inputManager->createInputObject(OIS::OISMouse, true)
+	mMouse = static_cast<OIS::Mouse*>(
+		mInputManager->createInputObject(OIS::OISMouse, true)
 	);
-	callbackMouseMoved = _callbackMouseMoved;
-	callbackMousePressed = _callbackMousePressed;
-	callbackMouseReleased = _callbackMouseReleased;
-	mouse->setEventCallback(this);
+	mCallbackMouseMoved = callbackMouseMoved;
+	mCallbackMousePressed = callbackMousePressed;
+	mCallbackMouseReleased = callbackMouseReleased;
+	mMouse->setEventCallback(this);
 
 }
 
 void Input::setKeyboardListener(
-	boost::function<bool (const OIS::KeyEvent&)> _callbackKeyPressed,
-	boost::function<bool (const OIS::KeyEvent&)> _callbackKeyReleased
+	boost::function<bool (const OIS::KeyEvent&)> callbackKeyPressed,
+	boost::function<bool (const OIS::KeyEvent&)> callbackKeyReleased
 ){
 
-	keyboard = static_cast<OIS::Keyboard*>(
-		inputManager->createInputObject(OIS::OISKeyboard, true)
+	mKeyboard = static_cast<OIS::Keyboard*>(
+		mInputManager->createInputObject(OIS::OISKeyboard, true)
 	);
-	callbackKeyPressed = _callbackKeyPressed;
-	callbackKeyReleased = _callbackKeyReleased;
-	keyboard->setEventCallback(this);
+	mCallbackKeyPressed = callbackKeyPressed;
+	mCallbackKeyReleased = callbackKeyReleased;
+	mKeyboard->setEventCallback(this);
+
+}
+
+void Input::setSensorFusionListener(
+	boost::function<bool (const Ogre::Vector3 &evt)> callbackHeadMoved
+){
+
+	mSensorFusionDevice = new SensorFusionDevice();
+	mCallbackHeadMoved = callbackHeadMoved;
+	mSensorFusionDevice->setEventCallback(this);
 
 }
 
 bool Input::mouseMoved(const OIS::MouseEvent &arg){
 
-	if(callbackMouseMoved == NULL)
+	if(mCallbackMouseMoved == NULL)
 		return true;
 
-	return callbackMouseMoved(arg);
+	return mCallbackMouseMoved(arg);
 
 }
 
 bool Input::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 
-	if(callbackMousePressed == NULL)
+	if(mCallbackMousePressed == NULL)
 		return true;
 
-	return callbackMousePressed(arg, id);
+	return mCallbackMousePressed(arg, id);
 }
 
 bool Input::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 
-	if(callbackMouseReleased == NULL)
+	if(mCallbackMouseReleased == NULL)
 		return true;
 
-	return callbackMouseReleased(arg, id);
+	return mCallbackMouseReleased(arg, id);
 }
 
 bool Input::keyPressed(const OIS::KeyEvent &arg){
 
-	if(callbackKeyPressed == NULL)
+	if(mCallbackKeyPressed == NULL)
 		return true;
-	return callbackKeyPressed(arg);
+	return mCallbackKeyPressed(arg);
 
 }
 
 bool Input::keyReleased(const OIS::KeyEvent &arg){
 
-	if(callbackKeyReleased == NULL)
+	if(mCallbackKeyReleased == NULL)
 		return true;
-	return callbackKeyReleased(arg);
+	return mCallbackKeyReleased(arg);
 
 }
 
-OIS::Mouse *Input::getMouse(){return mouse;}
-OIS::Keyboard *Input::getKeyboard(){return keyboard;}
+bool Input::headMoved(const Ogre::Vector3 &evt){
+
+	if(mCallbackHeadMoved == NULL)
+		return true;
+	return mCallbackHeadMoved(evt);
+
+}
