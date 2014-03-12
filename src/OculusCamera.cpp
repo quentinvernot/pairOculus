@@ -3,21 +3,17 @@
 OculusCamera::OculusCamera(Ogre::Camera *leftCam, Ogre::Camera *rightCam):
 	mLeftCamera(0),
 	mRightCamera(0),
-	mNodeYaw(0),
-	mNodePitch(0),
-	mNodeRoll(0),
 	mNodePosition(0,0,0),
-	mLeftCameraOffset(-0.32, 0.5, -0.5),
-	mRightCameraOffset(0.32, 0.5, -0.5)
+	mLeftCameraOffset(0, 0, 0),
+	mRightCameraOffset(0, 0, 0)
 {
 
 	setLeftCamera(leftCam);
 	setRightCamera(rightCam);
-
-	mLeftCamera->setPosition(mNodePosition);
-	mLeftCamera->move(mLeftCameraOffset);
-	mRightCamera->setPosition(mNodePosition);
-	mRightCamera->move(mRightCameraOffset);
+	setOrientation(Ogre::Quaternion(Ogre::Degree(0), Ogre::Vector3::UNIT_Y));
+	mLeftCameraOffset = Ogre::Vector3(0, 1, 0);
+	mRightCameraOffset = Ogre::Vector3(0, 1, 0);
+	setPosition(mNodePosition);
 
 }
 
@@ -35,20 +31,19 @@ void OculusCamera::yaw(Ogre::Radian ang){
 
 	mLeftCamera->yaw(ang);
 	mRightCamera->yaw(ang);
-	mNodeYaw = ang;
 
 	mLeftCameraOffset =
 		Ogre::Quaternion(
-			Ogre::Degree(mNodeYaw),
+			ang,
 			Ogre::Vector3::UNIT_Y
 		) * mLeftCameraOffset;
-
+std::cout << "a" << mLeftCameraOffset.x << " " << mLeftCameraOffset.y << " " << mLeftCameraOffset.z << std::endl;
 	mRightCameraOffset =
 		Ogre::Quaternion(
-			Ogre::Degree(mNodeYaw),
+			ang,
 			Ogre::Vector3::UNIT_Y
 		) * mRightCameraOffset;
-
+std::cout << "z" << mRightCameraOffset.x << " " << mRightCameraOffset.y << " " << mRightCameraOffset.z << std::endl;
 	mLeftCamera->setPosition(mNodePosition);
 	mLeftCamera->move(mLeftCameraOffset);
 
@@ -61,17 +56,16 @@ void OculusCamera::pitch(Ogre::Radian ang){
 
 	mLeftCamera->pitch(ang);
 	mRightCamera->pitch(ang);
-	mNodePitch = ang;
 
 	mLeftCameraOffset =
 		Ogre::Quaternion(
-			Ogre::Degree(mNodePitch),
+			ang,
 			Ogre::Vector3::UNIT_X
 		) * mLeftCameraOffset;
 
 	mRightCameraOffset =
 		Ogre::Quaternion(
-			Ogre::Degree(mNodePitch),
+			ang,
 			Ogre::Vector3::UNIT_X
 		) * mRightCameraOffset;
 
@@ -87,17 +81,16 @@ void OculusCamera::roll(Ogre::Radian ang){
 
 	mLeftCamera->roll(ang);
 	mRightCamera->roll(ang);
-	mNodeRoll = ang;
 
 	mLeftCameraOffset =
 		Ogre::Quaternion(
-			Ogre::Degree(mNodeRoll),
+			ang,
 			Ogre::Vector3::UNIT_Z
 		) * mLeftCameraOffset;
 
 	mRightCameraOffset =
 		Ogre::Quaternion(
-			Ogre::Degree(mNodeRoll),
+			ang,
 			Ogre::Vector3::UNIT_Z
 		) * mRightCameraOffset;
 
@@ -125,9 +118,9 @@ Ogre::Quaternion OculusCamera::getOrientation(){
 
 void OculusCamera::setOrientation(Ogre::Quaternion ori){
 
-	yaw(ori.getYaw() - mNodeYaw);
-	pitch(ori.getPitch() - mNodeYaw);
-	roll(ori.getRoll() - mNodeYaw);
+	yaw(ori.getYaw() - mLeftCamera->getOrientation().getYaw());
+	pitch(ori.getPitch() - mLeftCamera->getOrientation().getPitch());
+	roll(ori.getRoll() - mLeftCamera->getOrientation().getRoll());
 
 }
 

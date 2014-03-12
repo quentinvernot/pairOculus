@@ -30,9 +30,6 @@ class OculusCamera{
 	private:
 		Ogre::Camera *mLeftCamera;
 		Ogre::Camera *mRightCamera;
-		Ogre::Radian mNodeYaw;
-		Ogre::Radian mNodePitch;
-		Ogre::Radian mNodeRoll;
 		Ogre::Vector3 mNodePosition;
 		Ogre::Vector3 mLeftCameraOffset;
 		Ogre::Vector3 mRightCameraOffset;

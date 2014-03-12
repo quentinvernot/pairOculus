@@ -46,7 +46,9 @@ void CameraManager::createOculusCamera(){
 	Ogre::Camera *cameraRight = mSceneMgr->createCamera("PlayerCamRight");
 
 	cameraLeft->setNearClipDistance(0.5);
+	cameraLeft->setFOVy(Ogre::Degree(103));
 	cameraRight->setNearClipDistance(0.5);
+	cameraRight->setFOVy(Ogre::Degree(103));
 
 	if(mOculusCamera == 0)
 		mOculusCamera = new OculusCamera(cameraLeft, cameraRight);
