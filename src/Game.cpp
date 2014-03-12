@@ -323,7 +323,7 @@ bool Game::offlineSetup(){
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
 	mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager);
 	mPlayerList->addPlayer(mLocalPlayer);
-	
+
 	mLocalMap->setStartingPosition(0, mLocalPlayer);
 
 	mOnlineMode = false;
@@ -411,7 +411,8 @@ void Game::createScene(){
 	Animation::setDefaultInterpolationMode(Animation::IM_LINEAR);
 	Animation::setDefaultRotationInterpolationMode(Animation::RIM_LINEAR);
 
-	Ogre::LogManager::getSingletonPtr()->logMessage("Generating player graphics");
+	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Player Graphics");
+
 	for(unsigned int i = 0; i < mPlayerList->size(); i++)
 		(*mPlayerList)[i]->generateGraphics();
 
@@ -478,8 +479,23 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 	if(mGameRunning){
 
-		if(!mSceneCreated)
+		if(!mSceneCreated){
 			createScene();
+			Entity *entity = mSceneMgr->createEntity("bomberman.mesh");
+			entity->setCastShadows(true);
+			AxisAlignedBox boundingB = entity->getBoundingBox();
+			Vector3 size = boundingB.getSize();
+			size /= 2;
+			SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+
+			SceneNode *entityNode = bodyNode->createChildSceneNode();
+			entityNode->attachObject(entity);
+			entityNode->setPosition(20, 15, 20);
+
+			mPlayerAnimationState = new PlayerAnimation(mSceneMgr, entity);
+			mPlayerAnimationState->doRunAnimation();
+		}
+		mPlayerAnimationState->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);

@@ -60,7 +60,6 @@ class LocalPlayer : public Player{
 		OgreBulletDynamics::DynamicsWorld *mWorld;
 		OgreBulletDynamics::RigidBody *mBody;
 		CameraManager *mCameraManager;
-		PlayerAnimation *mPAS;
 
 		int mAccelForward;
 		int mAccelBack;

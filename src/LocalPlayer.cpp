@@ -33,7 +33,7 @@ void LocalPlayer::generateGraphics(){
 
 	if(mGraphicsSetUp)
 		return;
-	
+
 	using namespace OgreBulletCollisions;
 	using namespace Ogre;
 
@@ -72,8 +72,6 @@ void LocalPlayer::generateGraphics(){
 	mBody->disableDeactivation();
 	mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
 	mBody->getBulletRigidBody()->setGravity(btVector3(0, 0, 0));
-
-	mPAS = new PlayerAnimation(mWorld->getSceneManager(), entity);
 
 	mGraphicsSetUp = true;
 
@@ -297,8 +295,6 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	mPitchCorrection = 0;
 	mRollCorrection = 0;
 	mPositionCorrection = Ogre::Vector3::ZERO;
-
-	mPAS->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 
 	return true;
 
