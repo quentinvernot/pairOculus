@@ -11,10 +11,10 @@ OIS=-I/usr/include/OIS
 BULLET=`pkg-config --cflags bullet` -I/usr/local/include/OgreBullet/Dynamics  -I/usr/local/include/OgreBullet/Collisions
 
 LIBBOOST=-lboost_date_time -lboost_system -lboost_thread
-LIBOGRE=-lGL -lOgreMain -lOIS -lOgreTerrain -lX11 -lXinerama -ludev -lGLU
+LIBOGRE=-lGL -lOgreMain -lOIS -lX11 -lXinerama -ludev -lGLU
 LIBBULLET=`pkg-config --libs bullet` /usr/local/lib/libOgreBulletDynamics.a /usr/local/lib/libOgreBulletCollisions.a
 
-all: $(OBJDIR) $(BINDIR)main $(BINDIR)server $(BINDIR)client
+all: $(OBJDIR) $(BINDIR)main $(BINDIR)server
 re: clean all
 
 $(OBJDIR): .FORCE
@@ -31,14 +31,9 @@ SERVEROBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)NetworkMessage/*.o $(OBJDIR)GameServer/*
 $(BINDIR)server: server.cpp $(OBJDIR)GameServer
 	$(CC) $(CFLAGS) server.cpp $(SERVEROBJ) $(LIBBOOST) -o $(BINDIR)server
 
-CLIENTOBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)NetworkMessage/*.o $(OBJDIR)GameClient/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o
-$(BINDIR)client: client.cpp $(OBJDIR)GameClient
-	$(CC) $(CFLAGS) client.cpp $(CLIENTOBJ) $(LIBBOOST) -o $(BINDIR)client
-
 clean:
 	cd $(SRCDIR) && make clean
 	rm -f $(BINDIR)main
 	rm -f $(BINDIR)server
-	rm -f $(BINDIR)client
 
 .FORCE:
