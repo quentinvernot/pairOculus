@@ -26,14 +26,20 @@ class LocalMap : public Map {
 		void generate();
 
 		Ogre::Vector3 getMapCenter();
+		void createExplosion(Ogre::Vector3 pos, int range);
 
 	private:
 		//Methodes
+		int getRow(Ogre::Vector3 pos);
+		int getCol(Ogre::Vector3 pos);
 		void viewMap();
+		
+		void destroyBlock(unsigned int i, unsigned int j);
 
 		//Attributes
 		Ogre::SceneManager *mSceneMgr;
 		OgreBulletDynamics::DynamicsWorld *mWorld;
+		OgreBulletDynamics::RigidBody ***mBodies;
 
 };
 

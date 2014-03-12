@@ -91,6 +91,23 @@ bool Map::isBreakable(int i, int j) {
 	std::cerr << "WARNING Found an unknow kind of block in isBreakable" << std::endl;
 	return false;	// You must never come here
 }
+
+bool Map::isUnbreakable(int i, int j) {
+	switch (mMap[i][j]) {
+		case UNBREAKABLE:
+			return true;
+			break;
+		case EMPTY:
+		case BREAKABLE:
+			return false;
+			break;
+		default:
+			;	// TODO generate exception
+	}
+
+	std::cerr << "WARNING Found an unknow kind of block in isUnbreakable" << std::endl;
+	return false;	// You must never come here
+}
 /*
 bool Map::Break(int i, int j)
 {

@@ -342,36 +342,6 @@ bool Game::bulletSetup(){
 	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
 	node->attachObject(static_cast <SimpleRenderable *> (debugDrawer));
 
-	//bomberman test mesh
-	Ogre::Entity *entity = mSceneMgr->createEntity("Box", "bomberman.mesh");
-	entity->setCastShadows(true);
-	// we need the bounding box of the box to be able to set the size of the Bullet-box
-	Ogre::AxisAlignedBox boundingB = entity->getBoundingBox();
-	Ogre::Vector3 size = boundingB.getSize();
-	size /= 2;
-	Ogre::SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	Ogre::SceneNode *entityNode = bodyNode->createChildSceneNode();
-	entityNode->setPosition(0, -3, 0);
-	entityNode->attachObject(entity);
-
-	// after that create the Bullet shape with the calculated size
-	OgreBulletCollisions::BoxCollisionShape *sceneBoxShape = new OgreBulletCollisions::BoxCollisionShape(size);
-	// and the Bullet rigid body
-	OgreBulletDynamics::RigidBody *defaultBody = new OgreBulletDynamics::RigidBody(
-		"defaultBoxRigid", mWorld
-	);
-
-	Ogre::Vector3 pos(-100, 100, -100);
-
-	defaultBody->setShape(
-		bodyNode,
-		sceneBoxShape,
-		0.6f,			// dynamic body restitution
-		0.6f,			// dynamic body friction
-		1.0f, 			// dynamic bodymass
-		pos				// starting position of the box
-	);
-
 	return true;
 
 }
@@ -439,9 +409,7 @@ void Game::createScene(){
 
 	// Lights
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
-
-	//Ogre::Light* light = mSceneMgr->createLight("MainLight");
-	//light->setPosition(0, 80, 0);
+	mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 
 	mSceneCreated = true;
 

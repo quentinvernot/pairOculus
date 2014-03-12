@@ -36,6 +36,10 @@ void BombManager::frameRenderingQueued(){
 	clock_t now = clock();
 
 	while(activeBombs.size() > 0 && activeBombs.front()->hasExploded(now)){
+		mMap->createExplosion(
+			activeBombs.front()->getPosition(),
+			activeBombs.front()->getRange()
+		);
 		delete activeBombs.front();
 		activeBombs.pop_front();
 	}

@@ -5,7 +5,7 @@ Bomb::Bomb(
 	Ogre::Vector3 position,
 	OgreBulletDynamics::DynamicsWorld *world
 ):
-	mRange(2),
+	mRange(3),
 	mTTL(CLOCKS_PER_SEC * 3),
 	mCreationTime(clock()),
 	mName(name),
@@ -62,3 +62,11 @@ void Bomb::generateGraphics(){
 	mGraphicsSetUp = true;
 
 }
+
+Ogre::Vector3 Bomb::getPosition(){
+	if(mGraphicsSetUp)
+		return mBody->getSceneNode()->getPosition();
+	return Ogre::Vector3(0, 0, 0);
+}
+
+int Bomb::getRange(){return mRange;}

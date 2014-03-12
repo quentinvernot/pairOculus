@@ -39,7 +39,7 @@ $(OBJDIR)Player.o: Player.hpp Player.cpp
 $(OBJDIR)PlayerList.o: PlayerList.hpp PlayerList.cpp Player.hpp
 	$(CC) $(CFLAGS) -c PlayerList.cpp -o $(OBJDIR)PlayerList.o
 
-$(OBJDIR)LocalPlayer.o: LocalPlayer.hpp LocalPlayer.cpp Player.hpp CameraManager.hpp SimpleCamera.hpp OculusCamera.hpp PlayerAnimation.hpp Bomb.hpp BombManager.hpp $(ls NetworkMessage/.*hpp)
+$(OBJDIR)LocalPlayer.o: LocalPlayer.hpp LocalPlayer.cpp Player.hpp CameraManager.hpp SimpleCamera.hpp OculusCamera.hpp PlayerAnimation.hpp BombManager.hpp Bomb.hpp LocalMap.hpp Block.hpp Cube.hpp Pyramid.hpp FloorPanel.hpp BlockFactory.hpp Player.hpp Map.hpp $(ls NetworkMessage/.*hpp)
 	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c LocalPlayer.cpp -o $(OBJDIR)LocalPlayer.o
 
 $(OBJDIR)LocalPlayerList.o: LocalPlayerList.hpp LocalPlayerList.cpp LocalPlayer.hpp

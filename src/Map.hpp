@@ -28,6 +28,11 @@ class Map {
 		 * \return true if a block is breakable here
 		 */
 		bool isBreakable(int i, int j);
+		/** Asks if a cell is unbreakable
+		 * \param the coordonees of the cell
+		 * \return true if a block is unbreakable here
+		 */
+		bool isUnbreakable(int i, int j);
 		/** set in Player the start position
 		 * \param The player witch we are asking the starting position
 		 */

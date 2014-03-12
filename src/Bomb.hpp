@@ -22,6 +22,9 @@ class Bomb{
 		bool hasExploded(time_t now);
 		void generateGraphics();
 
+		Ogre::Vector3 getPosition();
+		int getRange();
+
 	private:
 		//Attributes
 		int mRange;
