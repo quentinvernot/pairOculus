@@ -255,7 +255,7 @@ bool Game::setup(){
 	createResourceListener();
 	// Load resources
 	loadResources();
-	mGameWindow->setViewMode("oculus");
+	mGameWindow->setViewMode("default");
 
 	// Create the frame listener
 	createFrameListener();
