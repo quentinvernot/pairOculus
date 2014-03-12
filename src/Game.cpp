@@ -423,6 +423,7 @@ void Game::createScene(){
 	Animation::setDefaultInterpolationMode(Animation::IM_LINEAR);
 	Animation::setDefaultRotationInterpolationMode(Animation::RIM_LINEAR);
 
+	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Player Graphics");
 	for(unsigned int i = 0; i < mPlayerList->size(); i++)
 		(*mPlayerList)[i]->generateGraphics();
 /*
@@ -497,8 +498,23 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 	if(mGameRunning){
 
-		if(!mSceneCreated)
+		if(!mSceneCreated){
 			createScene();
+			Entity *entity = mSceneMgr->createEntity("bomberman.mesh");
+			entity->setCastShadows(true);
+			AxisAlignedBox boundingB = entity->getBoundingBox();
+			Vector3 size = boundingB.getSize();
+			size /= 2;
+			SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+
+			SceneNode *entityNode = bodyNode->createChildSceneNode();
+			entityNode->attachObject(entity);
+			entityNode->setPosition(50, 15, 50);
+
+			mPAS = new PlayerAnimation(mSceneMgr, entity);
+			mPAS->doRunAnimation();
+		}
+		mPAS->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);

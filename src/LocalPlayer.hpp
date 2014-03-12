@@ -72,8 +72,6 @@ class LocalPlayer : public Player{
 
 		CameraManager *mCameraManager;
 
-		PlayerAnimation *mPAS;
-
 		int mAccelForward;
 		int mAccelBack;
 		int mAccelLeft;

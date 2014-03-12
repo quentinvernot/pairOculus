@@ -74,8 +74,6 @@ void LocalPlayer::generateGraphics(){
 	mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
 	mBody->getBulletRigidBody()->setGravity(btVector3(0, 0, 0));
 
-	mPAS = new PlayerAnimation(mSceneMgr, entity);
-
 	mGraphicsSetUp = true;
 
 }
@@ -286,8 +284,6 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	mPitchCorrection = 0;
 	mRollCorrection = 0;
 	mPositionCorrection = Ogre::Vector3::ZERO;
-
-	mPAS->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 
 	return true;
 
