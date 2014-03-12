@@ -90,9 +90,9 @@ class Block {
 		Real positionX;
 		Real positionY;
 		Real positionZ;
-		int sizeX;
-		int sizeY;
-		int sizeZ;
+		Real sizeX;
+		Real sizeY;
+		Real sizeZ;
 		Ogre::ManualObject *manualBlock;
 	private:
 };

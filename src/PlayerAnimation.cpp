@@ -2,6 +2,25 @@
 
 PlayerAnimation::PlayerAnimation(Ogre::SceneManager *sceneMgr, Ogre::Entity *entity) :
 	mSceneMgr(sceneMgr) {
+	// Controle bones individualy
+    Ogre::Bone* bHead = entity->getSkeleton()->getBone("HEAD");
+    bHead->setManuallyControlled(true);
+	Ogre::Bone* bHipRight = entity->getSkeleton()->getBone("HIP_RIGHT");
+	bHipRight->setManuallyControlled(true);
+	Ogre::Bone* bHipLeft = entity->getSkeleton()->getBone("HIP_LEFT");
+	bHipLeft->setManuallyControlled(true);
+	Ogre::Bone* bKneeRight = entity->getSkeleton()->getBone("KNEE_RIGHT");
+	bKneeRight->setManuallyControlled(true);
+	Ogre::Bone* bKneeLeft = entity->getSkeleton()->getBone("KNEE_LEFT");
+	bKneeLeft->setManuallyControlled(true);
+	Ogre::Bone* bShoulderRight = entity->getSkeleton()->getBone("SHOULDER_RIGHT");
+	bShoulderRight->setManuallyControlled(true);
+	Ogre::Bone* bShoulderLeft = entity->getSkeleton()->getBone("SHOULDER_LEFT");
+	bShoulderLeft->setManuallyControlled(true);
+	Ogre::Bone* bElbowRight = entity->getSkeleton()->getBone("ELBOW_RIGHT");
+	bElbowRight->setManuallyControlled(true);
+	Ogre::Bone* bElbowLeft = entity->getSkeleton()->getBone("ELBOW_LEFT");
+	bElbowLeft->setManuallyControlled(true);
 
 	setupIdleAnimation (entity);
 	setupHeadAnimation (entity);
@@ -11,16 +30,6 @@ PlayerAnimation::PlayerAnimation(Ogre::SceneManager *sceneMgr, Ogre::Entity *ent
 }
 
 void PlayerAnimation::setupIdleAnimation (Ogre::Entity *entity) {
-	// Controle bones individualy
-	Ogre::Bone* bHipRight = entity->getSkeleton()->getBone("HIP_RIGHT");
-	bHipRight->setManuallyControlled(true);
-	Ogre::Bone* bHipLeft = entity->getSkeleton()->getBone("HIP_LEFT");
-	bHipLeft->setManuallyControlled(true);
-	Ogre::Bone* bShoulderRight = entity->getSkeleton()->getBone("SHOULDER_RIGHT");
-	bShoulderRight->setManuallyControlled(true);
-	Ogre::Bone* bShoulderLeft = entity->getSkeleton()->getBone("SHOULDER_LEFT");
-	bShoulderLeft->setManuallyControlled(true);
-
 	// Setup the animation
 	Ogre::Real duration=1.0;
 	Ogre::Animation* animation = mSceneMgr->createAnimation(entity->getName() + "Idle",duration);
@@ -53,10 +62,6 @@ void PlayerAnimation::setupIdleAnimation (Ogre::Entity *entity) {
 }
 
 void PlayerAnimation::setupHeadAnimation (Ogre::Entity *entity) {
-	// Controle bones individualy
-    Ogre::Bone* bHead = entity->getSkeleton()->getBone("HEAD");
-    bHead->setManuallyControlled(true);
-
 	// Setup the animation
 	Ogre::Real duration=4.0;
 	Ogre::Real step=duration/4.0;
@@ -86,24 +91,6 @@ void PlayerAnimation::setupHeadAnimation (Ogre::Entity *entity) {
 }
 
 void PlayerAnimation::setupRunAnimation (Ogre::Entity *entity) {
-	// Controle bones individualy
-	Ogre::Bone* bKneeRight = entity->getSkeleton()->getBone("KNEE_RIGHT");
-	bKneeRight->setManuallyControlled(true);
-	Ogre::Bone* bHipRight = entity->getSkeleton()->getBone("HIP_RIGHT");
-	bHipRight->setManuallyControlled(true);
-	Ogre::Bone* bKneeLeft = entity->getSkeleton()->getBone("KNEE_LEFT");
-	bKneeLeft->setManuallyControlled(true);
-	Ogre::Bone* bHipLeft = entity->getSkeleton()->getBone("HIP_LEFT");
-	bHipLeft->setManuallyControlled(true);
-	Ogre::Bone* bShoulderRight = entity->getSkeleton()->getBone("SHOULDER_RIGHT");
-	bShoulderRight->setManuallyControlled(true);
-	Ogre::Bone* bShoulderLeft = entity->getSkeleton()->getBone("SHOULDER_LEFT");
-	bShoulderLeft->setManuallyControlled(true);
-	Ogre::Bone* bElbowRight = entity->getSkeleton()->getBone("ELBOW_RIGHT");
-	bElbowRight->setManuallyControlled(true);
-	Ogre::Bone* bElbowLeft = entity->getSkeleton()->getBone("ELBOW_LEFT");
-	bElbowLeft->setManuallyControlled(true);
-
 	// Setup the animation
 	Ogre::Real duration=1.5;
 	Ogre::Real step=duration/4.0;

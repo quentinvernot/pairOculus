@@ -12,7 +12,7 @@ Ogre::ManualObject* BlockFactory::createBlock(
 	Map::PrintType cellType,
 	unsigned int i,
 	unsigned int j,
-	unsigned int scale
+	double scale
 ) {
 
 	stringstream genName;
@@ -26,9 +26,9 @@ Ogre::ManualObject* BlockFactory::createBlock(
 			Pyramid *myPyramid = new Pyramid(
 				mSceneMgr->createManualObject(genName.str()),
 				Block::COMPLETE,
-				-(double)(scale/2),
-				-(double)(scale/6),
-				-(double)(scale/2),
+				-(scale/2),
+				-(scale/6),
+				-(scale/2),
 				scale,
 				scale/2,
 				scale
@@ -40,9 +40,9 @@ Ogre::ManualObject* BlockFactory::createBlock(
 			Cube *myCube = new Cube(
 				mSceneMgr->createManualObject(genName.str()),
 				Block::COMPLETE,
-				-(double)(scale/2),
-				-(double)(scale/6),
-				-(double)(scale/2),
+				-(scale/2),
+				-(scale/6),
+				-(scale/2),
 				scale,
 				scale/3,
 				scale

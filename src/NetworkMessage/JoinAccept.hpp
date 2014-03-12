@@ -5,7 +5,6 @@
 #include <sstream>
 #include <deque>
 #include "NetworkMessage.hpp"
-#include "../Player.hpp"
 #include "../PlayerList.hpp"
 #include "../Map.hpp"
 

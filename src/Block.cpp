@@ -9,7 +9,7 @@ Block::Block(Ogre::ManualObject *man, PrintType print, Real px, Real py, Real pz
 	sizeY (sy),
 	sizeZ (sz),
 	manualBlock (man) {
-	//ctor
+	manualBlock->setCastShadows(true);
 }
 
 Block::~Block() {

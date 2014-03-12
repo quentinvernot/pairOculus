@@ -11,6 +11,7 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mNickname(nickname),
 	mLocalPlayer(0),
 	mPlayerList(new LocalPlayerList()),
+	mBombManager(0),
 	mLocalMap(0),
 	mAddress(address),
 	mPort(port),
@@ -150,12 +151,23 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 	PlayerList *pl = message->getPlayerList();
 	LocalPlayer *tmp;
 
+	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
+	mLocalMap = new LocalMap(
+		mSceneMgr,
+		mWorld,
+		message->getMapHeight(),
+		message->getMapWidth(),
+		message->getSeed()
+	);
+
+	mBombManager = new BombManager(mWorld, mLocalMap);
+
 	Ogre::LogManager::getSingletonPtr()->logMessage("Filling player list");
 	for(unsigned int i = 0; i < pl->size(); i++){
 		if((*pl)[i]->getNickname() == mNickname)
-			tmp = new LocalPlayer(mNickname, mSceneMgr, mWorld, mCameraManager);
+			tmp = new LocalPlayer(mNickname, mWorld, mCameraManager);
 		else
-			tmp = new LocalPlayer((*pl)[i]->getNickname(), mSceneMgr, mWorld);
+			tmp = new LocalPlayer((*pl)[i]->getNickname(), mWorld);
 
 		tmp->setNodePositionX((*pl)[i]->getNodePositionX());
 		tmp->setNodePositionY((*pl)[i]->getNodePositionY());
@@ -167,15 +179,6 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
 	mLocalPlayer = mPlayerList->getPlayerByName(mNickname);
-
-	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
-	mLocalMap = new LocalMap(
-		mSceneMgr,
-		mWorld,
-		message->getMapHeight(),
-		message->getMapWidth(),
-		message->getSeed()
-	);
 
 	mGameSetUp = true;
 
@@ -190,7 +193,7 @@ void Game::injectPlayerJoined(NetworkMessage::PlayerJoined *message){
 	if(!mGameRunning){
 
 		Ogre::LogManager::getSingletonPtr()->logMessage("Adding new player");
-		LocalPlayer *lp = new LocalPlayer(message->getNickname(), mSceneMgr, mWorld);
+		LocalPlayer *lp = new LocalPlayer(message->getNickname(), mWorld);
 		lp->setNodePositionX(message->getPositionX());
 		lp->setNodePositionY(message->getPositionY());
 		lp->setNodePositionZ(message->getPositionZ());
@@ -303,12 +306,14 @@ bool Game::networkSetup(){
 
 bool Game::offlineSetup(){
 
-	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
-	mLocalPlayer = new LocalPlayer(mNickname, mSceneMgr, mWorld, mCameraManager);
-	mPlayerList->addPlayer(mLocalPlayer);
-
 	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
 	mLocalMap = new LocalMap(mSceneMgr, mWorld, 15, 15);
+
+	mBombManager = new BombManager(mWorld, mLocalMap);
+
+	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
+	mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager);
+	mPlayerList->addPlayer(mLocalPlayer);
 
 	mLocalMap->setStartingPosition(0, mLocalPlayer);
 
@@ -326,7 +331,7 @@ bool Game::bulletSetup(){
 		Ogre::Vector3 (-10000, -10000, -10000),
 		Ogre::Vector3 (10000,  10000,  10000)
 	);
-	Vector3 gravityVector(0,-98.1,0);
+	Vector3 gravityVector(0,-9.81 * 2,0);
 
 	mWorld = new OgreBulletDynamics::DynamicsWorld(mSceneMgr, bounds, gravityVector);
 	debugDrawer = new OgreBulletCollisions::DebugDrawer();
@@ -336,36 +341,6 @@ bool Game::bulletSetup(){
 	mWorld->setShowDebugShapes(true);		// enable it if you want to see the Bullet containers
 	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
 	node->attachObject(static_cast <SimpleRenderable *> (debugDrawer));
-
-	//bomberman test mesh
-	Ogre::Entity *entity = mSceneMgr->createEntity("Box", "bomberman.mesh");
-	entity->setCastShadows(true);
-	// we need the bounding box of the box to be able to set the size of the Bullet-box
-	Ogre::AxisAlignedBox boundingB = entity->getBoundingBox();
-	Ogre::Vector3 size = boundingB.getSize();
-	size /= 2;
-	Ogre::SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	Ogre::SceneNode *entityNode = bodyNode->createChildSceneNode();
-	entityNode->setPosition(0, -3, 0);
-	entityNode->attachObject(entity);
-
-	// after that create the Bullet shape with the calculated size
-	OgreBulletCollisions::BoxCollisionShape *sceneBoxShape = new OgreBulletCollisions::BoxCollisionShape(size);
-	// and the Bullet rigid body
-	OgreBulletDynamics::RigidBody *defaultBody = new OgreBulletDynamics::RigidBody(
-		"defaultBoxRigid", mWorld
-	);
-
-	Ogre::Vector3 pos(-100, 100, -100);
-
-	defaultBody->setShape(
-		bodyNode,
-		sceneBoxShape,
-		0.6f,			// dynamic body restitution
-		0.6f,			// dynamic body friction
-		1.0f, 			// dynamic bodymass
-		pos				// starting position of the box
-	);
 
 	return true;
 
@@ -424,15 +399,10 @@ void Game::createScene(){
 	Animation::setDefaultRotationInterpolationMode(Animation::RIM_LINEAR);
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Player Graphics");
+
 	for(unsigned int i = 0; i < mPlayerList->size(); i++)
 		(*mPlayerList)[i]->generateGraphics();
-/*
-	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
-	if(mOnlineMode)
-		mLocalMap = new LocalMap(15, 15);	// TODO add the seed, put the H and W of the server
-	else
-		mLocalMap = new LocalMap(15, 15);
-*/
+
 	mLocalPlayer->lookAt(mLocalMap->getMapCenter());
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
@@ -440,9 +410,7 @@ void Game::createScene(){
 
 	// Lights
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
-
-	Ogre::Light* light = mSceneMgr->createLight("MainLight");
-	light->setPosition(0, 80, 0);
+	mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 
 	mSceneCreated = true;
 
@@ -509,15 +477,18 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 			SceneNode *entityNode = bodyNode->createChildSceneNode();
 			entityNode->attachObject(entity);
-			entityNode->setPosition(50, 15, 50);
+			entityNode->setPosition(20, 15, 20);
 
-			mPAS = new PlayerAnimation(mSceneMgr, entity);
-			mPAS->doRunAnimation();
+			mPlayerAnimationState = new PlayerAnimation(mSceneMgr, entity);
+			mPlayerAnimationState->doRunAnimation();
 		}
-		mPAS->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
+		mPlayerAnimationState->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
+
+		mBombManager->add("Target6", Ogre::Vector3(10,5,10));
+		mBombManager->frameRenderingQueued();
 
 		if(mOnlineMode && mLocalPlayer->hadUsefulInput())
 			sendPlayerInput();

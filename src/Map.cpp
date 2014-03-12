@@ -4,7 +4,7 @@ Map::Map(unsigned int height, unsigned int width, time_t seed):
 	mSeed(seed) {
 	setWidth(height);
 	setHeight(width);
-	mScale = 20;
+	mScale = 2;
 	generateMap();
 }
 
@@ -89,6 +89,23 @@ bool Map::isBreakable(int i, int j) {
 	}
 
 	std::cerr << "WARNING Found an unknow kind of block in isBreakable" << std::endl;
+	return false;	// You must never come here
+}
+
+bool Map::isUnbreakable(int i, int j) {
+	switch (mMap[i][j]) {
+		case UNBREAKABLE:
+			return true;
+			break;
+		case EMPTY:
+		case BREAKABLE:
+			return false;
+			break;
+		default:
+			;	// TODO generate exception
+	}
+
+	std::cerr << "WARNING Found an unknow kind of block in isUnbreakable" << std::endl;
 	return false;	// You must never come here
 }
 /*
