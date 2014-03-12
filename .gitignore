@@ -22,4 +22,5 @@ dist/bin/client
 
 # Misc
 dist/bin/Ogre.log
+dist/bin/ogre.cfg
 TODO
