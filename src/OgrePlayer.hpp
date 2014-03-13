@@ -26,11 +26,17 @@ class OgrePlayer : public Player{
 		void injectPlayerInput(NetworkMessage::PlayerInput *message);
 		virtual bool frameRenderingQueued(const Ogre::FrameEvent &evt)=0;
 
+	protected:
+		//Methods
+		virtual void computeAcceleration();
+		virtual void computeVelocity(const Ogre::FrameEvent &evt);
+		virtual void computeNodePosition(const Ogre::FrameEvent &evt);
+		virtual void resetCorrection();
+		
 		Ogre::Vector3 getForwardDirection();
 		Ogre::Vector3 getUpDirection();
 		Ogre::Vector3 getRightDirection();
 
-	protected:
 		//Attributes
 		OgreBulletDynamics::DynamicsWorld *mWorld;
 		OgreBulletDynamics::RigidBody *mBody;
@@ -41,6 +47,8 @@ class OgrePlayer : public Player{
 		int mAccelRight;
 		int mAccelUp;
 		int mAccelDown;
+
+		Ogre::Vector3 mVelocity;
 
 		bool mGraphicsSetUp;
 		bool mHadInputUseful;

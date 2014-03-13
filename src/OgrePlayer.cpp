@@ -13,6 +13,7 @@ OgrePlayer::OgrePlayer(
 	mAccelRight(0),
 	mAccelUp(0),
 	mAccelDown(0),
+	mVelocity(Ogre::Vector3::ZERO),
 	mGraphicsSetUp(false),
 	mHadInputUseful(false),
 	mYawCorrection(0),
@@ -40,6 +41,79 @@ void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 	mGoingRight = message->getGoingRight();
 	mGoingUp = message->getGoingUp();
 	mGoingDown = message->getGoingDown();
+
+}
+
+void OgrePlayer::computeAcceleration(){
+
+	if(mGoingForward && mAccelForward < mTopAccel) mAccelForward += 1;
+	else if(!mGoingForward && mAccelForward > 0) mAccelForward -= 1;
+
+	if(mGoingLeft && mAccelLeft < mTopAccel) mAccelLeft += 1;
+	else if(!mGoingLeft && mAccelLeft > 0) mAccelLeft -= 1;
+
+	if(mGoingBack && mAccelBack < mTopAccel) mAccelBack += 1;
+	else if(!mGoingBack && mAccelBack > 0) mAccelBack -= 1;
+
+	if(mGoingRight && mAccelRight < mTopAccel) mAccelRight += 1;
+	else if(!mGoingRight && mAccelRight > 0) mAccelRight -= 1;
+
+	if(mGoingUp && mAccelUp < mTopAccel) mAccelUp += 1;
+	else if(!mGoingUp && mAccelUp > 0) mAccelUp -= 1;
+
+	if(mGoingDown && mAccelDown < mTopAccel) mAccelDown += 1;
+	else if(!mGoingDown && mAccelDown > 0) mAccelDown -= 1;
+
+}
+
+void OgrePlayer::computeVelocity(const Ogre::FrameEvent &evt){
+
+	mVelocity = Ogre::Vector3::ZERO;
+
+	if(mGoingForward || mAccelForward)
+		mVelocity += mAccelForward * getForwardDirection() / mTopAccel;
+	if(mGoingLeft || mAccelLeft)
+		mVelocity -= mAccelLeft * getRightDirection() / mTopAccel;
+	if(mGoingBack || mAccelBack)
+		mVelocity -= mAccelBack * getForwardDirection() / mTopAccel;
+	if(mGoingRight || mAccelRight)
+		mVelocity += mAccelRight * getRightDirection() / mTopAccel;
+
+	if(mGoingUp || mAccelUp)
+		mVelocity += mAccelUp * getUpDirection()  / mTopAccel;
+	if(mGoingDown || mAccelDown)
+		mVelocity -= mAccelDown * getUpDirection()  / mTopAccel;
+
+}
+
+void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
+
+	if(mGraphicsSetUp){
+		mNodePositionX = mBody->getSceneNode()->getPosition().x;
+		mNodePositionY = mBody->getSceneNode()->getPosition().y;
+		mNodePositionZ = mBody->getSceneNode()->getPosition().z;
+	}
+
+	mNodePositionX += mVelocity.x * evt.timeSinceLastFrame * mTopSpeed;
+	mNodePositionY += mVelocity.y * evt.timeSinceLastFrame * mTopSpeed;
+	mNodePositionZ += mVelocity.z * evt.timeSinceLastFrame * mTopSpeed;
+
+	mNodeYaw += mYawCorrection.valueDegrees();
+	mNodePitch += mPitchCorrection.valueDegrees();
+	mNodeRoll += mRollCorrection.valueDegrees();
+
+	mNodePositionX += mPositionCorrection.x;
+	mNodePositionY += mPositionCorrection.y;
+	mNodePositionZ += mPositionCorrection.z;
+
+}
+
+void OgrePlayer::resetCorrection(){
+
+	mYawCorrection = 0;
+	mPitchCorrection = 0;
+	mRollCorrection = 0;
+	mPositionCorrection = Ogre::Vector3::ZERO;
 
 }
 

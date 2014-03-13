@@ -59,57 +59,9 @@ void RemotePlayer::generateGraphics(){
 
 bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
-	if(mGoingForward && mAccelForward < mTopAccel) mAccelForward += 1;
-	else if(!mGoingForward && mAccelForward > 0) mAccelForward -= 1;
-
-	if(mGoingLeft && mAccelLeft < mTopAccel) mAccelLeft += 1;
-	else if(!mGoingLeft && mAccelLeft > 0) mAccelLeft -= 1;
-
-	if(mGoingBack && mAccelBack < mTopAccel) mAccelBack += 1;
-	else if(!mGoingBack && mAccelBack > 0) mAccelBack -= 1;
-
-	if(mGoingRight && mAccelRight < mTopAccel) mAccelRight += 1;
-	else if(!mGoingRight && mAccelRight > 0) mAccelRight -= 1;
-
-	if(mGoingUp && mAccelUp < mTopAccel) mAccelUp += 1;
-	else if(!mGoingUp && mAccelUp > 0) mAccelUp -= 1;
-
-	if(mGoingDown && mAccelDown < mTopAccel) mAccelDown += 1;
-	else if(!mGoingDown && mAccelDown > 0) mAccelDown -= 1;
-
-	Ogre::Vector3 velocity = Ogre::Vector3::ZERO;
-
-	if(mGoingForward || mAccelForward)
-		velocity += mAccelForward * getForwardDirection() / mTopAccel;
-	if(mGoingLeft || mAccelLeft)
-		velocity -= mAccelLeft * getRightDirection() / mTopAccel;
-	if(mGoingBack || mAccelBack)
-		velocity -= mAccelBack * getForwardDirection() / mTopAccel;
-	if(mGoingRight || mAccelRight)
-		velocity += mAccelRight * getRightDirection() / mTopAccel;
-
-	if(mGoingUp || mAccelUp)
-		velocity += mAccelUp * getUpDirection()  / mTopAccel;
-	if(mGoingDown || mAccelDown)
-		velocity -= mAccelDown * getUpDirection()  / mTopAccel;
-
-	if(mGraphicsSetUp){
-		mNodePositionX = mBody->getSceneNode()->getPosition().x;
-		mNodePositionY = mBody->getSceneNode()->getPosition().y;
-		mNodePositionZ = mBody->getSceneNode()->getPosition().z;
-	}
-
-	mNodePositionX += velocity.x * evt.timeSinceLastFrame * mTopSpeed;
-	mNodePositionY += velocity.y * evt.timeSinceLastFrame * mTopSpeed;
-	mNodePositionZ += velocity.z * evt.timeSinceLastFrame * mTopSpeed;
-
-	mNodeYaw += mYawCorrection.valueDegrees();
-	mNodePitch += mPitchCorrection.valueDegrees();
-	mNodeRoll += mRollCorrection.valueDegrees();
-
-	mNodePositionX += mPositionCorrection.x;
-	mNodePositionY += mPositionCorrection.y;
-	mNodePositionZ += mPositionCorrection.z;
+	computeAcceleration();
+	computeVelocity(evt);
+	computeNodePosition(evt);
 
 	if(mGraphicsSetUp){
 
@@ -124,10 +76,7 @@ bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 	}
 
-	mYawCorrection = 0;
-	mPitchCorrection = 0;
-	mRollCorrection = 0;
-	mPositionCorrection = Ogre::Vector3::ZERO;
+	resetCorrection();
 
 	return true;
 
