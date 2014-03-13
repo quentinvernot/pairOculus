@@ -53,11 +53,14 @@ void RemotePlayer::generateGraphics(){
 	mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
 	mBody->getBulletRigidBody()->setGravity(btVector3(0, 0, 0));
 
+	mPlayerAnimationState = new PlayerAnimation(mWorld->getSceneManager(), entity);
+
 	mGraphicsSetUp = true;
 
 }
 
 bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
+	Ogre::LogManager::getSingletonPtr()->logMessage("REMOTEPLAYER frameRenderingQueued");
 
 	if(mGoingForward && mAccelForward < mTopAccel) mAccelForward += 1;
 	else if(!mGoingForward && mAccelForward > 0) mAccelForward -= 1;
@@ -79,14 +82,32 @@ bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 	Ogre::Vector3 velocity = Ogre::Vector3::ZERO;
 
-	if(mGoingForward || mAccelForward)
+	if(mGoingForward || mAccelForward) {
 		velocity += mAccelForward * getForwardDirection() / mTopAccel;
-	if(mGoingLeft || mAccelLeft)
+//		mPlayerAnimationState->doRunAnimation();
+	}
+	if(mGoingLeft || mAccelLeft) {
 		velocity -= mAccelLeft * getRightDirection() / mTopAccel;
-	if(mGoingBack || mAccelBack)
+//		mPlayerAnimationState->doRunAnimation();
+	}
+	if(mGoingBack || mAccelBack) {
 		velocity -= mAccelBack * getForwardDirection() / mTopAccel;
-	if(mGoingRight || mAccelRight)
+//		mPlayerAnimationState->doRunAnimation();
+	}
+	if(mGoingRight || mAccelRight) {
 		velocity += mAccelRight * getRightDirection() / mTopAccel;
+//		mPlayerAnimationState->doRunAnimation();
+	}
+
+	if (mGraphicsSetUp) {
+		if (velocity != Ogre::Vector3::ZERO)
+			mPlayerAnimationState->doRunAnimation();
+		else {
+			Ogre::LogManager::getSingletonPtr()->logMessage("Before doIdleAnimation()");
+			mPlayerAnimationState->doIdleAnimation();
+			Ogre::LogManager::getSingletonPtr()->logMessage("After doIdleAnimation()");
+		}
+	}
 
 	if(mGoingUp || mAccelUp)
 		velocity += mAccelUp * getUpDirection()  / mTopAccel;
@@ -122,6 +143,9 @@ bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
 
+		Ogre::LogManager::getSingletonPtr()->logMessage("Before addTime()");
+		mPlayerAnimationState->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
+		Ogre::LogManager::getSingletonPtr()->logMessage("After addTime()");
 	}
 
 	mYawCorrection = 0;

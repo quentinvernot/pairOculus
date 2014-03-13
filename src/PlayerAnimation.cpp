@@ -1,43 +1,45 @@
 #include "PlayerAnimation.hpp"
 
 PlayerAnimation::PlayerAnimation(Ogre::SceneManager *sceneMgr, Ogre::Entity *entity) :
-	mSceneMgr(sceneMgr) {
+	mSceneMgr(sceneMgr),
+	mEntity(entity) {
+	mPlayerAnimationState = NULL;
 	// Controle bones individualy
-    Ogre::Bone* bHead = entity->getSkeleton()->getBone("HEAD");
+    Ogre::Bone* bHead = mEntity->getSkeleton()->getBone("HEAD");
     bHead->setManuallyControlled(true);
-	Ogre::Bone* bHipRight = entity->getSkeleton()->getBone("HIP_RIGHT");
+	Ogre::Bone* bHipRight = mEntity->getSkeleton()->getBone("HIP_RIGHT");
 	bHipRight->setManuallyControlled(true);
-	Ogre::Bone* bHipLeft = entity->getSkeleton()->getBone("HIP_LEFT");
+	Ogre::Bone* bHipLeft = mEntity->getSkeleton()->getBone("HIP_LEFT");
 	bHipLeft->setManuallyControlled(true);
-	Ogre::Bone* bKneeRight = entity->getSkeleton()->getBone("KNEE_RIGHT");
+	Ogre::Bone* bKneeRight = mEntity->getSkeleton()->getBone("KNEE_RIGHT");
 	bKneeRight->setManuallyControlled(true);
-	Ogre::Bone* bKneeLeft = entity->getSkeleton()->getBone("KNEE_LEFT");
+	Ogre::Bone* bKneeLeft = mEntity->getSkeleton()->getBone("KNEE_LEFT");
 	bKneeLeft->setManuallyControlled(true);
-	Ogre::Bone* bShoulderRight = entity->getSkeleton()->getBone("SHOULDER_RIGHT");
+	Ogre::Bone* bShoulderRight = mEntity->getSkeleton()->getBone("SHOULDER_RIGHT");
 	bShoulderRight->setManuallyControlled(true);
-	Ogre::Bone* bShoulderLeft = entity->getSkeleton()->getBone("SHOULDER_LEFT");
+	Ogre::Bone* bShoulderLeft = mEntity->getSkeleton()->getBone("SHOULDER_LEFT");
 	bShoulderLeft->setManuallyControlled(true);
-	Ogre::Bone* bElbowRight = entity->getSkeleton()->getBone("ELBOW_RIGHT");
+	Ogre::Bone* bElbowRight = mEntity->getSkeleton()->getBone("ELBOW_RIGHT");
 	bElbowRight->setManuallyControlled(true);
-	Ogre::Bone* bElbowLeft = entity->getSkeleton()->getBone("ELBOW_LEFT");
+	Ogre::Bone* bElbowLeft = mEntity->getSkeleton()->getBone("ELBOW_LEFT");
 	bElbowLeft->setManuallyControlled(true);
 
-	setupIdleAnimation (entity);
-	setupHeadAnimation (entity);
-	setupRunAnimation (entity);
+	setupIdleAnimation ();
+	setupHeadAnimation ();
+	setupRunAnimation ();
 
 	doIdleAnimation ();
 }
 
-void PlayerAnimation::setupIdleAnimation (Ogre::Entity *entity) {
+void PlayerAnimation::setupIdleAnimation () {
 	// Setup the animation
 	Ogre::Real duration=1.0;
-	Ogre::Animation* animation = mSceneMgr->createAnimation(entity->getName() + "Idle",duration);
+	Ogre::Animation* animation = mSceneMgr->createAnimation(mEntity->getName() + "Idle",duration);
 	animation->setInterpolationMode(Ogre::Animation::IM_SPLINE);
-	Ogre::NodeAnimationTrack* tHipRight = animation->createNodeTrack(0,entity->getSkeleton()->getBone("HIP_RIGHT"));
-	Ogre::NodeAnimationTrack* tHipLeft = animation->createNodeTrack(1,entity->getSkeleton()->getBone("HIP_LEFT"));
-	Ogre::NodeAnimationTrack* tShoulderRight = animation->createNodeTrack(2,entity->getSkeleton()->getBone("SHOULDER_RIGHT"));
-	Ogre::NodeAnimationTrack* tShoulderLeft = animation->createNodeTrack(3,entity->getSkeleton()->getBone("SHOULDER_LEFT"));
+	Ogre::NodeAnimationTrack* tHipRight = animation->createNodeTrack(0,mEntity->getSkeleton()->getBone("HIP_RIGHT"));
+	Ogre::NodeAnimationTrack* tHipLeft = animation->createNodeTrack(1,mEntity->getSkeleton()->getBone("HIP_LEFT"));
+	Ogre::NodeAnimationTrack* tShoulderRight = animation->createNodeTrack(2,mEntity->getSkeleton()->getBone("SHOULDER_RIGHT"));
+	Ogre::NodeAnimationTrack* tShoulderLeft = animation->createNodeTrack(3,mEntity->getSkeleton()->getBone("SHOULDER_LEFT"));
 
 	// Then make the animation
 	Ogre::TransformKeyFrame* key;
@@ -58,16 +60,32 @@ void PlayerAnimation::setupIdleAnimation (Ogre::Entity *entity) {
 	key = tShoulderLeft->createNodeKeyFrame(0.0f);
 	key->setRotation(Ogre::Quaternion(Ogre::Degree(-60), Ogre::Vector3::UNIT_Z));
 
-	mPlayerIdle = mSceneMgr->createAnimationState(entity->getName() + "Idle");
+	// Hip Right
+	key = tHipRight->createNodeKeyFrame(duration);
+	key->setRotation(Ogre::Quaternion(Ogre::Degree(20), Ogre::Vector3::UNIT_Z));
+
+	// Hip Left
+	key = tHipLeft->createNodeKeyFrame(duration);
+	key->setRotation(Ogre::Quaternion(Ogre::Degree(-20), Ogre::Vector3::UNIT_Z));
+
+	// Shoulder Right
+	key = tShoulderRight->createNodeKeyFrame(duration);
+	key->setRotation(Ogre::Quaternion(Ogre::Degree(60), Ogre::Vector3::UNIT_Z));
+
+	// Shoulder Left
+	key = tShoulderLeft->createNodeKeyFrame(duration);
+	key->setRotation(Ogre::Quaternion(Ogre::Degree(-60), Ogre::Vector3::UNIT_Z));
+
+	mSceneMgr->createAnimationState(mEntity->getName() + "Idle");
 }
 
-void PlayerAnimation::setupHeadAnimation (Ogre::Entity *entity) {
+void PlayerAnimation::setupHeadAnimation () {
 	// Setup the animation
 	Ogre::Real duration=4.0;
 	Ogre::Real step=duration/4.0;
-	Ogre::Animation* animation = mSceneMgr->createAnimation(entity->getName() + "HeadRotate",duration);
+	Ogre::Animation* animation = mSceneMgr->createAnimation(mEntity->getName() + "HeadRotate",duration);
 	animation->setInterpolationMode(Ogre::Animation::IM_SPLINE);
-	Ogre::NodeAnimationTrack* track = animation->createNodeTrack(0,entity->getSkeleton()->getBone("HEAD"));
+	Ogre::NodeAnimationTrack* track = animation->createNodeTrack(0,mEntity->getSkeleton()->getBone("HEAD"));
 
 	// Then make the animation
 	Ogre::TransformKeyFrame* key;
@@ -87,23 +105,23 @@ void PlayerAnimation::setupHeadAnimation (Ogre::Entity *entity) {
 	key = track->createNodeKeyFrame(4.0*step);
 	key->setRotation(Ogre::Quaternion(Ogre::Degree(0), Ogre::Vector3::UNIT_Y));
 
-	mPlayerHead = mSceneMgr->createAnimationState(entity->getName() + "HeadRotate");
+	mSceneMgr->createAnimationState(mEntity->getName() + "HeadRotate");
 }
 
-void PlayerAnimation::setupRunAnimation (Ogre::Entity *entity) {
+void PlayerAnimation::setupRunAnimation () {
 	// Setup the animation
-	Ogre::Real duration=1.5;
+	Ogre::Real duration=0.75;
 	Ogre::Real step=duration/4.0;
-	Ogre::Animation* animation = mSceneMgr->createAnimation(entity->getName() + "Run",duration);
+	Ogre::Animation* animation = mSceneMgr->createAnimation(mEntity->getName() + "Run",duration);
 	animation->setInterpolationMode(Ogre::Animation::IM_SPLINE);
-	Ogre::NodeAnimationTrack* tKneeRight = animation->createNodeTrack(0,entity->getSkeleton()->getBone("KNEE_RIGHT"));
-	Ogre::NodeAnimationTrack* tHipRight = animation->createNodeTrack(1,entity->getSkeleton()->getBone("HIP_RIGHT"));
-	Ogre::NodeAnimationTrack* tKneeLeft = animation->createNodeTrack(2,entity->getSkeleton()->getBone("KNEE_LEFT"));
-	Ogre::NodeAnimationTrack* tHipLeft = animation->createNodeTrack(3,entity->getSkeleton()->getBone("HIP_LEFT"));
-	Ogre::NodeAnimationTrack* tShoulderRight = animation->createNodeTrack(4,entity->getSkeleton()->getBone("SHOULDER_RIGHT"));
-	Ogre::NodeAnimationTrack* tShoulderLeft = animation->createNodeTrack(5,entity->getSkeleton()->getBone("SHOULDER_LEFT"));
-	Ogre::NodeAnimationTrack* tElbowRight = animation->createNodeTrack(6,entity->getSkeleton()->getBone("ELBOW_RIGHT"));
-	Ogre::NodeAnimationTrack* tElbowLeft = animation->createNodeTrack(7,entity->getSkeleton()->getBone("ELBOW_LEFT"));
+	Ogre::NodeAnimationTrack* tKneeRight = animation->createNodeTrack(0,mEntity->getSkeleton()->getBone("KNEE_RIGHT"));
+	Ogre::NodeAnimationTrack* tHipRight = animation->createNodeTrack(1,mEntity->getSkeleton()->getBone("HIP_RIGHT"));
+	Ogre::NodeAnimationTrack* tKneeLeft = animation->createNodeTrack(2,mEntity->getSkeleton()->getBone("KNEE_LEFT"));
+	Ogre::NodeAnimationTrack* tHipLeft = animation->createNodeTrack(3,mEntity->getSkeleton()->getBone("HIP_LEFT"));
+	Ogre::NodeAnimationTrack* tShoulderRight = animation->createNodeTrack(4,mEntity->getSkeleton()->getBone("SHOULDER_RIGHT"));
+	Ogre::NodeAnimationTrack* tShoulderLeft = animation->createNodeTrack(5,mEntity->getSkeleton()->getBone("SHOULDER_LEFT"));
+	Ogre::NodeAnimationTrack* tElbowRight = animation->createNodeTrack(6,mEntity->getSkeleton()->getBone("ELBOW_RIGHT"));
+	Ogre::NodeAnimationTrack* tElbowLeft = animation->createNodeTrack(7,mEntity->getSkeleton()->getBone("ELBOW_LEFT"));
 
 	// Then make the animation
 	Ogre::TransformKeyFrame* key;
@@ -236,23 +254,23 @@ void PlayerAnimation::setupRunAnimation (Ogre::Entity *entity) {
 	key = tElbowLeft->createNodeKeyFrame(4.0*step);
 	key->setRotation(Ogre::Quaternion(Ogre::Degree(-20), Ogre::Vector3::UNIT_X));
 
-	mPlayerRun = mSceneMgr->createAnimationState(entity->getName() + "Run");
+	mSceneMgr->createAnimationState(mEntity->getName() + "Run");
 
 }
 
 void PlayerAnimation::doIdleAnimation () {
-	mPlayerAnimationState = mPlayerIdle;
+	mPlayerAnimationState = mSceneMgr->getAnimationState(mEntity->getName() + "Idle");
 	mPlayerAnimationState->setEnabled(true);
 }
 
 void PlayerAnimation::doHeadAnimation () {
-	mPlayerAnimationState = mPlayerHead;
+	mPlayerAnimationState = mSceneMgr->getAnimationState(mEntity->getName() + "Head");
 	mPlayerAnimationState->setEnabled(true);
 	mPlayerAnimationState->setLoop(true);
 }
 
 void PlayerAnimation::doRunAnimation () {
-	mPlayerAnimationState = mPlayerRun;
+	mPlayerAnimationState = mSceneMgr->getAnimationState(mEntity->getName() + "Run");
 	mPlayerAnimationState->setEnabled(true);
 	mPlayerAnimationState->setLoop(true);
 }

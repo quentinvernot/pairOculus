@@ -25,6 +25,9 @@ class RemotePlayer : public OgrePlayer{
 		void generateGraphics();
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
+	private:
+		// Atributes
+		PlayerAnimation *mPlayerAnimationState;
 };
 
 #endif //__REMOTEPLAYER_H
