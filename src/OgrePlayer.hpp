@@ -5,6 +5,7 @@
 #include "BombManager.hpp"
 #include "NetworkMessage/PlayerInput.hpp"
 
+#include <OgreEntity.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
@@ -28,6 +29,12 @@ class OgrePlayer : public Player{
 
 	protected:
 		//Methods
+		virtual Ogre::Vector3 computeHitboxSize();
+		virtual void generateHitbox(
+			Ogre::Vector3 size,
+			Ogre::SceneNode *bodyNode
+		);
+
 		virtual void computeAcceleration();
 		virtual void computeVelocity(const Ogre::FrameEvent &evt);
 		virtual void computeNodePosition(const Ogre::FrameEvent &evt);
@@ -40,6 +47,8 @@ class OgrePlayer : public Player{
 		//Attributes
 		OgreBulletDynamics::DynamicsWorld *mWorld;
 		OgreBulletDynamics::RigidBody *mBody;
+
+		Entity *mEntity;
 
 		int mAccelForward;
 		int mAccelBack;

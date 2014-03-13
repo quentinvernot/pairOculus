@@ -5,7 +5,6 @@
 #include "CameraManager.hpp"
 
 #include <OgreCamera.h>
-#include <OgreEntity.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>

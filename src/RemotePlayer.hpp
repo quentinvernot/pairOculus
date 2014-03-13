@@ -4,7 +4,6 @@
 #include "OgrePlayer.hpp"
 #include "PlayerAnimation.hpp"
 
-#include <OgreEntity.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>

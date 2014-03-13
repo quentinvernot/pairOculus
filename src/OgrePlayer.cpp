@@ -7,6 +7,7 @@ OgrePlayer::OgrePlayer(
 	Player(name),
 	mWorld(world),
 	mBody(0),
+	mEntity(0),
 	mAccelForward(0),
 	mAccelBack(0),
 	mAccelLeft(0),
@@ -44,6 +45,54 @@ void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
 }
 
+Ogre::Vector3 OgrePlayer::computeHitboxSize(){
+
+	if(mEntity){
+		AxisAlignedBox boundingB = mEntity->getBoundingBox();
+		Vector3 size = boundingB.getSize();
+		size /= 20;
+		size.x /= 2;
+		size.z /= 2;
+		
+		return size;
+	}
+
+	return Ogre::Vector3::ZERO;
+
+}
+
+void OgrePlayer::generateHitbox(
+	Ogre::Vector3 size,
+	Ogre::SceneNode *bodyNode
+){
+
+	using namespace OgreBulletCollisions;
+	using namespace Ogre;
+
+	BoxCollisionShape *boxShape = new BoxCollisionShape(size);
+	mBody = new OgreBulletDynamics::RigidBody(mNickname + "Box", mWorld);
+
+	Vector3 position(
+		mNodePositionX,
+		mNodePositionY,
+		mNodePositionZ
+	);
+
+	mBody->setShape(
+		bodyNode,
+		boxShape,
+		0.6f,
+		0.0f,
+		50.0f,
+		position
+	);
+
+	mBody->disableDeactivation();
+	mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
+	mBody->getBulletRigidBody()->setGravity(btVector3(0, 0, 0));
+
+}
+
 void OgrePlayer::computeAcceleration(){
 
 	if(mGoingForward && mAccelForward < mTopAccel) mAccelForward += 1;
@@ -71,18 +120,18 @@ void OgrePlayer::computeVelocity(const Ogre::FrameEvent &evt){
 	mVelocity = Ogre::Vector3::ZERO;
 
 	if(mGoingForward || mAccelForward)
-		mVelocity += mAccelForward * getForwardDirection() / mTopAccel;
+		mVelocity += mAccelForward * getForwardDirection();
 	if(mGoingLeft || mAccelLeft)
-		mVelocity -= mAccelLeft * getRightDirection() / mTopAccel;
+		mVelocity -= mAccelLeft * getRightDirection();
 	if(mGoingBack || mAccelBack)
-		mVelocity -= mAccelBack * getForwardDirection() / mTopAccel;
+		mVelocity -= mAccelBack * getForwardDirection();
 	if(mGoingRight || mAccelRight)
-		mVelocity += mAccelRight * getRightDirection() / mTopAccel;
+		mVelocity += mAccelRight * getRightDirection();
 
 	if(mGoingUp || mAccelUp)
-		mVelocity += mAccelUp * getUpDirection()  / mTopAccel;
+		mVelocity += mAccelUp * getUpDirection();
 	if(mGoingDown || mAccelDown)
-		mVelocity -= mAccelDown * getUpDirection()  / mTopAccel;
+		mVelocity -= mAccelDown * getUpDirection();
 
 }
 
