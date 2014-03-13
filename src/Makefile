@@ -10,7 +10,7 @@ OVR=-I/usr/local/include/OVR/Include
 BULLET=`pkg-config --cflags bullet` -I/usr/local/include/OgreBullet/Dynamics  -I/usr/local/include/OgreBullet/Collisions
 
 GAME=$(OBJDIR)Game.o $(OBJDIR)GameWindow.o $(OBJDIR)Input.o $(OBJDIR)SensorFusionDevice.o
-PLAYER=$(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(OBJDIR)LocalPlayer.o $(OBJDIR)LocalPlayerList.o $(OBJDIR)PlayerAnimation.o
+PLAYER=$(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(OBJDIR)OgrePlayer.o $(OBJDIR)LocalPlayer.o $(OBJDIR)RemotePlayer.o $(OBJDIR)OgrePlayerList.o $(OBJDIR)PlayerAnimation.o
 CAMERA=$(OBJDIR)CameraManager.o $(OBJDIR)SimpleCamera.o $(OBJDIR)OculusCamera.o
 BOMB=$(OBJDIR)Bomb.o $(OBJDIR)BombManager.o
 BLOCK=$(OBJDIR)Block.o $(OBJDIR)Cube.o $(OBJDIR)Pyramid.o $(OBJDIR)FloorPanel.o $(OBJDIR)BlockFactory.o
@@ -43,11 +43,17 @@ $(OBJDIR)Player.o: Player.hpp Player.cpp
 $(OBJDIR)PlayerList.o: PlayerList.hpp PlayerList.cpp Player.hpp
 	$(CC) $(CFLAGS) -c PlayerList.cpp -o $(OBJDIR)PlayerList.o
 
-$(OBJDIR)LocalPlayer.o: LocalPlayer.hpp LocalPlayer.cpp Player.hpp CameraManager.hpp SimpleCamera.hpp OculusCamera.hpp PlayerAnimation.hpp BombManager.hpp Bomb.hpp LocalMap.hpp Block.hpp Cube.hpp Pyramid.hpp FloorPanel.hpp BlockFactory.hpp Player.hpp Map.hpp $(ls NetworkMessage/.*hpp)
+$(OBJDIR)OgrePlayer.o: OgrePlayer.hpp OgrePlayer.cpp Player.hpp BombManager.hpp Bomb.hpp LocalMap.hpp Block.hpp Cube.hpp Pyramid.hpp FloorPanel.hpp BlockFactory.hpp Player.hpp Map.hpp $(ls NetworkMessage/.*hpp)
+	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c OgrePlayer.cpp -o $(OBJDIR)OgrePlayer.o
+
+$(OBJDIR)LocalPlayer.o: LocalPlayer.hpp LocalPlayer.cpp OgrePlayer.hpp Player.hpp CameraManager.hpp SimpleCamera.hpp OculusCamera.hpp PlayerAnimation.hpp BombManager.hpp Bomb.hpp LocalMap.hpp Block.hpp Cube.hpp Pyramid.hpp FloorPanel.hpp BlockFactory.hpp Player.hpp Map.hpp $(ls NetworkMessage/.*hpp)
 	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c LocalPlayer.cpp -o $(OBJDIR)LocalPlayer.o
 
-$(OBJDIR)LocalPlayerList.o: LocalPlayerList.hpp LocalPlayerList.cpp LocalPlayer.hpp
-	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c LocalPlayerList.cpp -o $(OBJDIR)LocalPlayerList.o
+$(OBJDIR)RemotePlayer.o: RemotePlayer.hpp RemotePlayer.cpp OgrePlayer.hpp Player.hpp PlayerAnimation.hpp BombManager.hpp Bomb.hpp LocalMap.hpp Block.hpp Cube.hpp Pyramid.hpp FloorPanel.hpp BlockFactory.hpp Player.hpp Map.hpp $(ls NetworkMessage/.*hpp)
+	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c RemotePlayer.cpp -o $(OBJDIR)RemotePlayer.o
+
+$(OBJDIR)OgrePlayerList.o: OgrePlayerList.hpp OgrePlayerList.cpp OgrePlayer.hpp
+	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c OgrePlayerList.cpp -o $(OBJDIR)OgrePlayerList.o
 
 $(OBJDIR)PlayerAnimation.o: PlayerAnimation.hpp PlayerAnimation.cpp
 	$(CC) $(OGRE) $(CFLAGS) -c PlayerAnimation.cpp -o $(OBJDIR)PlayerAnimation.o

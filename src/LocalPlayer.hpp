@@ -1,20 +1,14 @@
 #ifndef __LOCALPLAYER_H
 #define __LOCALPLAYER_H
 
-#include "Player.hpp"
-#include "PlayerAnimation.hpp"
-#include "BombManager.hpp"
+#include "OgrePlayer.hpp"
 #include "CameraManager.hpp"
-#include "NetworkMessage/PlayerInput.hpp"
 
 #include <OgreCamera.h>
 #include <OgreEntity.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
-#include <OgreViewport.h>
 #include <OgreSceneManager.h>
-#include <OgreRenderWindow.h>
-#include <OgreConfigFile.h>
 
 #include <OISEvents.h>
 #include <OISInputManager.h>
@@ -24,14 +18,14 @@
 #include <OgreBulletDynamicsRigidBody.h>
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
 
-class LocalPlayer : public Player{
+class LocalPlayer : public OgrePlayer{
 
 	public:
 		//Methods
 		LocalPlayer(
 			std::string name,
 			OgreBulletDynamics::DynamicsWorld *world,
-			CameraManager *cameraManager=0
+			CameraManager *cameraManager
 		);
 		~LocalPlayer();
 
@@ -45,37 +39,14 @@ class LocalPlayer : public Player{
 		bool injectKeyDown(const OIS::KeyEvent &arg);
 		bool injectKeyUp(const OIS::KeyEvent &arg);
 		bool injectHeadMove(const Ogre::Vector3 &evt);
-		void injectPlayerInput(NetworkMessage::PlayerInput *message);
 
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		bool hadUsefulInput();
 
-		Ogre::Vector3 getForwardDirection();
-		Ogre::Vector3 getUpDirection();
-		Ogre::Vector3 getRightDirection();
-
 	private:
 		//Attributes
-		OgreBulletDynamics::DynamicsWorld *mWorld;
-		OgreBulletDynamics::RigidBody *mBody;
 		CameraManager *mCameraManager;
-
-		int mAccelForward;
-		int mAccelBack;
-		int mAccelLeft;
-		int mAccelRight;
-		int mAccelUp;
-		int mAccelDown;
-
-		bool mGraphicsSetUp;
-		bool mHadInputUseful;
-
-		Ogre::Degree mYawCorrection;
-		Ogre::Degree mPitchCorrection;
-		Ogre::Degree mRollCorrection;
-		Ogre::Vector3 mPositionCorrection;
-		Ogre::Quaternion mOrientationCorrection;
 
 };
 

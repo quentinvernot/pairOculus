@@ -29,7 +29,9 @@
 #include "Input.hpp"
 #include "GameWindow.hpp"
 
-#include "LocalPlayerList.hpp"
+#include "LocalPlayer.hpp"
+#include "RemotePlayer.hpp"
+#include "OgrePlayerList.hpp"
 #include "LocalMap.hpp"
 
 #include "GameClient/Listener.hpp"
@@ -100,7 +102,7 @@ class Game : public Ogre::FrameListener{
 
 		std::string mNickname;
 		LocalPlayer *mLocalPlayer;
-		LocalPlayerList *mPlayerList;
+		OgrePlayerList *mPlayerList;
 		PlayerAnimation *mPlayerAnimationState;
 		BombManager *mBombManager;
 		LocalMap *mLocalMap;

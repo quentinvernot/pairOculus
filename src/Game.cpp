@@ -10,7 +10,7 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mInput(0),
 	mNickname(nickname),
 	mLocalPlayer(0),
-	mPlayerList(new LocalPlayerList()),
+	mPlayerList(new OgrePlayerList()),
 	mBombManager(0),
 	mLocalMap(0),
 	mAddress(address),
@@ -158,7 +158,7 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 	mServerJoined = true;
 
 	PlayerList *pl = message->getPlayerList();
-	LocalPlayer *tmp;
+	OgrePlayer *tmp;
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
 	mLocalMap = new LocalMap(
@@ -173,10 +173,13 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Filling player list");
 	for(unsigned int i = 0; i < pl->size(); i++){
-		if((*pl)[i]->getNickname() == mNickname)
-			tmp = new LocalPlayer(mNickname, mWorld, mCameraManager);
+		if((*pl)[i]->getNickname() == mNickname){
+			Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
+			mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager);
+			tmp = mLocalPlayer;
+		}
 		else
-			tmp = new LocalPlayer((*pl)[i]->getNickname(), mWorld);
+			tmp = new RemotePlayer((*pl)[i]->getNickname(), mWorld);
 
 		tmp->setNodePositionX((*pl)[i]->getNodePositionX());
 		tmp->setNodePositionY((*pl)[i]->getNodePositionY());
@@ -185,9 +188,6 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 		mPlayerList->addPlayer(tmp);
 
 	}
-
-	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
-	mLocalPlayer = mPlayerList->getPlayerByName(mNickname);
 
 	mGameSetUp = true;
 
@@ -202,7 +202,7 @@ void Game::injectPlayerJoined(NetworkMessage::PlayerJoined *message){
 	if(!mGameRunning){
 
 		Ogre::LogManager::getSingletonPtr()->logMessage("Adding new player");
-		LocalPlayer *lp = new LocalPlayer(message->getNickname(), mWorld);
+		RemotePlayer *lp = new RemotePlayer(message->getNickname(), mWorld);
 		lp->setNodePositionX(message->getPositionX());
 		lp->setNodePositionY(message->getPositionY());
 		lp->setNodePositionZ(message->getPositionZ());
