@@ -31,7 +31,7 @@ void RemotePlayer::generateGraphics(){
 
 	generateHitbox(size, bodyNode);
 
-	mPlayerAnimationState = new PlayerAnimation(mWorld->getSceneManager(), entity);
+	mPlayerAnimationState = new PlayerAnimation(mWorld->getSceneManager(), mEntity);
 
 	mGraphicsSetUp = true;
 
