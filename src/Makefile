@@ -18,8 +18,10 @@ MAP=$(OBJDIR)Map.o $(OBJDIR)LocalMap.o
 NETWORK=$(OBJDIR)NetworkMessage $(OBJDIR)NetworkIO.o $(OBJDIR)GameServer $(OBJDIR)GameClient
 
 ALL=$(OBJDIR) $(GAME) $(PLAYER) $(CAMERA) $(BOMB) $(BLOCK) $(MAP) $(NETWORK)
+SERVER=$(OBJDIR) $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(OBJDIR)Map.o $(OBJDIR)NetworkMessage $(OBJDIR)NetworkIO.o $(OBJDIR)GameServer
 
 all: $(ALL)
+server: $(SERVER)
 re: clean all
 
 $(OBJDIR):

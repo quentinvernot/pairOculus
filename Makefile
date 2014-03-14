@@ -22,12 +22,15 @@ re: clean all
 $(OBJDIR): .FORCE
 	cd $(SRCDIR) && make
 
+$(OBJDIR)GameServer: .FORCE
+	cd $(SRCDIR) && make server
+
 MAINOBJ=$(OBJDIR)*.o $(OBJDIR)NetworkMessage/*.o $(OBJDIR)GameClient/*.o
 $(BINDIR)main: main.cpp $(OBJDIR) $(OBJDIR)NetworkMessage
 	$(CC) $(OGRE) $(OIS) $(OVR) $(BULLET) $(CFLAGS) main.cpp $(MAINOBJ) $(LIBBOOST) $(LIBOGRE) $(LIBOVR) $(LIBBULLET) -o $(BINDIR)main
 
 SERVEROBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)NetworkMessage/*.o $(OBJDIR)GameServer/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(OBJDIR)Map.o
-$(BINDIR)server: server.cpp $(OBJDIR) $(OBJDIR)NetworkMessage $(OBJDIR)GameServer
+$(BINDIR)server: server.cpp $(OBJDIR)GameServer
 	$(CC) $(CFLAGS) server.cpp $(SERVEROBJ) $(LIBBOOST) -o $(BINDIR)server
 
 clean:
