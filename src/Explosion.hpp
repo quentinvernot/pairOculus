@@ -1,5 +1,5 @@
-#ifndef __BOMB_H
-#define __BOMB_H
+#ifndef __EXPLOSION_H
+#define __EXPLOSION_H
 
 #include <OgreEntity.h>
 #include <OgreLogManager.h>
@@ -8,33 +8,31 @@
 #include <OgreBulletDynamicsRigidBody.h>
 #include "Shapes/OgreBulletCollisionsSphereShape.h"
 
-class Bomb{
+class Explosion{
 
 	public:
 		//Methods
-		Bomb(
+		Explosion(
 			std::string owner,
 			Ogre::Vector3 position,
+			Ogre::Vector3 velocity,
 			OgreBulletDynamics::DynamicsWorld *world
 		);
-		~Bomb();
+		~Explosion();
 
-		bool hasExploded(time_t now);
 		void generateGraphics();
-		void detonate();
+		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
-		std::string getName();
 		Ogre::Vector3 getPosition();
-		int getRange();
+		double getRange();
 		OgreBulletDynamics::RigidBody *getBody();
 
 	private:
 		//Attributes
-		int mRange;
-		int mTTL;
-		clock_t mCreationTime;
+		double mRange;
 		std::string mName;
 		Ogre::Vector3 mPosition;
+		Ogre::Vector3 mVelocity;
 
 		OgreBulletDynamics::DynamicsWorld *mWorld;
 		OgreBulletDynamics::RigidBody *mBody;
@@ -43,4 +41,4 @@ class Bomb{
 
 };
 
-#endif //__BOMB_H
+#endif //__EXPLOSION_H

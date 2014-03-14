@@ -2,7 +2,8 @@
 #define __BOMBMANAGER_H
 
 #include "Bomb.hpp"
-#include "LocalMap.hpp"
+#include "ExplosionManager.hpp"
+#include "ExplosionListener.hpp"
 
 #include <deque>
 
@@ -16,7 +17,7 @@ class BombManager{
 		//Methods
 		BombManager(
 			OgreBulletDynamics::DynamicsWorld *world,
-			LocalMap *map
+			ExplosionManager *explosionManager
 		);
 		~BombManager();
 
@@ -24,15 +25,23 @@ class BombManager{
 			std::string owner,
 			Ogre::Vector3 position
 		);
+		void detonate(unsigned int i);
+
 		void frameRenderingQueued();
+		unsigned int size();
+		Bomb *operator[](unsigned int i);
+
+		void setExplosionListener(ExplosionListener *el);
 
 	private:
 		//Attributes
 		OgreBulletDynamics::DynamicsWorld *mWorld;
-		LocalMap *mMap;
+		ExplosionManager *mExplosionManager;
 		unsigned int mBombPlaced;
-		std::deque<Bomb*> newBombs;
-		std::deque<Bomb*> activeBombs;
+		std::deque<Bomb*> mNewBombs;
+		std::deque<Bomb*> mActiveBombs;
+
+		ExplosionListener *mExplosionListener;
 
 };
 

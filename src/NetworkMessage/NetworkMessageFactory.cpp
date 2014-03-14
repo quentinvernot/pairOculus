@@ -81,7 +81,7 @@ namespace NetworkMessage{
 					atoi(parts[15].c_str())
 				);
 			case PLAYERKILLED:
-				return buildMessage(PLAYERKILLED);
+				return buildMessage(PLAYERKILLED, parts[2]);
 			default:
 				break;
 		}
@@ -121,6 +121,8 @@ namespace NetworkMessage{
 				return new JoinRefuse(data);
 			case PLAYERLEFT:
 				return new PlayerLeft(data);
+			case PLAYERKILLED:
+				return new PlayerKilled(data);
 			default:
 				break;
 		}

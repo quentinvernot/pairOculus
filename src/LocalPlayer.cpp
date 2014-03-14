@@ -3,12 +3,13 @@
 LocalPlayer::LocalPlayer(
 	std::string name,
 	OgreBulletDynamics::DynamicsWorld *world,
-	CameraManager *cameraManager,
-	BombManager *bombManager
+	BombManager *bombManager,
+	CameraManager *cameraManager
 ):
 	OgrePlayer(name, world, bombManager),
 	mCameraManager(cameraManager),
-	mBombCooldown(0)
+	mBombCooldown(0),
+	mPlayerEventListener(0)
 {
 }
 
@@ -54,7 +55,8 @@ bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 	mPitchCorrection  += Ogre::Degree(-arg.state.Y.rel * 0.15f);
 	//mRollCorrection += Ogre::Degree(-arg.state.Z.rel * 0.15f);
 
-	mHadInputUseful = true;
+	if(mPlayerEventListener)
+		mPlayerEventListener->playerInput();
 
 	return true;
 
@@ -69,6 +71,9 @@ bool LocalPlayer::injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID i
 }
 
 bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
+
+	if(mIsDead)
+		return true;
 
 	if (arg.key == OIS::KC_Z || arg.key == OIS::KC_UP)
 		mGoingForward = true;
@@ -88,26 +93,33 @@ bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 		mFastMove = true;
 
 	if(
-		arg.key == OIS::KC_Z ||
-		arg.key == OIS::KC_UP ||
-		arg.key == OIS::KC_S ||
-		arg.key == OIS::KC_DOWN ||
-		arg.key == OIS::KC_Q ||
-		arg.key == OIS::KC_LEFT ||
-		arg.key == OIS::KC_D ||
-		arg.key == OIS::KC_RIGHT ||
-		arg.key == OIS::KC_E ||
-		arg.key == OIS::KC_SPACE ||
-		arg.key == OIS::KC_PGUP ||
-		arg.key == OIS::KC_PGDOWN
+		mPlayerEventListener &&
+		(
+			arg.key == OIS::KC_Z ||
+			arg.key == OIS::KC_UP ||
+			arg.key == OIS::KC_S ||
+			arg.key == OIS::KC_DOWN ||
+			arg.key == OIS::KC_Q ||
+			arg.key == OIS::KC_LEFT ||
+			arg.key == OIS::KC_D ||
+			arg.key == OIS::KC_RIGHT ||
+			arg.key == OIS::KC_E ||
+			arg.key == OIS::KC_SPACE ||
+			arg.key == OIS::KC_PGUP ||
+			arg.key == OIS::KC_PGDOWN
+		)
 	)
-		mHadInputUseful = true;
+		mPlayerEventListener->playerInput();
+
 
 	return true;
 
 }
 
 bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
+
+	if(mIsDead)
+		return true;
 
 	if (arg.key == OIS::KC_Z || arg.key == OIS::KC_UP)
 		mGoingForward = false;
@@ -127,20 +139,23 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 		mFastMove = false;
 
 	if(
-		arg.key == OIS::KC_Z ||
-		arg.key == OIS::KC_UP ||
-		arg.key == OIS::KC_S ||
-		arg.key == OIS::KC_DOWN ||
-		arg.key == OIS::KC_Q ||
-		arg.key == OIS::KC_LEFT ||
-		arg.key == OIS::KC_D ||
-		arg.key == OIS::KC_RIGHT ||
-		arg.key == OIS::KC_E ||
-		arg.key == OIS::KC_SPACE ||
-		arg.key == OIS::KC_PGUP ||
-		arg.key == OIS::KC_PGDOWN
+		mPlayerEventListener &&
+		(
+			arg.key == OIS::KC_Z ||
+			arg.key == OIS::KC_UP ||
+			arg.key == OIS::KC_S ||
+			arg.key == OIS::KC_DOWN ||
+			arg.key == OIS::KC_Q ||
+			arg.key == OIS::KC_LEFT ||
+			arg.key == OIS::KC_D ||
+			arg.key == OIS::KC_RIGHT ||
+			arg.key == OIS::KC_E ||
+			arg.key == OIS::KC_SPACE ||
+			arg.key == OIS::KC_PGUP ||
+			arg.key == OIS::KC_PGDOWN
+		)
 	)
-		mHadInputUseful = true;
+		mPlayerEventListener->playerInput();
 
 	return true;
 
@@ -148,11 +163,15 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 
 bool LocalPlayer::injectHeadMove(const Ogre::Vector3 &evt){
 
+	if(mIsDead)
+		return true;
+
 	mYawCorrection += Ogre::Degree(evt.x);
 	mPitchCorrection  += Ogre::Degree(evt.y);
 	mRollCorrection += Ogre::Degree(evt.z);
 
-	mHadInputUseful = true;
+	if(mPlayerEventListener)
+		mPlayerEventListener->playerInput();
 
 	return true;
 
@@ -171,19 +190,6 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		mBombCooldown = 1;
 	}
 
-	if(mGraphicsSetUp){
-
-		mBody->getBulletRigidBody()->proceedToTransform(
-			btTransform(
-				btQuaternion(Ogre::Degree(mNodeYaw + 180).valueRadians(), 0, 0),
-				btVector3(mNodePositionX, mNodePositionY, mNodePositionZ)
-			)
-		);
-
-		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
-
-	}
-
 	mCameraManager->setPosition(
 		Ogre::Vector3(mNodePositionX, mNodePositionY + 0.7, mNodePositionZ)
 	);
@@ -198,13 +204,31 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 }
 
-bool LocalPlayer::hadUsefulInput(){
+void LocalPlayer::setPlayerEventListener(PlayerEventListener *pel){
+	mPlayerEventListener = pel;
+}
 
-	if(!mHadInputUseful)
-		return false;
+void LocalPlayer::die(){
 
-	mHadInputUseful = false;
+	mIsDead = true;
 
-	return true;
+	mGoingForward = false;
+	mGoingBack = false;
+	mGoingLeft = false;
+	mGoingRight = false;
+	mGoingUp = false;
+	mGoingDown = false;
+	mFastMove = false;
+
+	mNodePositionX = 0;
+	mNodePositionY = 10;
+	mNodePositionZ = 0;
+
+	mWasTeleported = true;
+
+	if(mPlayerEventListener){
+		mPlayerEventListener->playerInput();
+		mPlayerEventListener->playerDied();
+	}
 
 }

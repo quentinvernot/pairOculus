@@ -2,17 +2,18 @@
 
 BombManager::BombManager(
 	OgreBulletDynamics::DynamicsWorld *world,
-	LocalMap *map
+	ExplosionManager *explosionManager
 ):
 	mWorld(world),
-	mMap(map),
-	mBombPlaced(0)
+	mExplosionManager(explosionManager),
+	mBombPlaced(0),
+	mExplosionListener(0)
 {
 }
 
 BombManager::~BombManager(){
-	newBombs.clear();
-	activeBombs.clear();
+	mNewBombs.clear();
+	mActiveBombs.clear();
 }
 
 void BombManager::add(
@@ -21,27 +22,57 @@ void BombManager::add(
 ){
 	std::ostringstream convert;
 	convert << owner << mBombPlaced;
-	newBombs.push_back(new Bomb(convert.str(), position, mWorld));
+	mNewBombs.push_back(new Bomb(convert.str(), position, mWorld));
 	mBombPlaced++;
+}
+
+void BombManager::detonate(unsigned int i){
+
+	if(mExplosionListener){
+
+		if(i > mActiveBombs.size())
+			return;
+
+		mExplosionListener->bombExploded(
+			mActiveBombs[i]->getPosition(),
+			mActiveBombs[i]->getRange()
+		);
+		
+	}
+
+	mExplosionManager->add(
+		mActiveBombs[i]->getName(),
+		mActiveBombs[i]->getPosition()
+	);
+
+	delete mActiveBombs[i];
+	mActiveBombs.erase(mActiveBombs.begin() + i);
+
 }
 
 void BombManager::frameRenderingQueued(){
 
-	while(newBombs.size() > 0){
-		newBombs.front()->generateGraphics();
-		activeBombs.push_back(newBombs.front());
-		newBombs.pop_front();
+	while(mNewBombs.size() > 0){
+		mNewBombs.front()->generateGraphics();
+		mActiveBombs.push_back(mNewBombs.front());
+		mNewBombs.pop_front();
 	}
 
 	clock_t now = clock();
 
-	while(activeBombs.size() > 0 && activeBombs.front()->hasExploded(now)){
-		mMap->createExplosion(
-			activeBombs.front()->getPosition(),
-			activeBombs.front()->getRange()
-		);
-		delete activeBombs.front();
-		activeBombs.pop_front();
-	}
+	while(mActiveBombs.size() > 0 && mActiveBombs.front()->hasExploded(now))
+		detonate(0);
 
+}
+
+unsigned int BombManager::size(){return mActiveBombs.size();}
+
+Bomb *BombManager::operator[](unsigned int i){
+	if(i > mActiveBombs.size())
+		return 0;
+	return mActiveBombs[i];
+}
+
+void BombManager::setExplosionListener(ExplosionListener *el){
+	mExplosionListener = el;
 }

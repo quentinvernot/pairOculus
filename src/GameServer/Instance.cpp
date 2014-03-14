@@ -271,6 +271,11 @@ namespace GameServer{
 		std::cout << "Received PLAYERKILLED" << std::endl;
 		std::cout << message->getMessage() << std::endl;
 
+		if(sourceSession->getPlayer() != 0){
+			std::string nickname = sourceSession->getPlayer()->getNickname();
+			sendPlayerKilled(nickname, message);
+		}
+
 	}
 
 	void Instance::sendJoinAccept(Session *sourceSession){
@@ -388,6 +393,26 @@ namespace GameServer{
 
 		using namespace NetworkMessage;
 		std::cout << "Sending PLAYERINPUT to everyone else" << std::endl;
+		for(unsigned int i = 0; i < mSessionList->size(); i++){
+
+			if(
+				(*mSessionList)[i]->getPlayer() != 0 &&
+				(*mSessionList)[i]->getPlayer()->getNickname() != nickname
+			){
+				(*mSessionList)[i]->sendMessage(message);
+			}
+
+		}
+
+	}
+	
+	void Instance::sendPlayerKilled(
+		std::string nickname,
+		NetworkMessage::PlayerKilled *message
+	){
+
+		using namespace NetworkMessage;
+		std::cout << "Sending PLAYERKILLED to everyone else" << std::endl;
 		for(unsigned int i = 0; i < mSessionList->size(); i++){
 
 			if(

@@ -3,6 +3,7 @@
 
 #include "OgrePlayer.hpp"
 #include "CameraManager.hpp"
+#include "PlayerEventListener.hpp"
 
 #include <OgreCamera.h>
 #include <OgreLogManager.h>
@@ -24,8 +25,8 @@ class LocalPlayer : public OgrePlayer{
 		LocalPlayer(
 			std::string name,
 			OgreBulletDynamics::DynamicsWorld *world,
-			CameraManager *cameraManager,
-			BombManager *bombManager
+			BombManager *bombManager,
+			CameraManager *cameraManager
 		);
 		~LocalPlayer();
 
@@ -40,14 +41,20 @@ class LocalPlayer : public OgrePlayer{
 		bool injectKeyUp(const OIS::KeyEvent &arg);
 		bool injectHeadMove(const Ogre::Vector3 &evt);
 
+		bool playerInput(OgrePlayer *op);
+		bool playerDied(OgrePlayer *op);
+
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
-		bool hadUsefulInput();
+		void setPlayerEventListener(PlayerEventListener *pel);
+
+		void die();
 
 	private:
 		//Attributes
 		CameraManager *mCameraManager;
 		double mBombCooldown;
+		PlayerEventListener *mPlayerEventListener;
 
 };
 

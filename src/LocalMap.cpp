@@ -1,16 +1,20 @@
 #include "LocalMap.hpp"
 
 LocalMap::LocalMap(
-	Ogre::SceneManager *sceneMgr,
 	OgreBulletDynamics::DynamicsWorld *world,
+	OgrePlayerList *playerList,
+	BombManager *bombManager,
 	unsigned int height,
 	unsigned int width,
 	time_t seed
 ):
 	Map(height, width, seed),
-	mSceneMgr(sceneMgr),
-	mWorld(world)
+	mWorld(world),
+	mBodies(0),
+	mPlayerList(playerList),
+	mBombManager(bombManager)
 {
+	mBombManager->setExplosionListener(this);
 }
 
 LocalMap::~LocalMap() {
@@ -19,13 +23,15 @@ LocalMap::~LocalMap() {
 void LocalMap::generate() {
 
 	using namespace OgreBulletCollisions;
+	
+	Ogre::SceneManager *sceneMgr = mWorld->getSceneManager();
 
 	FloorPanel* fp = new FloorPanel(
-		mSceneMgr->createManualObject("floor"),
+		sceneMgr->createManualObject("floor"),
 		mScale*mHeight,
 		mScale*mWidth
 	);
-	BlockFactory* bf = new BlockFactory(mSceneMgr);
+	BlockFactory* bf = new BlockFactory(sceneMgr);
 
 	CollisionShape *Shape;
 	Shape = new StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 0);
@@ -33,7 +39,7 @@ void LocalMap::generate() {
 	planeBody = new OgreBulletDynamics::RigidBody("MapFloor", mWorld);
 	planeBody->setStaticShape(Shape, 0.6f, 0.6f);
 
-	SceneNode *floorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("floorNode");
+	SceneNode *floorNode = sceneMgr->getRootSceneNode()->createChildSceneNode("floorNode");
 	floorNode->attachObject(fp->GetManualFloor());
 
 	Ogre::ManualObject *object;
@@ -58,7 +64,7 @@ void LocalMap::generate() {
 			if (object != NULL){
 
 				genName << i << "_" << j;
-				node = mSceneMgr->getRootSceneNode()->createChildSceneNode("node_" + genName.str());
+				node = sceneMgr->getRootSceneNode()->createChildSceneNode("node_" + genName.str());
 				node->attachObject(object);
 
 				boxShape = new BoxCollisionShape(size);
@@ -87,12 +93,12 @@ void LocalMap::generate() {
 	}
 	
 	Entity *entity = mWorld->getSceneManager()->createEntity("bomb.mesh");
-	node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	node = sceneMgr->getRootSceneNode()->createChildSceneNode();
 	node->setPosition(Ogre::Vector3(0, mScale/2, 0));
 	node->attachObject(entity);
 	node->scale(0.1, 0.1, 0.1);
 
-	Ogre::Light* light = mSceneMgr->createLight("light");
+	Ogre::Light* light = sceneMgr->createLight("light");
 	light->setPosition(16, 80, 16);
 
 }
@@ -101,46 +107,9 @@ Ogre::Vector3 LocalMap::getMapCenter(){
 	return Ogre::Vector3(mHeight * (mScale+0.1f), 0, mWidth * (mScale+0.1f));
 }
 
-void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
-
-	if(pos.y < 0 || pos.y >= mScale/3) //above or below the map
-		return;
-
-	int row = getRow(pos), col = getCol(pos), i;
-
-	if(row == -1 || col == -1) //outside the map
-		return;
-
-	if(!isUnbreakable(row, col)){
-
-		mMap[row][col] = EMPTY;
-
-		i = 1;
-		while(!isUnbreakable(row + i, col) && range - i > 0){
-			destroyBlock(row + i, col);
-			i++;
-		}
-
-		i = -1;
-		while(!isUnbreakable(row + i, col) && range + i > 0){
-			destroyBlock(row + i, col);
-			i--;
-		}
-		
-		i = 1;
-		while(!isUnbreakable(row, col + i) && range - i > 0){
-			destroyBlock(row, col + i);
-			i++;
-		}
-
-		i = -1;
-		while(!isUnbreakable(row, col + i) && range + i > 0){
-			destroyBlock(row, col + i);
-			i--;
-		}
-
-	}
-
+bool LocalMap::bombExploded(Ogre::Vector3 position, int range){
+	createExplosion(position, range);
+	return true;
 }
 
 int LocalMap::getRow(Ogre::Vector3 pos){
@@ -164,6 +133,81 @@ int LocalMap::getCol(Ogre::Vector3 pos){
 void LocalMap::viewMap() {
 }
 
+void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
+
+	if(pos.y < 0 || pos.y >= mScale/3) //above or below the map
+		return;
+
+	int row = getRow(pos), col = getCol(pos), i;
+
+	if(row == -1 || col == -1) //outside the map
+		return;
+
+	if(!isUnbreakable(row, col)){
+
+		mMap[row][col] = EMPTY;
+		searchAndDestroyObjects(row, col);
+
+		i = 1;
+		while(range - i > 0 && !isUnbreakable(row + i, col)){
+
+			if(mMap[row + i][col] == EMPTY)
+				searchAndDestroyObjects(row + i, col);
+
+			destroyBlock(row + i, col);
+
+			if(isBreakable(row + i, col))
+				i = range;
+
+			i++;
+		}
+
+		i = -1;
+		while(range + i > 0 && !isUnbreakable(row + i, col)){
+
+			if(mMap[row + i][col] == EMPTY)
+				searchAndDestroyObjects(row + i, col);
+
+			destroyBlock(row + i, col);
+
+			if(isBreakable(row + i, col))
+				i = range;
+
+			i--;
+		}
+		
+		i = 1;
+		while(range - i > 0 && !isUnbreakable(row, col + i)){
+
+			if(mMap[row][col + i] == EMPTY)
+				searchAndDestroyObjects(row, col + i);
+
+			destroyBlock(row, col + i);
+
+			if(isBreakable(row, col + i))
+				i = range;
+
+			i++;
+		}
+
+		i = -1;
+		while(range + i > 0 && !isUnbreakable(row, col + i)){
+
+			if(mMap[row][col + i] == EMPTY)
+				searchAndDestroyObjects(row, col + i);
+
+			destroyBlock(row, col + i);
+
+			if(isBreakable(row , col + i))
+				i = range;
+
+			i--;
+		}
+
+	}
+
+}
+
 void LocalMap::destroyBlock(unsigned int i, unsigned int j){
 
 	stringstream genName;
@@ -176,5 +220,38 @@ void LocalMap::destroyBlock(unsigned int i, unsigned int j){
 		delete mBodies[i][j];
 		mBodies[i][j] = 0;
 	}
+
+}
+
+void LocalMap::searchAndDestroyObjects(int row, int col){
+
+	double topBound = (row+1) * mScale;
+	double bottomBound = row * mScale;
+	double leftBound = col * mScale;
+	double rightBound = (col+1) * mScale;
+	double upperBound = mScale;
+	double lowerBound = 0;
+
+	for(unsigned int i = 0; i < mPlayerList->size(); i++)
+		if(
+			(*mPlayerList)[i]->getNodePositionX() >= bottomBound &&
+			(*mPlayerList)[i]->getNodePositionX() < topBound &&
+			(*mPlayerList)[i]->getNodePositionZ() >= leftBound &&
+			(*mPlayerList)[i]->getNodePositionZ() < rightBound &&
+			(*mPlayerList)[i]->getNodePositionY() >= lowerBound &&
+			(*mPlayerList)[i]->getNodePositionY() < upperBound
+		)
+			(*mPlayerList)[i]->die();
+
+	for(unsigned int i = 0; i < mBombManager->size(); i++)
+		if(
+			(*mBombManager)[i]->getPosition().x >= bottomBound &&
+			(*mBombManager)[i]->getPosition().x < topBound &&
+			(*mBombManager)[i]->getPosition().z >= leftBound &&
+			(*mBombManager)[i]->getPosition().z < rightBound &&
+			(*mBombManager)[i]->getPosition().y >= lowerBound &&
+			(*mBombManager)[i]->getPosition().y < upperBound
+		)
+			(*mBombManager)[i]->detonate();
 
 }

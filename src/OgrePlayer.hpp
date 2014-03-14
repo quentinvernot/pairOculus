@@ -24,8 +24,8 @@ class OgrePlayer : public Player{
 		);
 		virtual ~OgrePlayer(){};
 
-		virtual void generateGraphics()=0;
 		void injectPlayerInput(NetworkMessage::PlayerInput *message);
+		virtual void generateGraphics()=0;
 		virtual bool frameRenderingQueued(const Ogre::FrameEvent &evt)=0;
 
 	protected:
@@ -51,7 +51,7 @@ class OgrePlayer : public Player{
 
 		BombManager *mBombManager;
 
-		Entity *mEntity;
+		Ogre::Entity *mEntity;
 
 		int mAccelForward;
 		int mAccelBack;
@@ -63,7 +63,7 @@ class OgrePlayer : public Player{
 		Ogre::Vector3 mVelocity;
 
 		bool mGraphicsSetUp;
-		bool mHadInputUseful;
+		bool mWasTeleported;
 
 		Ogre::Degree mYawCorrection;
 		Ogre::Degree mPitchCorrection;

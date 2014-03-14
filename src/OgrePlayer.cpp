@@ -18,7 +18,7 @@ OgrePlayer::OgrePlayer(
 	mAccelDown(0),
 	mVelocity(Ogre::Vector3::ZERO),
 	mGraphicsSetUp(false),
-	mHadInputUseful(false),
+	mWasTeleported(false),
 	mYawCorrection(0),
 	mPitchCorrection(0),
 	mRollCorrection(0),
@@ -34,9 +34,9 @@ void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 	mPitchCorrection += Ogre::Degree(message->getNodePitch() - mNodePitch);
 	mRollCorrection += Ogre::Degree(message->getNodeRoll() - mNodeRoll);
 
-	mPositionCorrection.x += message->getNodePositionX() - mNodePositionX;
-	mPositionCorrection.y += message->getNodePositionY() - mNodePositionY;
-	mPositionCorrection.z += message->getNodePositionZ() - mNodePositionZ;
+	mNodePositionX = message->getNodePositionX();
+	mNodePositionY = message->getNodePositionY();
+	mNodePositionZ = message->getNodePositionZ();
 
 	mGoingForward = message->getGoingForward();
 	mGoingBack = message->getGoingBack();
@@ -47,13 +47,15 @@ void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
 	mPuttingBomb = message->getPuttingBomb();
 
+	mWasTeleported = true;
+
 }
 
 Ogre::Vector3 OgrePlayer::computeHitboxSize(){
 
 	if(mEntity){
-		AxisAlignedBox boundingB = mEntity->getBoundingBox();
-		Vector3 size = boundingB.getSize();
+		Ogre::AxisAlignedBox boundingB = mEntity->getBoundingBox();
+		Ogre::Vector3 size = boundingB.getSize();
 		size /= 20;
 		size.x /= 2;
 		size.z /= 2;
@@ -141,7 +143,10 @@ void OgrePlayer::computeVelocity(const Ogre::FrameEvent &evt){
 
 void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 
-	if(mGraphicsSetUp){
+	if(mWasTeleported){
+		mWasTeleported = false;
+	}
+	else if(mGraphicsSetUp){
 		mNodePositionX = mBody->getSceneNode()->getPosition().x;
 		mNodePositionY = mBody->getSceneNode()->getPosition().y;
 		mNodePositionZ = mBody->getSceneNode()->getPosition().z;
@@ -158,6 +163,19 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 	mNodePositionX += mPositionCorrection.x;
 	mNodePositionY += mPositionCorrection.y;
 	mNodePositionZ += mPositionCorrection.z;
+
+	if(mGraphicsSetUp){
+
+		mBody->getBulletRigidBody()->proceedToTransform(
+			btTransform(
+				btQuaternion(Ogre::Degree(mNodeYaw + 180).valueRadians(), 0, 0),
+				btVector3(mNodePositionX, mNodePositionY, mNodePositionZ)
+			)
+		);
+
+		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
+
+	}
 
 }
 

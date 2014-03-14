@@ -45,7 +45,7 @@ void Bomb::generateGraphics(){
 	entityNode->scale(0.2, 0.2, 0.2);
 	entityNode->setPosition(0, -size.x, 0);
 	SphereCollisionShape *boxShape = new SphereCollisionShape(size.x);
-	mBody = new OgreBulletDynamics::RigidBody(mName + "Box", mWorld);
+	mBody = new OgreBulletDynamics::RigidBody(mName + "SphereBomb", mWorld);
 
 	mBody->setShape(
 		bodyNode,
@@ -63,6 +63,10 @@ void Bomb::generateGraphics(){
 
 }
 
+void Bomb::detonate(){mTTL = 0;}
+
+std::string Bomb::getName(){return mName;}
+
 Ogre::Vector3 Bomb::getPosition(){
 	if(mGraphicsSetUp)
 		return mBody->getSceneNode()->getPosition();
@@ -70,3 +74,5 @@ Ogre::Vector3 Bomb::getPosition(){
 }
 
 int Bomb::getRange(){return mRange;}
+
+OgreBulletDynamics::RigidBody *Bomb::getBody(){return mBody;}

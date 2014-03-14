@@ -12,6 +12,7 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mLocalPlayer(0),
 	mPlayerList(new OgrePlayerList()),
 	mBombManager(0),
+	mExplosionManager(0),
 	mLocalMap(0),
 	mAddress(address),
 	mPort(port),
@@ -22,7 +23,8 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mGameSetUp(false),
 	mSceneCreated(false),
 	mGameRunning(false),
-	mShutDownFlag(false)
+	mShutDownFlag(false),
+	cd(0.5)
 {
 	if(mAddress != "")
 		mOnlineMode = true;
@@ -160,22 +162,24 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 	PlayerList *pl = message->getPlayerList();
 	OgrePlayer *tmp;
 
+	mExplosionManager = new ExplosionManager(mWorld);
+	mBombManager = new BombManager(mWorld, mExplosionManager);
+
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
 	mLocalMap = new LocalMap(
-		mSceneMgr,
 		mWorld,
+		mPlayerList,
+		mBombManager,
 		message->getMapHeight(),
 		message->getMapWidth(),
 		message->getSeed()
 	);
 
-	mBombManager = new BombManager(mWorld, mLocalMap);
-
 	Ogre::LogManager::getSingletonPtr()->logMessage("Filling player list");
 	for(unsigned int i = 0; i < pl->size(); i++){
 		if((*pl)[i]->getNickname() == mNickname){
 			Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
-			mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager, mBombManager);
+			mLocalPlayer = new LocalPlayer(mNickname, mWorld, mBombManager, mCameraManager);
 			tmp = mLocalPlayer;
 		}
 		else
@@ -188,6 +192,8 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 		mPlayerList->addPlayer(tmp);
 
 	}
+
+	mLocalPlayer->setPlayerEventListener(this);
 
 	mGameSetUp = true;
 
@@ -202,11 +208,12 @@ void Game::injectPlayerJoined(NetworkMessage::PlayerJoined *message){
 	if(!mGameRunning){
 
 		Ogre::LogManager::getSingletonPtr()->logMessage("Adding new player");
-		RemotePlayer *lp = new RemotePlayer(message->getNickname(), mWorld, mBombManager);
-		lp->setNodePositionX(message->getPositionX());
-		lp->setNodePositionY(message->getPositionY());
-		lp->setNodePositionZ(message->getPositionZ());
-		mPlayerList->addPlayer(lp);
+
+		RemotePlayer *rp = new RemotePlayer(message->getNickname(), mWorld, mBombManager);
+		rp->setNodePositionX(message->getPositionX());
+		rp->setNodePositionY(message->getPositionY());
+		rp->setNodePositionZ(message->getPositionZ());
+		mPlayerList->addPlayer(rp);
 
 	}
 
@@ -237,6 +244,35 @@ void Game::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
 	if(nickname != mNickname)
 		mPlayerList->getPlayerByName(nickname)->injectPlayerInput(message);
+
+}
+
+void Game::injectPlayerKilled(NetworkMessage::PlayerKilled *message){
+
+	std::string nickname = message->getNickname();
+
+	if(nickname != mNickname)
+		mPlayerList->getPlayerByName(nickname)->die();
+
+}
+
+bool  Game::playerInput(){
+
+	mGCListener->sendMessage(
+		mNMFactory->buildMessage(NetworkMessage::PLAYERINPUT, mLocalPlayer)
+	);
+
+	return true;
+
+}
+
+bool Game::playerDied(){
+
+	mGCListener->sendMessage(
+		mNMFactory->buildMessage(NetworkMessage::PLAYERKILLED, mNickname)
+	);
+
+	return true;
 
 }
 
@@ -315,14 +351,16 @@ bool Game::networkSetup(){
 
 bool Game::offlineSetup(){
 
-	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
-	mLocalMap = new LocalMap(mSceneMgr, mWorld, 15, 15);
+	mExplosionManager = new ExplosionManager(mWorld);
+	mBombManager = new BombManager(mWorld, mExplosionManager);
 
-	mBombManager = new BombManager(mWorld, mLocalMap);
+	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
+	mLocalMap = new LocalMap(mWorld, mPlayerList, mBombManager, 15, 15);
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
-	mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager, mBombManager);
+	mLocalPlayer = new LocalPlayer(mNickname, mWorld, mBombManager, mCameraManager);
 	mPlayerList->addPlayer(mLocalPlayer);
+	mLocalPlayer->setPlayerEventListener(this);
 
 	mLocalMap->setStartingPosition(0, mLocalPlayer);
 
@@ -347,7 +385,7 @@ bool Game::bulletSetup(){
 	debugDrawer->setDrawWireframe(true);	// we want to see the Bullet containers
 
 	mWorld->setDebugDrawer(debugDrawer);
-	mWorld->setShowDebugShapes(true);		// enable it if you want to see the Bullet containers
+	//mWorld->setShowDebugShapes(true);		// enable it if you want to see the Bullet containers
 	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
 	node->attachObject(static_cast <SimpleRenderable *> (debugDrawer));
 
@@ -378,6 +416,9 @@ void Game::createNetworkListener(){
 	);
 	mGCListener->setCallbackPlayerInput(
 		boost::bind(&Game::injectPlayerInput, this, _1)
+	);
+	mGCListener->setCallbackPlayerKilled(
+		boost::bind(&Game::injectPlayerKilled, this, _1)
 	);
 
 }
@@ -481,30 +522,26 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 		if(!mSceneCreated){
 			createScene();
-/*			mPlayerList->addPlayer (new RemotePlayer("Zykino", mWorld, mBombManager));
-			mLocalMap->setStartingPosition(1, (*mPlayerList)[1]);
-			(*mPlayerList)[1]->generateGraphics();
-*/		}
+		}
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
 
 		mBombManager->frameRenderingQueued();
 
-		if(mOnlineMode && mLocalPlayer->hadUsefulInput())
-			sendPlayerInput();
+		cd -= evt.timeSinceLastFrame;
+
+		if(cd < 0){
+			mBombManager->add("Target6", Ogre::Vector3(10,5,10));
+			cd = 0.5;
+		}
+
+		mBombManager->frameRenderingQueued();
+		mExplosionManager->frameRenderingQueued(evt);
 
 		mWorld->stepSimulation(evt.timeSinceLastFrame);
 	}
 
 	return true;
-
-}
-
-void Game::sendPlayerInput(){
-
-	mGCListener->sendMessage(
-		mNMFactory->buildMessage(NetworkMessage::PLAYERINPUT, mLocalPlayer)
-	);
 
 }

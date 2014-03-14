@@ -32,6 +32,8 @@ class Player{
 
 		bool getPuttingBomb();
 
+		virtual void die();
+
 	protected:
 		//Attributes
 		std::string mNickname;
@@ -57,6 +59,8 @@ class Player{
 		bool mGoingDown;
 
 		bool mPuttingBomb;
+
+		bool mIsDead;
 
 };
 
