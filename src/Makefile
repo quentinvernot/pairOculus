@@ -106,7 +106,7 @@ $(OBJDIR)NetworkMessage: .FORCE
 	cd NetworkMessage/ && make
 
 $(OBJDIR)NetworkIO.o: NetworkIO.hpp NetworkIO.cpp $(shell ls NetworkMessage/*.hpp)
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c NetworkIO.cpp -o $(OBJDIR)NetworkIO.o
+	$(CC) $(BOOST) $(CFLAGS) -c NetworkIO.cpp -o $(OBJDIR)NetworkIO.o
 
 $(OBJDIR)GameServer: .FORCE
 	cd GameServer/ && make

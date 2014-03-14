@@ -110,14 +110,17 @@ void NetworkIO::handleWrite(const boost::system::error_code& error){
 		}
 
 		NetworkMessage::NetworkMessage nm = mMessageList.front();
+		char *str = new char[NetworkMessage::HEADERLENGTH + NetworkMessage::MAXBODYLENGTH + 1];
+		strcpy(str, nm.getMessage().c_str());
+		int length = nm.getMessage().length();
 		mMessageList.pop_front();
 		mWriting = true;
 
 		boost::asio::async_write(
 			mSocket,
 			boost::asio::buffer(
-				nm.getMessage().c_str(),
-				nm.getMessage().length()
+				str,
+				length
 			),
 			boost::bind(
 				&NetworkIO::handleWrite,

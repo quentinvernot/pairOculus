@@ -1,6 +1,7 @@
 #ifndef __NETWORKCOMMONNETWORKIO_H
 #define __NETWORKCOMMONNETWORKIO_H
 
+#include <cstring>
 #include <list>
 
 #include <boost/bind.hpp>
