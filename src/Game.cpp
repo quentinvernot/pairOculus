@@ -175,11 +175,11 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 	for(unsigned int i = 0; i < pl->size(); i++){
 		if((*pl)[i]->getNickname() == mNickname){
 			Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
-			mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager);
+			mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager, mBombManager);
 			tmp = mLocalPlayer;
 		}
 		else
-			tmp = new RemotePlayer((*pl)[i]->getNickname(), mWorld);
+			tmp = new RemotePlayer((*pl)[i]->getNickname(), mWorld, mBombManager);
 
 		tmp->setNodePositionX((*pl)[i]->getNodePositionX());
 		tmp->setNodePositionY((*pl)[i]->getNodePositionY());
@@ -202,7 +202,7 @@ void Game::injectPlayerJoined(NetworkMessage::PlayerJoined *message){
 	if(!mGameRunning){
 
 		Ogre::LogManager::getSingletonPtr()->logMessage("Adding new player");
-		RemotePlayer *lp = new RemotePlayer(message->getNickname(), mWorld);
+		RemotePlayer *lp = new RemotePlayer(message->getNickname(), mWorld, mBombManager);
 		lp->setNodePositionX(message->getPositionX());
 		lp->setNodePositionY(message->getPositionY());
 		lp->setNodePositionZ(message->getPositionZ());
@@ -321,7 +321,7 @@ bool Game::offlineSetup(){
 	mBombManager = new BombManager(mWorld, mLocalMap);
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
-	mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager);
+	mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager, mBombManager);
 	mPlayerList->addPlayer(mLocalPlayer);
 
 	mLocalMap->setStartingPosition(0, mLocalPlayer);
@@ -481,15 +481,14 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 		if(!mSceneCreated){
 			createScene();
-			mPlayerList->addPlayer (new RemotePlayer("Zykino", mWorld));
+/*			mPlayerList->addPlayer (new RemotePlayer("Zykino", mWorld, mBombManager));
 			mLocalMap->setStartingPosition(1, (*mPlayerList)[1]);
 			(*mPlayerList)[1]->generateGraphics();
-		}
+*/		}
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
 
-		mBombManager->add("Target6", Ogre::Vector3(10,5,10));
 		mBombManager->frameRenderingQueued();
 
 		if(mOnlineMode && mLocalPlayer->hadUsefulInput())

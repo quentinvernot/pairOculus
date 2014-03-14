@@ -2,11 +2,13 @@
 
 OgrePlayer::OgrePlayer(
 	std::string name,
-	OgreBulletDynamics::DynamicsWorld *world
+	OgreBulletDynamics::DynamicsWorld *world,
+	BombManager* bombManager
 ):
 	Player(name),
 	mWorld(world),
 	mBody(0),
+	mBombManager(bombManager),
 	mEntity(0),
 	mAccelForward(0),
 	mAccelBack(0),
@@ -43,6 +45,8 @@ void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 	mGoingUp = message->getGoingUp();
 	mGoingDown = message->getGoingDown();
 
+	mPuttingBomb = message->getPuttingBomb();
+
 }
 
 Ogre::Vector3 OgrePlayer::computeHitboxSize(){
@@ -53,7 +57,7 @@ Ogre::Vector3 OgrePlayer::computeHitboxSize(){
 		size /= 20;
 		size.x /= 2;
 		size.z /= 2;
-		
+
 		return size;
 	}
 

@@ -71,7 +71,8 @@ namespace NetworkMessage{
 				bool goingLeft,
 				bool goingRight,
 				bool goingUp,
-				bool goingDown
+				bool goingDown,
+				bool puttingBomb
 			);
 			int getLengthFromHeader(std::string header);
 

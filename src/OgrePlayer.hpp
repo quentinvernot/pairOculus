@@ -19,7 +19,8 @@ class OgrePlayer : public Player{
 		//Methods
 		OgrePlayer(
 			std::string name,
-			OgreBulletDynamics::DynamicsWorld *world
+			OgreBulletDynamics::DynamicsWorld *world,
+			BombManager *bombManager
 		);
 		virtual ~OgrePlayer(){};
 
@@ -39,7 +40,7 @@ class OgrePlayer : public Player{
 		virtual void computeVelocity(const Ogre::FrameEvent &evt);
 		virtual void computeNodePosition(const Ogre::FrameEvent &evt);
 		virtual void resetCorrection();
-		
+
 		Ogre::Vector3 getForwardDirection();
 		Ogre::Vector3 getUpDirection();
 		Ogre::Vector3 getRightDirection();
@@ -47,6 +48,8 @@ class OgrePlayer : public Player{
 		//Attributes
 		OgreBulletDynamics::DynamicsWorld *mWorld;
 		OgreBulletDynamics::RigidBody *mBody;
+
+		BombManager *mBombManager;
 
 		Entity *mEntity;
 

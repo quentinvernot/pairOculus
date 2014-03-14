@@ -16,7 +16,8 @@ namespace NetworkMessage{
 		mGoingLeft(player->getGoingLeft()),
 		mGoingRight(player->getGoingRight()),
 		mGoingUp(player->getGoingUp()),
-		mGoingDown(player->getGoingDown())
+		mGoingDown(player->getGoingDown()),
+		mPuttingBomb(player->getPuttingBomb())
 	{
 		buildSelf();
 	}
@@ -34,7 +35,8 @@ namespace NetworkMessage{
 		bool goingLeft,
 		bool goingRight,
 		bool goingUp,
-		bool goingDown
+		bool goingDown,
+		bool puttingBomb
 	):
 		NetworkMessage(PLAYERINPUT),
 		mNickname(nickname),
@@ -49,7 +51,8 @@ namespace NetworkMessage{
 		mGoingLeft(goingLeft),
 		mGoingRight(goingRight),
 		mGoingUp(goingUp),
-		mGoingDown(goingDown)
+		mGoingDown(goingDown),
+		mPuttingBomb(puttingBomb)
 	{
 		buildSelf();
 	}
@@ -74,6 +77,8 @@ namespace NetworkMessage{
 	bool PlayerInput::getGoingUp(){return mGoingUp;}
 	bool PlayerInput::getGoingDown(){return mGoingDown;}
 
+	bool PlayerInput::getPuttingBomb(){return mPuttingBomb;}
+
 	void PlayerInput::buildSelf(){
 
 		std::ostringstream convert;
@@ -94,6 +99,8 @@ namespace NetworkMessage{
 		convert << mGoingRight << "\n";
 		convert << mGoingUp << "\n";
 		convert << mGoingDown << "\n";
+
+		convert << mPuttingBomb << "\n";
 
 		mBody = convert.str();
 

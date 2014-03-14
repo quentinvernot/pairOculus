@@ -24,7 +24,8 @@ class LocalPlayer : public OgrePlayer{
 		LocalPlayer(
 			std::string name,
 			OgreBulletDynamics::DynamicsWorld *world,
-			CameraManager *cameraManager
+			CameraManager *cameraManager,
+			BombManager *bombManager
 		);
 		~LocalPlayer();
 
@@ -46,6 +47,7 @@ class LocalPlayer : public OgrePlayer{
 	private:
 		//Attributes
 		CameraManager *mCameraManager;
+		double mBombCooldown;
 
 };
 

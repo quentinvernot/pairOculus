@@ -26,7 +26,8 @@ namespace NetworkMessage{
 				bool goingLeft,
 				bool goingRight,
 				bool goingUp,
-				bool goingDown
+				bool goingDown,
+				bool puttingBomb
 			);
 			~PlayerInput();
 
@@ -47,6 +48,8 @@ namespace NetworkMessage{
 			bool getGoingRight();
 			bool getGoingUp();
 			bool getGoingDown();
+
+			bool getPuttingBomb();
 
 		private:
 			//methods
@@ -69,6 +72,8 @@ namespace NetworkMessage{
 			bool mGoingRight;
 			bool mGoingUp;
 			bool mGoingDown;
+
+			bool mPuttingBomb;
 
 	};
 
