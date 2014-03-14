@@ -108,24 +108,6 @@ bool Map::isUnbreakable(int i, int j) {
 	std::cerr << "WARNING Found an unknow kind of block in isUnbreakable" << std::endl;
 	return false;	// You must never come here
 }
-/*
-bool Map::Break(int i, int j)
-{
-	switch (mMap[i][j]) {
-		case BREAKABLE:
-			mMap[i][j] = EMPTY;
-			break;
-		case EMPTY:
-		case UNBREAKABLE:
-			break;
-		default:
-			;	// TODO generate exception
-	}
-
-	std::cout << "WARNING Found an unknow kind of block in isBreakable" << std::endl;
-	return false;	// You must never come here
-}
-*/
 
 time_t Map::getSeed(){return mSeed;}
 
@@ -133,24 +115,24 @@ void Map::setStartingPosition(int pos, Player *player) {
 
 	switch (pos) {
 		case 0:
-			player->setNodePositionX(1.5f * (mScale + 0.1f));
+			player->setNodePositionX(1.5f * mScale);
 			player->setNodePositionY(1);
-			player->setNodePositionZ(1.5f * (mScale + 0.1f));
+			player->setNodePositionZ(1.5f * mScale);
 			break;
 		case 1:
-			player->setNodePositionX((mHeight-1.5f) * (mScale + 0.1f));
-			player->setNodePositionY(0);
-			player->setNodePositionZ((mWidth-1.5f) * (mScale + 0.1f));
+			player->setNodePositionX((mHeight-1.5f) * mScale);
+			player->setNodePositionY(1);
+			player->setNodePositionZ((mWidth-1.5f) * mScale);
 			break;
 		case 2:
-			player->setNodePositionX((mHeight-1.5f) * (mScale + 0.1f));
-			player->setNodePositionY(0);
-			player->setNodePositionZ(1.5f * (mScale + 0.1f));
+			player->setNodePositionX((mHeight-1.5f) * mScale);
+			player->setNodePositionY(1);
+			player->setNodePositionZ(1.5f * mScale);
 			break;
 		case 3:
-			player->setNodePositionX(1.5f * (mScale + 0.1f));
-			player->setNodePositionY(0);
-			player->setNodePositionZ((mWidth-1.5f) * (mScale + 0.1f));
+			player->setNodePositionX(1.5f * mScale);
+			player->setNodePositionY(1);
+			player->setNodePositionZ((mWidth-1.5f) * mScale);
 			break;
 		default:
 			std::cerr << "ERROR Position \"" << pos << "\" is invalid." << std::endl;

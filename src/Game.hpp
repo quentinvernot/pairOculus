@@ -67,6 +67,7 @@ class Game : public Ogre::FrameListener, public PlayerEventListener{
 		void injectGameStart(NetworkMessage::GameStart *message);
 		void injectGameEnd(NetworkMessage::GameEnd *message);
 		void injectPlayerInput(NetworkMessage::PlayerInput *message);
+		void injectPlayerKilled(NetworkMessage::PlayerKilled *message);
 
 		bool playerInput();
 		bool playerDied();

@@ -208,11 +208,11 @@ void Game::injectPlayerJoined(NetworkMessage::PlayerJoined *message){
 	if(!mGameRunning){
 
 		Ogre::LogManager::getSingletonPtr()->logMessage("Adding new player");
-		RemotePlayer *lp = new RemotePlayer(message->getNickname(), mWorld);
-		lp->setNodePositionX(message->getPositionX());
-		lp->setNodePositionY(message->getPositionY());
-		lp->setNodePositionZ(message->getPositionZ());
-		mPlayerList->addPlayer(lp);
+		RemotePlayer *rp = new RemotePlayer(message->getNickname(), mWorld);
+		rp->setNodePositionX(message->getPositionX());
+		rp->setNodePositionY(message->getPositionY());
+		rp->setNodePositionZ(message->getPositionZ());
+		mPlayerList->addPlayer(rp);
 
 	}
 
@@ -243,6 +243,15 @@ void Game::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
 	if(nickname != mNickname)
 		mPlayerList->getPlayerByName(nickname)->injectPlayerInput(message);
+
+}
+
+void Game::injectPlayerKilled(NetworkMessage::PlayerKilled *message){
+
+	std::string nickname = message->getNickname();
+
+	if(nickname != mNickname)
+		mPlayerList->getPlayerByName(nickname)->die();
 
 }
 
@@ -407,6 +416,9 @@ void Game::createNetworkListener(){
 	mGCListener->setCallbackPlayerInput(
 		boost::bind(&Game::injectPlayerInput, this, _1)
 	);
+	mGCListener->setCallbackPlayerKilled(
+		boost::bind(&Game::injectPlayerKilled, this, _1)
+	);
 
 }
 
@@ -516,7 +528,7 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 			mBombManager->add("Target6", Ogre::Vector3(9,1,10));
 
 			mPlayerList->addPlayer (new RemotePlayer("Zykino", mWorld));
-			mLocalMap->setStartingPosition(1, (*mPlayerList)[1]);
+			mLocalMap->setStartingPosition(2, (*mPlayerList)[1]);
 			(*mPlayerList)[1]->generateGraphics();
 
 		}
