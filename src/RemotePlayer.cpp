@@ -31,6 +31,8 @@ void RemotePlayer::generateGraphics(){
 
 	generateHitbox(size, bodyNode);
 
+	mPlayerAnimationState = new PlayerAnimation(mWorld->getSceneManager(), mEntity);
+
 	mGraphicsSetUp = true;
 
 }
@@ -40,6 +42,25 @@ bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	computeAcceleration();
 	computeVelocity(evt);
 	computeNodePosition(evt);
+
+	if(mGraphicsSetUp){
+		if (mVelocity.x != 0 && mVelocity.z != 0)
+			mPlayerAnimationState->doRunAnimation();
+		else {
+			mPlayerAnimationState->doIdleAnimation();
+		}
+
+		mBody->getBulletRigidBody()->proceedToTransform(
+			btTransform(
+				btQuaternion(Ogre::Degree(mNodeYaw + 180).valueRadians(), 0, 0),
+				btVector3(mNodePositionX, mNodePositionY, mNodePositionZ)
+			)
+		);
+
+		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
+
+		mPlayerAnimationState->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
+	}
 
 	resetCorrection();
 

@@ -508,25 +508,18 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	if(mGameRunning){
 
 		if(!mSceneCreated){
+
 			createScene();
-			Entity *entity = mSceneMgr->createEntity("bomberman.mesh");
-			entity->setCastShadows(true);
-			AxisAlignedBox boundingB = entity->getBoundingBox();
-			Vector3 size = boundingB.getSize();
-			size /= 2;
-			SceneNode *bodyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 
-			SceneNode *entityNode = bodyNode->createChildSceneNode();
-			entityNode->attachObject(entity);
-			entityNode->setPosition(20, 15, 20);
-
-			mPlayerAnimationState = new PlayerAnimation(mSceneMgr, entity);
-			mPlayerAnimationState->doRunAnimation();
 			mBombManager->add("Target6", Ogre::Vector3(10,1,10));
 			mBombManager->add("Target6", Ogre::Vector3(11,1,10));
 			mBombManager->add("Target6", Ogre::Vector3(9,1,10));
+
+			mPlayerList->addPlayer (new RemotePlayer("Zykino", mWorld));
+			mLocalMap->setStartingPosition(1, (*mPlayerList)[1]);
+			(*mPlayerList)[1]->generateGraphics();
+
 		}
-		mPlayerAnimationState->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);

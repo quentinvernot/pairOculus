@@ -10,9 +10,9 @@ class PlayerAnimation {
 		~PlayerAnimation ();
 
 		// Setup
-		void setupHeadAnimation (Ogre::Entity *entity);
-		void setupRunAnimation (Ogre::Entity *entity);
-		void setupIdleAnimation (Ogre::Entity *entity);
+		void setupHeadAnimation ();
+		void setupRunAnimation ();
+		void setupIdleAnimation ();
 
 		// Enable/disable Animations
 		void stopAnimation ();
@@ -23,9 +23,8 @@ class PlayerAnimation {
 	private:
 		//Attributes
 		Ogre::SceneManager *mSceneMgr;
+		Ogre::Entity *mEntity;
+
 		Ogre::AnimationState *mPlayerAnimationState;
-		Ogre::AnimationState *mPlayerIdle;
-		Ogre::AnimationState *mPlayerHead;
-		Ogre::AnimationState *mPlayerRun;
 };
 #endif /* PLAYERANIMATION_H */
