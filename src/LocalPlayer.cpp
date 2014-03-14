@@ -48,8 +48,8 @@ void LocalPlayer::lookAt(Ogre::Vector3 vec){
 bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 
 	mYawCorrection += Ogre::Degree(-arg.state.X.rel * 0.15f);
-	mPitchCorrection  += Ogre::Degree(-arg.state.Y.rel * 0.15f);
-	//mRollCorrection += Ogre::Degree(-arg.state.Z.rel * 0.15f);
+	if(mCameraManager->getCameraMode() != "oculus")
+		mPitchCorrection += Ogre::Degree(-arg.state.Y.rel * 0.15f);
 
 	if(mPlayerEventListener)
 		mPlayerEventListener->playerInput();
@@ -151,12 +151,9 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 
 bool LocalPlayer::injectHeadMove(const Ogre::Vector3 &evt){
 
-	if(mIsDead)
-		return true;
-
-	mYawCorrection += Ogre::Degree(evt.x);
-	mPitchCorrection  += Ogre::Degree(evt.y);
-	mRollCorrection += Ogre::Degree(evt.z);
+	mYawCorrection += Ogre::Radian(evt.x);
+	mPitchCorrection  += Ogre::Radian(evt.y);
+	mRollCorrection += Ogre::Radian(evt.z);
 
 	if(mPlayerEventListener)
 		mPlayerEventListener->playerInput();

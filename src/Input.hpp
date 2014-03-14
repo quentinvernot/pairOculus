@@ -47,6 +47,9 @@ class Input :
 			boost::function<bool (const Ogre::Vector3 &evt)> callbackHeadMoved
 		);
 
+		bool connectOculusRift();
+		bool hasOculusRift();
+
 	private:
 		//Method
 		bool mouseMoved(const OIS::MouseEvent &arg);

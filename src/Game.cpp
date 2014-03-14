@@ -294,10 +294,14 @@ bool Game::setup(){
 	createResourceListener();
 	// Load resources
 	loadResources();
-	mGameWindow->setViewMode("default");
 
 	// Create the frame listener
 	createFrameListener();
+
+	if(mInput->hasOculusRift())
+		mGameWindow->setViewMode("oculus");
+	else
+		mGameWindow->setViewMode("default");
 
 	return true;
 

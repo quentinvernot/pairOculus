@@ -102,6 +102,16 @@ void Input::setSensorFusionListener(
 
 }
 
+bool Input::connectOculusRift(){
+
+	if(mSensorFusionDevice->hasOculusRift())
+		return true;
+
+	return mSensorFusionDevice->connect();
+
+}
+bool Input::hasOculusRift(){return mSensorFusionDevice->hasOculusRift();}
+
 bool Input::mouseMoved(const OIS::MouseEvent &arg){
 
 	if(mCallbackMouseMoved == NULL)

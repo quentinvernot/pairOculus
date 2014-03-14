@@ -11,8 +11,10 @@ class SensorFusionDevice{
 		SensorFusionDevice();
 		~SensorFusionDevice();
 
+		bool connect();
 		void capture();
-		virtual void setEventCallback(SensorFusionListener *listener);
+		void setEventCallback(SensorFusionListener *listener);
+		bool hasOculusRift();
 
 	private:
 		//Arguments

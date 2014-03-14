@@ -6,18 +6,8 @@ SensorFusionDevice::SensorFusionDevice():
 {
 
 	mManager = *OVR::DeviceManager::Create();
-	mHMD = *mManager->EnumerateDevices<OVR::HMDDevice>().CreateDevice();
 	mSensorFusion = new OVR::SensorFusion();
-
-	if(mHMD){
-
-		mSensor = *mHMD->GetSensor();
-		if(mSensor){
-			mSensorFusion->AttachToSensor(mSensor);
-			mSensorFusion->SetPredictionEnabled(true);
-		}
-
-	}
+	connect();
 
 }
 
@@ -30,11 +20,28 @@ SensorFusionDevice::~SensorFusionDevice(){
 
 }
 
+bool SensorFusionDevice::connect(){
+
+	mHMD = *mManager->EnumerateDevices<OVR::HMDDevice>().CreateDevice();
+
+	if(mHMD){
+
+		mSensor = *mHMD->GetSensor();
+		if(mSensor){
+			mSensorFusion->AttachToSensor(mSensor);
+			mSensorFusion->SetPredictionEnabled(true);
+		}
+
+	}
+
+	return hasOculusRift();
+
+}
+
 void SensorFusionDevice::setEventCallback(SensorFusionListener *listener){
 	mListener = listener;
 }
 
-#include <iostream>
 void SensorFusionDevice::capture(){
 
 	if(mSensor){
@@ -45,8 +52,7 @@ void SensorFusionDevice::capture(){
 		Quatf oriQuat = mSensorFusion->GetOrientation();
 		oriQuat.GetEulerAngles<Axis_Y, Axis_X, Axis_Z>(&yaw, &pitch, &roll);
 		Ogre::Vector3 current(yaw, pitch, roll);
-		std::cout << current.x << "\t" << current.y << "\t" << current.z << "\t" << std::endl;
-		
+
 		if(mListener)
 			mListener->headMoved(current - mLast);
 		
@@ -55,3 +61,5 @@ void SensorFusionDevice::capture(){
 	}
 
 }
+
+bool SensorFusionDevice::hasOculusRift(){return mSensor != 0;}
