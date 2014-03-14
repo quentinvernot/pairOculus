@@ -4,7 +4,7 @@ ExplosionManager::ExplosionManager(
 	OgreBulletDynamics::DynamicsWorld *world
 ):
 	mWorld(world),
-	mExplosionsPerDetonation(100),
+	mExplosionsPerDetonation(10),
 	mExplosionCreated(0)
 {
 }
