@@ -30,6 +30,8 @@ class Player{
 		bool getGoingUp();
 		bool getGoingDown();
 
+		void die();
+
 	protected:
 		//Attributes
 		std::string mNickname;
@@ -53,6 +55,8 @@ class Player{
 		bool mGoingRight;
 		bool mGoingUp;
 		bool mGoingDown;
+
+		bool mIsDead;
 
 };
 

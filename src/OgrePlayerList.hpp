@@ -1,5 +1,5 @@
-#ifndef __LOCALPLAYERLIST_H
-#define __LOCALPLAYERLIST_H
+#ifndef __OGREPLAYERLIST_H
+#define __OGREPLAYERLIST_H
 
 #include "PlayerList.hpp"
 #include "OgrePlayer.hpp"
@@ -26,4 +26,4 @@ class OgrePlayerList{
 
 };
 
-#endif //__LOCALPLAYERLIST_H
+#endif //__OGREPLAYERLIST_H

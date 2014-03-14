@@ -12,6 +12,7 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mLocalPlayer(0),
 	mPlayerList(new OgrePlayerList()),
 	mBombManager(0),
+	mExplosionManager(0),
 	mLocalMap(0),
 	mAddress(address),
 	mPort(port),
@@ -22,7 +23,8 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mGameSetUp(false),
 	mSceneCreated(false),
 	mGameRunning(false),
-	mShutDownFlag(false)
+	mShutDownFlag(false),
+	cd(0.5)
 {
 	if(mAddress != "")
 		mOnlineMode = true;
@@ -160,16 +162,18 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 	PlayerList *pl = message->getPlayerList();
 	OgrePlayer *tmp;
 
+	mExplosionManager = new ExplosionManager(mWorld);
+	mBombManager = new BombManager(mWorld, mExplosionManager);
+
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
 	mLocalMap = new LocalMap(
-		mSceneMgr,
 		mWorld,
+		mPlayerList,
+		mBombManager,
 		message->getMapHeight(),
 		message->getMapWidth(),
 		message->getSeed()
 	);
-
-	mBombManager = new BombManager(mWorld, mLocalMap);
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Filling player list");
 	for(unsigned int i = 0; i < pl->size(); i++){
@@ -315,10 +319,11 @@ bool Game::networkSetup(){
 
 bool Game::offlineSetup(){
 
-	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
-	mLocalMap = new LocalMap(mSceneMgr, mWorld, 15, 15);
+	mExplosionManager = new ExplosionManager(mWorld);
+	mBombManager = new BombManager(mWorld, mExplosionManager);
 
-	mBombManager = new BombManager(mWorld, mLocalMap);
+	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
+	mLocalMap = new LocalMap(mWorld, mPlayerList, mBombManager, 15, 15);
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
 	mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager);
@@ -347,7 +352,7 @@ bool Game::bulletSetup(){
 	debugDrawer->setDrawWireframe(true);	// we want to see the Bullet containers
 
 	mWorld->setDebugDrawer(debugDrawer);
-	mWorld->setShowDebugShapes(true);		// enable it if you want to see the Bullet containers
+	//mWorld->setShowDebugShapes(true);		// enable it if you want to see the Bullet containers
 	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
 	node->attachObject(static_cast <SimpleRenderable *> (debugDrawer));
 
@@ -494,14 +499,24 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 			mPlayerAnimationState = new PlayerAnimation(mSceneMgr, entity);
 			mPlayerAnimationState->doRunAnimation();
+			mBombManager->add("Target6", Ogre::Vector3(10,1,10));
+			mBombManager->add("Target6", Ogre::Vector3(11,1,10));
+			mBombManager->add("Target6", Ogre::Vector3(9,1,10));
 		}
 		mPlayerAnimationState->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
 
-		mBombManager->add("Target6", Ogre::Vector3(10,5,10));
+		cd -= evt.timeSinceLastFrame;
+
+		if(cd < 0){
+			mBombManager->add("Target6", Ogre::Vector3(10,5,10));
+			cd = 0.5;
+		}
+
 		mBombManager->frameRenderingQueued();
+		mExplosionManager->frameRenderingQueued(evt);
 
 		if(mOnlineMode && mLocalPlayer->hadUsefulInput())
 			sendPlayerInput();

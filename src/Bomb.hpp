@@ -21,9 +21,12 @@ class Bomb{
 
 		bool hasExploded(time_t now);
 		void generateGraphics();
+		void detonate();
 
+		std::string getName();
 		Ogre::Vector3 getPosition();
 		int getRange();
+		OgreBulletDynamics::RigidBody *getBody();
 
 	private:
 		//Attributes

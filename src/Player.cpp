@@ -16,7 +16,8 @@ Player::Player(std::string nickname):
 	mGoingLeft(false),
 	mGoingRight(false),
 	mGoingUp(false),
-	mGoingDown(false)
+	mGoingDown(false),
+	mIsDead(false)
 {
 }
 
@@ -48,3 +49,9 @@ bool Player::getGoingLeft(){return mGoingLeft;}
 bool Player::getGoingRight(){return mGoingRight;}
 bool Player::getGoingUp(){return mGoingUp;}
 bool Player::getGoingDown(){return mGoingDown;}
+
+#include <iostream>
+void Player::die(){
+	std::cout << "argl" << std::endl;
+	mIsDead = true;
+}

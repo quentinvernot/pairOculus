@@ -48,7 +48,7 @@ class OgrePlayer : public Player{
 		OgreBulletDynamics::DynamicsWorld *mWorld;
 		OgreBulletDynamics::RigidBody *mBody;
 
-		Entity *mEntity;
+		Ogre::Entity *mEntity;
 
 		int mAccelForward;
 		int mAccelBack;

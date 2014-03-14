@@ -10,13 +10,17 @@
 #include "Map.hpp"
 #include "FloorPanel.hpp"
 #include "BlockFactory.hpp"
+#include "BombManager.hpp"
+#include "ExplosionListener.hpp"
+#include "OgrePlayerList.hpp"
 
-class LocalMap : public Map {
+class LocalMap : public Map, public ExplosionListener {
 
 	public:
 		LocalMap(
-			Ogre::SceneManager *sceneMgr,
 			OgreBulletDynamics::DynamicsWorld *world,
+			OgrePlayerList *playerList,
+			BombManager *bombManager,
 			unsigned int height,
 			unsigned int width,
 			time_t seed=time(0)
@@ -26,20 +30,23 @@ class LocalMap : public Map {
 		void generate();
 
 		Ogre::Vector3 getMapCenter();
-		void createExplosion(Ogre::Vector3 pos, int range);
+		bool bombExploded(Ogre::Vector3 position, int range);
 
 	private:
 		//Methodes
 		int getRow(Ogre::Vector3 pos);
 		int getCol(Ogre::Vector3 pos);
 		void viewMap();
-		
+
+		void createExplosion(Ogre::Vector3 pos, int range);
 		void destroyBlock(unsigned int i, unsigned int j);
+		void searchAndDestroyObjects(int row, int col);
 
 		//Attributes
-		Ogre::SceneManager *mSceneMgr;
 		OgreBulletDynamics::DynamicsWorld *mWorld;
 		OgreBulletDynamics::RigidBody ***mBodies;
+		OgrePlayerList *mPlayerList;
+		BombManager *mBombManager;
 
 };
 

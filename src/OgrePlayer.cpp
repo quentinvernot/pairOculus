@@ -48,8 +48,8 @@ void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 Ogre::Vector3 OgrePlayer::computeHitboxSize(){
 
 	if(mEntity){
-		AxisAlignedBox boundingB = mEntity->getBoundingBox();
-		Vector3 size = boundingB.getSize();
+		Ogre::AxisAlignedBox boundingB = mEntity->getBoundingBox();
+		Ogre::Vector3 size = boundingB.getSize();
 		size /= 20;
 		size.x /= 2;
 		size.z /= 2;
@@ -154,6 +154,19 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 	mNodePositionX += mPositionCorrection.x;
 	mNodePositionY += mPositionCorrection.y;
 	mNodePositionZ += mPositionCorrection.z;
+
+	if(mGraphicsSetUp){
+
+		mBody->getBulletRigidBody()->proceedToTransform(
+			btTransform(
+				btQuaternion(Ogre::Degree(mNodeYaw + 180).valueRadians(), 0, 0),
+				btVector3(mNodePositionX, mNodePositionY, mNodePositionZ)
+			)
+		);
+
+		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
+
+	}
 
 }
 

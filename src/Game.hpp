@@ -32,6 +32,8 @@
 #include "LocalPlayer.hpp"
 #include "RemotePlayer.hpp"
 #include "OgrePlayerList.hpp"
+#include "BombManager.hpp"
+#include "ExplosionManager.hpp"
 #include "LocalMap.hpp"
 
 #include "GameClient/Listener.hpp"
@@ -105,6 +107,7 @@ class Game : public Ogre::FrameListener{
 		OgrePlayerList *mPlayerList;
 		PlayerAnimation *mPlayerAnimationState;
 		BombManager *mBombManager;
+		ExplosionManager *mExplosionManager;
 		LocalMap *mLocalMap;
 
 		std::string mAddress;
@@ -118,6 +121,7 @@ class Game : public Ogre::FrameListener{
 		bool mSceneCreated;
 		bool mGameRunning;
 		bool mShutDownFlag;
+		double cd;
 
 };
 
