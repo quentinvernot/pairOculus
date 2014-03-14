@@ -154,19 +154,6 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	computeVelocity(evt);
 	computeNodePosition(evt);
 
-	if(mGraphicsSetUp){
-
-		mBody->getBulletRigidBody()->proceedToTransform(
-			btTransform(
-				btQuaternion(Ogre::Degree(mNodeYaw + 180).valueRadians(), 0, 0),
-				btVector3(mNodePositionX, mNodePositionY, mNodePositionZ)
-			)
-		);
-
-		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
-
-	}
-
 	mCameraManager->setPosition(
 		Ogre::Vector3(mNodePositionX, mNodePositionY + 0.7, mNodePositionZ)
 	);
