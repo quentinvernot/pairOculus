@@ -52,9 +52,9 @@ namespace NetworkMessage{
 			case JOINREFUSE:
 				return buildMessage(JOINREFUSE, parts[2]);
 			case PLAYERJOINED:
-				x = atoi(parts[3].c_str());
-				y = atoi(parts[4].c_str());
-				z = atoi(parts[5].c_str());
+				x = atof(parts[3].c_str());
+				y = atof(parts[4].c_str());
+				z = atof(parts[5].c_str());
 				return buildMessage(PLAYERJOINED, parts[2], x, y, z);
 			case PLAYERLEFT:
 				return buildMessage(PLAYERLEFT, parts[2]);
@@ -69,9 +69,9 @@ namespace NetworkMessage{
 					atof(parts[3].c_str()),
 					atof(parts[4].c_str()),
 					atof(parts[5].c_str()),
-					atoi(parts[6].c_str()),
-					atoi(parts[7].c_str()),
-					atoi(parts[8].c_str()),
+					atof(parts[6].c_str()),
+					atof(parts[7].c_str()),
+					atof(parts[8].c_str()),
 					atoi(parts[9].c_str()),
 					atoi(parts[10].c_str()),
 					atoi(parts[11].c_str()),
@@ -133,9 +133,9 @@ namespace NetworkMessage{
 	NetworkMessage *NetworkMessageFactory::buildMessage(
 		MessageType type,
 		std::string data,
-		long x,
-		long y,
-		long z
+		double x,
+		double y,
+		double z
 	){
 
 		switch(type){
@@ -192,9 +192,9 @@ namespace NetworkMessage{
 		double nodeYaw,
 		double nodePitch,
 		double nodeRoll,
-		long nodePositionX,
-		long nodePositionY,
-		long nodePositionZ,
+		double nodePositionX,
+		double nodePositionY,
+		double nodePositionZ,
 		bool goingForward,
 		bool goingBack,
 		bool goingLeft,

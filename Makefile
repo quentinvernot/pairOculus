@@ -23,11 +23,11 @@ $(OBJDIR): .FORCE
 	cd $(SRCDIR) && make
 
 MAINOBJ=$(OBJDIR)*.o $(OBJDIR)NetworkMessage/*.o $(OBJDIR)GameClient/*.o
-$(BINDIR)main: main.cpp $(OBJDIR)
+$(BINDIR)main: main.cpp $(OBJDIR) $(OBJDIR)NetworkMessage
 	$(CC) $(OGRE) $(OIS) $(OVR) $(BULLET) $(CFLAGS) main.cpp $(MAINOBJ) $(LIBBOOST) $(LIBOGRE) $(LIBOVR) $(LIBBULLET) -o $(BINDIR)main
 
 SERVEROBJ=$(OBJDIR)NetworkIO.o $(OBJDIR)NetworkMessage/*.o $(OBJDIR)GameServer/*.o $(OBJDIR)Player.o $(OBJDIR)PlayerList.o $(OBJDIR)Map.o
-$(BINDIR)server: server.cpp $(OBJDIR)
+$(BINDIR)server: server.cpp $(OBJDIR) $(OBJDIR)NetworkMessage $(OBJDIR)GameServer
 	$(CC) $(CFLAGS) server.cpp $(SERVEROBJ) $(LIBBOOST) -o $(BINDIR)server
 
 clean:

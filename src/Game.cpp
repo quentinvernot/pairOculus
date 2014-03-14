@@ -235,6 +235,10 @@ void Game::injectGameStart(NetworkMessage::GameStart *message){
 void Game::injectGameEnd(NetworkMessage::GameEnd *message){
 	Ogre::LogManager::getSingletonPtr()->logMessage("Ending game");
 	mGameRunning = false;
+	
+	for(unsigned int i = 0; i < mPlayerList->size(); i++)
+		if(!(*mPlayerList)[i]->isDead())
+			std::cout << (*mPlayerList)[i]->getNickname() << " wins !" << std::endl;
 }
 
 void Game::injectPlayerInput(NetworkMessage::PlayerInput *message){

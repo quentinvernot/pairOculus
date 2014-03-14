@@ -104,7 +104,7 @@ namespace GameServer{
 			PlayerList *mPlayerList;
 			Map *mMap;
 			int mOpenedSessions;
-			bool mGameStarted;
+			bool mGameRunning;
 
 	};
 

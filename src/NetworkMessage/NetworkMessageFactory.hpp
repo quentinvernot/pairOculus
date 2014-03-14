@@ -42,9 +42,9 @@ namespace NetworkMessage{
 			NetworkMessage *buildMessage(
 				MessageType type,
 				std::string data,
-				long x,
-				long y,
-				long z
+				double x,
+				double y,
+				double z
 			);
 			NetworkMessage *buildMessage(
 				MessageType type,
@@ -63,9 +63,9 @@ namespace NetworkMessage{
 				double nodeYaw,
 				double nodePitch,
 				double nodeRoll,
-				long nodePositionX,
-				long nodePositionY,
-				long nodePositionZ,
+				double nodePositionX,
+				double nodePositionY,
+				double nodePositionZ,
 				bool goingForward,
 				bool goingBack,
 				bool goingLeft,

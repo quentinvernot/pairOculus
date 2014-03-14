@@ -18,9 +18,9 @@ namespace NetworkMessage{
 				double nodeYaw,
 				double nodePitch,
 				double nodeRoll,
-				long nodePositionX,
-				long nodePositionY,
-				long nodePositionZ,
+				double nodePositionX,
+				double nodePositionY,
+				double nodePositionZ,
 				bool goingForward,
 				bool goingBack,
 				bool goingLeft,
@@ -31,15 +31,14 @@ namespace NetworkMessage{
 			~PlayerInput();
 
 			std::string getNickname();
-			int getId();
 
 			double getNodeYaw();
 			double getNodePitch();
 			double getNodeRoll();
 
-			long getNodePositionX();
-			long getNodePositionY();
-			long getNodePositionZ();
+			double getNodePositionX();
+			double getNodePositionY();
+			double getNodePositionZ();
 
 			bool getGoingForward();
 			bool getGoingBack();
@@ -59,9 +58,9 @@ namespace NetworkMessage{
 			double mNodePitch;
 			double mNodeRoll;
 
-			long mNodePositionX;
-			long mNodePositionY;
-			long mNodePositionZ;
+			double mNodePositionX;
+			double mNodePositionY;
+			double mNodePositionZ;
 
 			bool mGoingForward;
 			bool mGoingBack;

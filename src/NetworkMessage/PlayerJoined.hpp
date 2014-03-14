@@ -15,25 +15,25 @@ namespace NetworkMessage{
 			PlayerJoined(Player *player);
 			PlayerJoined(
 				std::string nickname,
-				long x,
-				long y,
-				long z
+				double x,
+				double y,
+				double z
 			);
 			~PlayerJoined();
 
 			std::string getNickname();
-			long getPositionX();
-			long getPositionY();
-			long getPositionZ();
+			double getPositionX();
+			double getPositionY();
+			double getPositionZ();
 
 		private:
 			//methods
 			void buildSelf();
 			//arguments
 			std::string mNickname;
-			long mX;
-			long mY;
-			long mZ;
+			double mX;
+			double mY;
+			double mZ;
 
 	};
 

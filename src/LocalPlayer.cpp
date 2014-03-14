@@ -35,15 +35,13 @@ void LocalPlayer::generateGraphics(){
 
 void LocalPlayer::lookAt(Ogre::Vector3 vec){
 
-	if(mCameraManager){
+	mCameraManager->lookAt(vec);
 
-		mCameraManager->lookAt(vec);
+	mNodeYaw = mCameraManager->getOrientation().getYaw().valueDegrees();
+	mNodePitch = mCameraManager->getOrientation().getPitch().valueDegrees();
+	mNodeRoll = mCameraManager->getOrientation().getRoll().valueDegrees();
 
-		mNodeYaw = mCameraManager->getOrientation().getYaw().valueDegrees();
-		mNodePitch = mCameraManager->getOrientation().getPitch().valueDegrees();
-		mNodeRoll = mCameraManager->getOrientation().getRoll().valueDegrees();
-
-	}
+	mStartingTarget = vec;
 
 }
 

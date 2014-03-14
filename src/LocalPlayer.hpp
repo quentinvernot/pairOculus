@@ -46,13 +46,15 @@ class LocalPlayer : public OgrePlayer{
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		void setPlayerEventListener(PlayerEventListener *pel);
-		
+
 		void die();
 
 	private:
 		//Attributes
 		CameraManager *mCameraManager;
 		PlayerEventListener *mPlayerEventListener;
+		Ogre::Vector3 mStartingPosition;
+		Ogre::Vector3 mStartingTarget;
 
 };
 

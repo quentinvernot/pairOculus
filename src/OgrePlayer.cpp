@@ -28,9 +28,9 @@ OgrePlayer::OgrePlayer(
 
 void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
-	mYawCorrection += Ogre::Degree(message->getNodeYaw() - mNodeYaw);
-	mPitchCorrection += Ogre::Degree(message->getNodePitch() - mNodePitch);
-	mRollCorrection += Ogre::Degree(message->getNodeRoll() - mNodeRoll);
+	mNodeYaw = message->getNodeYaw();
+	mNodePitch = message->getNodePitch();
+	mNodeRoll = message->getNodeRoll();
 
 	mNodePositionX = message->getNodePositionX();
 	mNodePositionY = message->getNodePositionY();
@@ -42,6 +42,8 @@ void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 	mGoingRight = message->getGoingRight();
 	mGoingUp = message->getGoingUp();
 	mGoingDown = message->getGoingDown();
+
+	resetCorrection();
 
 	mWasTeleported = true;
 
@@ -142,23 +144,27 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 	if(mWasTeleported){
 		mWasTeleported = false;
 	}
-	else if(mGraphicsSetUp){
-		mNodePositionX = mBody->getSceneNode()->getPosition().x;
-		mNodePositionY = mBody->getSceneNode()->getPosition().y;
-		mNodePositionZ = mBody->getSceneNode()->getPosition().z;
+	else{
+
+		if(mGraphicsSetUp){
+			mNodePositionX = mBody->getSceneNode()->getPosition().x;
+			mNodePositionY = mBody->getSceneNode()->getPosition().y;
+			mNodePositionZ = mBody->getSceneNode()->getPosition().z;
+		}
+		
+		mNodePositionX += mVelocity.x * evt.timeSinceLastFrame * mTopSpeed;
+		mNodePositionY += mVelocity.y * evt.timeSinceLastFrame * mTopSpeed;
+		mNodePositionZ += mVelocity.z * evt.timeSinceLastFrame * mTopSpeed;
+
+		mNodeYaw += mYawCorrection.valueDegrees();
+		mNodePitch += mPitchCorrection.valueDegrees();
+		mNodeRoll += mRollCorrection.valueDegrees();
+
+		mNodePositionX += mPositionCorrection.x;
+		mNodePositionY += mPositionCorrection.y;
+		mNodePositionZ += mPositionCorrection.z;
+	
 	}
-
-	mNodePositionX += mVelocity.x * evt.timeSinceLastFrame * mTopSpeed;
-	mNodePositionY += mVelocity.y * evt.timeSinceLastFrame * mTopSpeed;
-	mNodePositionZ += mVelocity.z * evt.timeSinceLastFrame * mTopSpeed;
-
-	mNodeYaw += mYawCorrection.valueDegrees();
-	mNodePitch += mPitchCorrection.valueDegrees();
-	mNodeRoll += mRollCorrection.valueDegrees();
-
-	mNodePositionX += mPositionCorrection.x;
-	mNodePositionY += mPositionCorrection.y;
-	mNodePositionZ += mPositionCorrection.z;
 
 	if(mGraphicsSetUp){
 

@@ -31,6 +31,7 @@ class Player{
 		bool getGoingDown();
 
 		virtual void die();
+		virtual bool isDead();
 
 	protected:
 		//Attributes

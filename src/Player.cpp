@@ -50,6 +50,5 @@ bool Player::getGoingRight(){return mGoingRight;}
 bool Player::getGoingUp(){return mGoingUp;}
 bool Player::getGoingDown(){return mGoingDown;}
 
-void Player::die(){
-	mIsDead = true;
-}
+void Player::die(){mIsDead = true;}
+bool Player::isDead(){return mIsDead;}

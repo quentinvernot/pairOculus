@@ -11,7 +11,7 @@ namespace GameServer{
 		mPlayerList(new PlayerList()),
 		mMap(new Map(15, 15)),
 		mOpenedSessions(0),
-		mGameStarted(false)
+		mGameRunning(false)
 	{
 	}
 
@@ -230,6 +230,7 @@ namespace GameServer{
 
 		if(readyCount == mPlayerList->size()){
 			std::cout << "Everyone is ready to start" << std::endl;
+			mGameRunning = true;
 			sendGameStart();
 		}
 
@@ -271,10 +272,25 @@ namespace GameServer{
 		std::cout << "Received PLAYERKILLED" << std::endl;
 		std::cout << message->getMessage() << std::endl;
 
-		if(sourceSession->getPlayer() != 0){
+		if(mGameRunning && sourceSession->getPlayer() != 0){
 			std::string nickname = sourceSession->getPlayer()->getNickname();
+			mPlayerList->getPlayerByName(nickname)->die();
 			sendPlayerKilled(nickname, message);
+			
+			unsigned int deadCount = 0;
+			for(unsigned int i = 0; i < mPlayerList->size(); i++)
+				if((*mPlayerList)[i]->isDead())
+					deadCount ++;
+
+			if(deadCount == mPlayerList->size() - 1){
+				std::cout << "Only one player is alive" << std::endl;
+				sendGameEnd();
+				mGameRunning = false;
+			}
+
 		}
+		else
+			std::cout << "Game is not started" << std::endl;
 
 	}
 

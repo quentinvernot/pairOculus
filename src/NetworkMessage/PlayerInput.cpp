@@ -26,9 +26,9 @@ namespace NetworkMessage{
 		double nodeYaw,
 		double nodePitch,
 		double nodeRoll,
-		long nodePositionX,
-		long nodePositionY,
-		long nodePositionZ,
+		double nodePositionX,
+		double nodePositionY,
+		double nodePositionZ,
 		bool goingForward,
 		bool goingBack,
 		bool goingLeft,
@@ -63,9 +63,9 @@ namespace NetworkMessage{
 	double PlayerInput::getNodePitch(){return mNodePitch;}
 	double PlayerInput::getNodeRoll(){return mNodeRoll;}
 
-	long PlayerInput::getNodePositionX(){return mNodePositionX;}
-	long PlayerInput::getNodePositionY(){return mNodePositionY;}
-	long PlayerInput::getNodePositionZ(){return mNodePositionZ;}
+	double PlayerInput::getNodePositionX(){return mNodePositionX;}
+	double PlayerInput::getNodePositionY(){return mNodePositionY;}
+	double PlayerInput::getNodePositionZ(){return mNodePositionZ;}
 
 	bool PlayerInput::getGoingForward(){return mGoingForward;}
 	bool PlayerInput::getGoingBack(){return mGoingBack;}

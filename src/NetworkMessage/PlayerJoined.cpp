@@ -16,9 +16,9 @@ namespace NetworkMessage{
 
 	PlayerJoined::PlayerJoined(
 		std::string nickname,
-		long x,
-		long y,
-		long z
+		double x,
+		double y,
+		double z
 	):
 		NetworkMessage(PLAYERJOINED),
 		mNickname(nickname),
@@ -33,9 +33,9 @@ namespace NetworkMessage{
 	}
 
 	std::string PlayerJoined::getNickname(){return mNickname;}
-	long PlayerJoined::getPositionX(){return mX;}
-	long PlayerJoined::getPositionY(){return mY;}
-	long PlayerJoined::getPositionZ(){return mZ;}
+	double PlayerJoined::getPositionX(){return mX;}
+	double PlayerJoined::getPositionY(){return mY;}
+	double PlayerJoined::getPositionZ(){return mZ;}
 
 	void PlayerJoined::buildSelf(){
 		std::ostringstream convert;
