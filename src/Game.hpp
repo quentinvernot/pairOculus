@@ -32,13 +32,14 @@
 #include "LocalPlayer.hpp"
 #include "RemotePlayer.hpp"
 #include "OgrePlayerList.hpp"
+#include "PlayerEventListener.hpp"
 #include "BombManager.hpp"
 #include "ExplosionManager.hpp"
 #include "LocalMap.hpp"
 
 #include "GameClient/Listener.hpp"
 
-class Game : public Ogre::FrameListener{
+class Game : public Ogre::FrameListener, public PlayerEventListener{
 
 	public:
 		//Methods
@@ -66,6 +67,9 @@ class Game : public Ogre::FrameListener{
 		void injectGameStart(NetworkMessage::GameStart *message);
 		void injectGameEnd(NetworkMessage::GameEnd *message);
 		void injectPlayerInput(NetworkMessage::PlayerInput *message);
+
+		bool playerInput();
+		bool playerDied();
 
 	private:
 		//Methods

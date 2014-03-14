@@ -192,6 +192,8 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 		mPlayerList->addPlayer(tmp);
 
 	}
+	
+	mLocalPlayer->setPlayerEventListener(this);
 
 	mGameSetUp = true;
 
@@ -241,6 +243,26 @@ void Game::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
 	if(nickname != mNickname)
 		mPlayerList->getPlayerByName(nickname)->injectPlayerInput(message);
+
+}
+
+bool  Game::playerInput(){
+
+	mGCListener->sendMessage(
+		mNMFactory->buildMessage(NetworkMessage::PLAYERINPUT, mLocalPlayer)
+	);
+
+	return true;
+
+}
+
+bool Game::playerDied(){
+
+	mGCListener->sendMessage(
+		mNMFactory->buildMessage(NetworkMessage::PLAYERKILLED)
+	);
+
+	return true;
 
 }
 
@@ -328,6 +350,7 @@ bool Game::offlineSetup(){
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
 	mLocalPlayer = new LocalPlayer(mNickname, mWorld, mCameraManager);
 	mPlayerList->addPlayer(mLocalPlayer);
+	mLocalPlayer->setPlayerEventListener(this);
 
 	mLocalMap->setStartingPosition(0, mLocalPlayer);
 
@@ -518,20 +541,9 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		mBombManager->frameRenderingQueued();
 		mExplosionManager->frameRenderingQueued(evt);
 
-		if(mOnlineMode && mLocalPlayer->hadUsefulInput())
-			sendPlayerInput();
-
 		mWorld->stepSimulation(evt.timeSinceLastFrame);
 	}
 
 	return true;
-
-}
-
-void Game::sendPlayerInput(){
-
-	mGCListener->sendMessage(
-		mNMFactory->buildMessage(NetworkMessage::PLAYERINPUT, mLocalPlayer)
-	);
 
 }

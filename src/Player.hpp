@@ -30,7 +30,7 @@ class Player{
 		bool getGoingUp();
 		bool getGoingDown();
 
-		void die();
+		virtual void die();
 
 	protected:
 		//Attributes

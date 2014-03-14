@@ -23,6 +23,7 @@ class OgrePlayer : public Player{
 		);
 		virtual ~OgrePlayer(){};
 
+		void injectPlayerInput(NetworkMessage::PlayerInput *message);
 		virtual void generateGraphics()=0;
 		virtual bool frameRenderingQueued(const Ogre::FrameEvent &evt)=0;
 
@@ -59,7 +60,7 @@ class OgrePlayer : public Player{
 		Ogre::Vector3 mVelocity;
 
 		bool mGraphicsSetUp;
-		bool mHadInputUseful;
+		bool mWasTeleported;
 
 		Ogre::Degree mYawCorrection;
 		Ogre::Degree mPitchCorrection;

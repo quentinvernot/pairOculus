@@ -50,8 +50,6 @@ bool Player::getGoingRight(){return mGoingRight;}
 bool Player::getGoingUp(){return mGoingUp;}
 bool Player::getGoingDown(){return mGoingDown;}
 
-#include <iostream>
 void Player::die(){
-	std::cout << "argl" << std::endl;
 	mIsDead = true;
 }

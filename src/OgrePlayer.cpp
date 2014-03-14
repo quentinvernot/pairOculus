@@ -16,7 +16,7 @@ OgrePlayer::OgrePlayer(
 	mAccelDown(0),
 	mVelocity(Ogre::Vector3::ZERO),
 	mGraphicsSetUp(false),
-	mHadInputUseful(false),
+	mWasTeleported(false),
 	mYawCorrection(0),
 	mPitchCorrection(0),
 	mRollCorrection(0),
@@ -24,6 +24,27 @@ OgrePlayer::OgrePlayer(
 	mOrientationCorrection(Ogre::Quaternion::ZERO)
 {
 	mTopSpeed = 10;
+}
+
+void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
+
+	mYawCorrection += Ogre::Degree(message->getNodeYaw() - mNodeYaw);
+	mPitchCorrection += Ogre::Degree(message->getNodePitch() - mNodePitch);
+	mRollCorrection += Ogre::Degree(message->getNodeRoll() - mNodeRoll);
+
+	mNodePositionX = message->getNodePositionX();
+	mNodePositionY = message->getNodePositionY();
+	mNodePositionZ = message->getNodePositionZ();
+
+	mGoingForward = message->getGoingForward();
+	mGoingBack = message->getGoingBack();
+	mGoingLeft = message->getGoingLeft();
+	mGoingRight = message->getGoingRight();
+	mGoingUp = message->getGoingUp();
+	mGoingDown = message->getGoingDown();
+
+	mWasTeleported = true;
+
 }
 
 Ogre::Vector3 OgrePlayer::computeHitboxSize(){
@@ -118,7 +139,10 @@ void OgrePlayer::computeVelocity(const Ogre::FrameEvent &evt){
 
 void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 
-	if(mGraphicsSetUp){
+	if(mWasTeleported){
+		mWasTeleported = false;
+	}
+	else if(mGraphicsSetUp){
 		mNodePositionX = mBody->getSceneNode()->getPosition().x;
 		mNodePositionY = mBody->getSceneNode()->getPosition().y;
 		mNodePositionZ = mBody->getSceneNode()->getPosition().z;
