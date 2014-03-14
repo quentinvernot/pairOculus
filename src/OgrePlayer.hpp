@@ -24,7 +24,6 @@ class OgrePlayer : public Player{
 		virtual ~OgrePlayer(){};
 
 		virtual void generateGraphics()=0;
-		void injectPlayerInput(NetworkMessage::PlayerInput *message);
 		virtual bool frameRenderingQueued(const Ogre::FrameEvent &evt)=0;
 
 	protected:

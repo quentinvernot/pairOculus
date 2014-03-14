@@ -21,6 +21,7 @@ class RemotePlayer : public OgrePlayer{
 		);
 		~RemotePlayer();
 
+		void injectPlayerInput(NetworkMessage::PlayerInput *message);
 		void generateGraphics();
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
