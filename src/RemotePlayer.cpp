@@ -2,9 +2,11 @@
 
 RemotePlayer::RemotePlayer(
 	std::string name,
-	OgreBulletDynamics::DynamicsWorld *world
+	OgreBulletDynamics::DynamicsWorld *world,
+	BombManager *bombManager
 ):
-	OgrePlayer(name, world)
+	OgrePlayer(name, world, bombManager),
+	mBombCooldown(0)
 {
 }
 
@@ -42,6 +44,13 @@ bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	computeAcceleration();
 	computeVelocity(evt);
 	computeNodePosition(evt);
+
+	mBombCooldown -= evt.timeSinceLastFrame;
+
+	if(mPuttingBomb && mBombCooldown <= 0) {
+		mBombManager->add(mNickname + "bomb", Ogre::Vector3(getNodePositionX() ,getNodePositionY() ,getNodePositionZ()) + getForwardDirection());
+		mBombCooldown = 1;
+	}
 
 	if(mGraphicsSetUp){
 		if (mVelocity.x != 0 && mVelocity.z != 0)

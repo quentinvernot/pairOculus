@@ -77,7 +77,8 @@ namespace NetworkMessage{
 					atoi(parts[11].c_str()),
 					atoi(parts[12].c_str()),
 					atoi(parts[13].c_str()),
-					atoi(parts[14].c_str())
+					atoi(parts[14].c_str()),
+					atoi(parts[15].c_str())
 				);
 			case PLAYERKILLED:
 				return buildMessage(PLAYERKILLED, parts[2]);
@@ -200,7 +201,8 @@ namespace NetworkMessage{
 		bool goingLeft,
 		bool goingRight,
 		bool goingUp,
-		bool goingDown
+		bool goingDown,
+		bool puttingBomb
 	){
 
 		switch(type){
@@ -218,7 +220,8 @@ namespace NetworkMessage{
 					goingLeft,
 					goingRight,
 					goingUp,
-					goingDown
+					goingDown,
+					puttingBomb
 				);
 			default:
 				break;

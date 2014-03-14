@@ -30,6 +30,8 @@ class Player{
 		bool getGoingUp();
 		bool getGoingDown();
 
+		bool getPuttingBomb();
+
 		virtual void die();
 		virtual bool isDead();
 
@@ -56,6 +58,8 @@ class Player{
 		bool mGoingRight;
 		bool mGoingUp;
 		bool mGoingDown;
+
+		bool mPuttingBomb;
 
 		bool mIsDead;
 

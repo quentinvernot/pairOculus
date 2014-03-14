@@ -17,6 +17,7 @@ Player::Player(std::string nickname):
 	mGoingRight(false),
 	mGoingUp(false),
 	mGoingDown(false),
+	mPuttingBomb(false),
 	mIsDead(false)
 {
 }
@@ -50,5 +51,6 @@ bool Player::getGoingRight(){return mGoingRight;}
 bool Player::getGoingUp(){return mGoingUp;}
 bool Player::getGoingDown(){return mGoingDown;}
 
+bool Player::getPuttingBomb(){return mPuttingBomb;}
 void Player::die(){mIsDead = true;}
 bool Player::isDead(){return mIsDead;}

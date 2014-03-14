@@ -17,7 +17,8 @@ class RemotePlayer : public OgrePlayer{
 		//Methods
 		RemotePlayer(
 			std::string name,
-			OgreBulletDynamics::DynamicsWorld *world
+			OgreBulletDynamics::DynamicsWorld *world,
+			BombManager *bombManager
 		);
 		~RemotePlayer();
 
@@ -27,6 +28,7 @@ class RemotePlayer : public OgrePlayer{
 	private:
 		// Atributes
 		PlayerAnimation *mPlayerAnimationState;
+		double mBombCooldown;
 };
 
 #endif //__REMOTEPLAYER_H

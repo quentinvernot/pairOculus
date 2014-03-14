@@ -60,7 +60,7 @@ void PlayerAnimation::setupIdleAnimation () {
 	key = tShoulderLeft->createNodeKeyFrame(0.0f);
 	key->setRotation(Ogre::Quaternion(Ogre::Degree(-60), Ogre::Vector3::UNIT_Z));
 
-	// Hip Right
+/*	// Hip Right
 	key = tHipRight->createNodeKeyFrame(duration);
 	key->setRotation(Ogre::Quaternion(Ogre::Degree(20), Ogre::Vector3::UNIT_Z));
 
@@ -75,7 +75,7 @@ void PlayerAnimation::setupIdleAnimation () {
 	// Shoulder Left
 	key = tShoulderLeft->createNodeKeyFrame(duration);
 	key->setRotation(Ogre::Quaternion(Ogre::Degree(-60), Ogre::Vector3::UNIT_Z));
-
+*/
 	mSceneMgr->createAnimationState(mEntity->getName() + "Idle");
 }
 

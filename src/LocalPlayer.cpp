@@ -3,10 +3,12 @@
 LocalPlayer::LocalPlayer(
 	std::string name,
 	OgreBulletDynamics::DynamicsWorld *world,
+	BombManager *bombManager,
 	CameraManager *cameraManager
 ):
-	OgrePlayer(name, world),
+	OgrePlayer(name, world, bombManager),
 	mCameraManager(cameraManager),
+	mBombCooldown(0),
 	mPlayerEventListener(0)
 {
 }
@@ -79,6 +81,8 @@ bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 		mGoingLeft = true;
 	else if (arg.key == OIS::KC_D || arg.key == OIS::KC_RIGHT)
 		mGoingRight = true;
+	else if (arg.key == OIS::KC_E || arg.key == OIS::KC_SPACE)
+		mPuttingBomb = true;
 	else if (arg.key == OIS::KC_PGUP)
 		mGoingUp = true;
 	else if (arg.key == OIS::KC_PGDOWN)
@@ -97,6 +101,8 @@ bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 			arg.key == OIS::KC_LEFT ||
 			arg.key == OIS::KC_D ||
 			arg.key == OIS::KC_RIGHT ||
+			arg.key == OIS::KC_E ||
+			arg.key == OIS::KC_SPACE ||
 			arg.key == OIS::KC_PGUP ||
 			arg.key == OIS::KC_PGDOWN
 		)
@@ -121,6 +127,8 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 		mGoingLeft = false;
 	else if (arg.key == OIS::KC_D || arg.key == OIS::KC_RIGHT)
 		mGoingRight = false;
+	else if (arg.key == OIS::KC_E || arg.key == OIS::KC_SPACE)
+		mPuttingBomb = false;
 	else if (arg.key == OIS::KC_PGUP)
 		mGoingUp = false;
 	else if (arg.key == OIS::KC_PGDOWN)
@@ -139,6 +147,8 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 			arg.key == OIS::KC_LEFT ||
 			arg.key == OIS::KC_D ||
 			arg.key == OIS::KC_RIGHT ||
+			arg.key == OIS::KC_E ||
+			arg.key == OIS::KC_SPACE ||
 			arg.key == OIS::KC_PGUP ||
 			arg.key == OIS::KC_PGDOWN
 		)
@@ -167,6 +177,13 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	computeAcceleration();
 	computeVelocity(evt);
 	computeNodePosition(evt);
+
+	mBombCooldown -= evt.timeSinceLastFrame;
+
+	if(mPuttingBomb && mBombCooldown <= 0) {
+		mBombManager->add(mNickname + "bomb", Ogre::Vector3(getNodePositionX() ,getNodePositionY() ,getNodePositionZ()) + getForwardDirection());
+		mBombCooldown = 1;
+	}
 
 	mCameraManager->setPosition(
 		Ogre::Vector3(mNodePositionX, mNodePositionY + 0.7, mNodePositionZ)
