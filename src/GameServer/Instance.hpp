@@ -89,6 +89,10 @@ namespace GameServer{
 				std::string nickname,
 				NetworkMessage::PlayerInput *message
 			);
+			void sendPlayerKilled(
+				std::string nickname,
+				NetworkMessage::PlayerKilled *message
+			);
 
 			//Attributes
 			boost::asio::io_service mIo_service;

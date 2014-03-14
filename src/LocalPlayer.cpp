@@ -209,9 +209,9 @@ void LocalPlayer::die(){
 
 	mWasTeleported = true;
 
-	if(mPlayerEventListener)
+	if(mPlayerEventListener){
 		mPlayerEventListener->playerInput();
-
-	mPlayerEventListener->playerInput();
+		mPlayerEventListener->playerDied();
+	}
 
 }

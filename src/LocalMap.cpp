@@ -149,42 +149,58 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 		searchAndDestroyObjects(row, col);
 
 		i = 1;
-		while(!isUnbreakable(row + i, col) && range - i > 0){
+		while(range - i > 0 && !isUnbreakable(row + i, col)){
 
-			if(mMap[row][col] == EMPTY)
+			if(mMap[row + i][col] == EMPTY)
 				searchAndDestroyObjects(row + i, col);
 
 			destroyBlock(row + i, col);
+
+			if(isBreakable(row + i, col))
+				i = range;
+
 			i++;
 		}
 
 		i = -1;
-		while(!isUnbreakable(row + i, col) && range + i > 0){
+		while(range + i > 0 && !isUnbreakable(row + i, col)){
 
-			if(mMap[row][col] == EMPTY)
+			if(mMap[row + i][col] == EMPTY)
 				searchAndDestroyObjects(row + i, col);
 
 			destroyBlock(row + i, col);
+
+			if(isBreakable(row + i, col))
+				i = range;
+
 			i--;
 		}
 		
 		i = 1;
-		while(!isUnbreakable(row, col + i) && range - i > 0){
+		while(range - i > 0 && !isUnbreakable(row, col + i)){
 
-			if(mMap[row][col] == EMPTY)
+			if(mMap[row][col + i] == EMPTY)
 				searchAndDestroyObjects(row, col + i);
 
 			destroyBlock(row, col + i);
+
+			if(isBreakable(row, col + i))
+				i = range;
+
 			i++;
 		}
 
 		i = -1;
-		while(!isUnbreakable(row, col + i) && range + i > 0){
+		while(range + i > 0 && !isUnbreakable(row, col + i)){
 
-			if(mMap[row][col] == EMPTY)
+			if(mMap[row][col + i] == EMPTY)
 				searchAndDestroyObjects(row, col + i);
-	
+
 			destroyBlock(row, col + i);
+
+			if(isBreakable(row , col + i))
+				i = range;
+
 			i--;
 		}
 
@@ -213,7 +229,7 @@ void LocalMap::searchAndDestroyObjects(int row, int col){
 	double bottomBound = row * mScale;
 	double leftBound = col * mScale;
 	double rightBound = (col+1) * mScale;
-	double upperBound = 2*mScale;
+	double upperBound = mScale;
 	double lowerBound = 0;
 
 	for(unsigned int i = 0; i < mPlayerList->size(); i++)

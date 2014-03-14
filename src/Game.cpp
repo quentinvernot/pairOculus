@@ -259,7 +259,7 @@ bool  Game::playerInput(){
 bool Game::playerDied(){
 
 	mGCListener->sendMessage(
-		mNMFactory->buildMessage(NetworkMessage::PLAYERKILLED)
+		mNMFactory->buildMessage(NetworkMessage::PLAYERKILLED, mNickname)
 	);
 
 	return true;

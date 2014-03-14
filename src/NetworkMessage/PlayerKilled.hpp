@@ -11,12 +11,15 @@ namespace NetworkMessage{
 
 		public:
 			//methods
-			PlayerKilled();
+			PlayerKilled(std::string nickname);
 			~PlayerKilled();
+
+			std::string getNickname();
 
 		private:
 			//methods
 			//arguments
+			std::string mNickname;
 
 	};
 
