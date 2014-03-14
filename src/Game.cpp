@@ -260,7 +260,7 @@ void Game::injectPlayerKilled(NetworkMessage::PlayerKilled *message){
 
 }
 
-bool  Game::playerInput(){
+bool Game::playerInput(){
 
 	mGCListener->sendMessage(
 		mNMFactory->buildMessage(NetworkMessage::PLAYERINPUT, mLocalPlayer)
@@ -368,7 +368,6 @@ bool Game::offlineSetup(){
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Player");
 	mLocalPlayer = new LocalPlayer(mNickname, mWorld, mBombManager, mCameraManager);
 	mPlayerList->addPlayer(mLocalPlayer);
-	mLocalPlayer->setPlayerEventListener(this);
 
 	mLocalMap->setStartingPosition(0, mLocalPlayer);
 
