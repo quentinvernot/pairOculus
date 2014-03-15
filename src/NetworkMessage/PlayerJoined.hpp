@@ -22,9 +22,9 @@ namespace NetworkMessage{
 			~PlayerJoined();
 
 			std::string getNickname();
-			double getPositionX();
-			double getPositionY();
-			double getPositionZ();
+			double getX();
+			double getY();
+			double getZ();
 
 		private:
 			//methods

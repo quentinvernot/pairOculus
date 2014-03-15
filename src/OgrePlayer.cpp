@@ -30,13 +30,13 @@ OgrePlayer::OgrePlayer(
 
 void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
 
-	mNodeYaw = message->getNodeYaw();
-	mNodePitch = message->getNodePitch();
-	mNodeRoll = message->getNodeRoll();
+	mYaw = message->getYaw();
+	mPitch = message->getPitch();
+	mRoll = message->getRoll();
 
-	mNodePositionX = message->getNodePositionX();
-	mNodePositionY = message->getNodePositionY();
-	mNodePositionZ = message->getNodePositionZ();
+	mX = message->getX();
+	mY = message->getY();
+	mZ = message->getZ();
 
 	mGoingForward = message->getGoingForward();
 	mGoingBack = message->getGoingBack();
@@ -81,9 +81,9 @@ void OgrePlayer::generateHitbox(
 	mBody = new OgreBulletDynamics::RigidBody(mNickname + "Box", mWorld);
 
 	Vector3 position(
-		mNodePositionX,
-		mNodePositionY,
-		mNodePositionZ
+		mX,
+		mY,
+		mZ
 	);
 
 	mBody->setShape(
@@ -151,22 +151,22 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 	else{
 
 		if(mGraphicsSetUp){
-			mNodePositionX = mBody->getSceneNode()->getPosition().x;
-			mNodePositionY = mBody->getSceneNode()->getPosition().y;
-			mNodePositionZ = mBody->getSceneNode()->getPosition().z;
+			mX = mBody->getSceneNode()->getPosition().x;
+			mY = mBody->getSceneNode()->getPosition().y;
+			mZ = mBody->getSceneNode()->getPosition().z;
 		}
 		
-		mNodePositionX += mVelocity.x * evt.timeSinceLastFrame * mTopSpeed;
-		mNodePositionY += mVelocity.y * evt.timeSinceLastFrame * mTopSpeed;
-		mNodePositionZ += mVelocity.z * evt.timeSinceLastFrame * mTopSpeed;
+		mX += mVelocity.x * evt.timeSinceLastFrame * mTopSpeed;
+		mY += mVelocity.y * evt.timeSinceLastFrame * mTopSpeed;
+		mZ += mVelocity.z * evt.timeSinceLastFrame * mTopSpeed;
 
-		mNodeYaw += mYawCorrection.valueDegrees();
-		mNodePitch += mPitchCorrection.valueDegrees();
-		mNodeRoll += mRollCorrection.valueDegrees();
+		mYaw += mYawCorrection.valueDegrees();
+		mPitch += mPitchCorrection.valueDegrees();
+		mRoll += mRollCorrection.valueDegrees();
 
-		mNodePositionX += mPositionCorrection.x;
-		mNodePositionY += mPositionCorrection.y;
-		mNodePositionZ += mPositionCorrection.z;
+		mX += mPositionCorrection.x;
+		mY += mPositionCorrection.y;
+		mZ += mPositionCorrection.z;
 	
 	}
 
@@ -174,8 +174,8 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 
 		mBody->getBulletRigidBody()->proceedToTransform(
 			btTransform(
-				btQuaternion(Ogre::Degree(mNodeYaw + 180).valueRadians(), 0, 0),
-				btVector3(mNodePositionX, mNodePositionY, mNodePositionZ)
+				btQuaternion(Ogre::Degree(mYaw + 180).valueRadians(), 0, 0),
+				btVector3(mX, mY, mZ)
 			)
 		);
 
@@ -196,7 +196,7 @@ void OgrePlayer::resetCorrection(){
 
 Ogre::Vector3 OgrePlayer::getForwardDirection(){
 	using namespace Ogre;
-	return Quaternion(Degree(mNodeYaw), Vector3::UNIT_Y) * Vector3::UNIT_Z * -1;
+	return Quaternion(Degree(mYaw), Vector3::UNIT_Y) * Vector3::UNIT_Z * -1;
 }
 
 Ogre::Vector3 OgrePlayer::getUpDirection(){
@@ -205,5 +205,5 @@ Ogre::Vector3 OgrePlayer::getUpDirection(){
 
 Ogre::Vector3 OgrePlayer::getRightDirection(){
 	using namespace Ogre;
-	return Quaternion(Degree(mNodeYaw), Vector3::UNIT_Y) * Vector3::UNIT_X;
+	return Quaternion(Degree(mYaw), Vector3::UNIT_Y) * Vector3::UNIT_X;
 }

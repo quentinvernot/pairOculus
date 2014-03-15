@@ -234,12 +234,12 @@ void LocalMap::searchAndDestroyObjects(int row, int col){
 
 	for(unsigned int i = 0; i < mPlayerList->size(); i++)
 		if(
-			(*mPlayerList)[i]->getNodePositionX() >= bottomBound &&
-			(*mPlayerList)[i]->getNodePositionX() < topBound &&
-			(*mPlayerList)[i]->getNodePositionZ() >= leftBound &&
-			(*mPlayerList)[i]->getNodePositionZ() < rightBound &&
-			(*mPlayerList)[i]->getNodePositionY() >= lowerBound &&
-			(*mPlayerList)[i]->getNodePositionY() < upperBound
+			(*mPlayerList)[i]->getX() >= bottomBound &&
+			(*mPlayerList)[i]->getX() < topBound &&
+			(*mPlayerList)[i]->getZ() >= leftBound &&
+			(*mPlayerList)[i]->getZ() < rightBound &&
+			(*mPlayerList)[i]->getY() >= lowerBound &&
+			(*mPlayerList)[i]->getY() < upperBound
 		)
 			(*mPlayerList)[i]->die();
 

@@ -48,6 +48,7 @@ class LocalPlayer : public OgrePlayer{
 
 		void setPlayerEventListener(PlayerEventListener *pel);
 
+		void win();
 		void die();
 
 	private:

@@ -5,12 +5,12 @@ namespace NetworkMessage{
 	PlayerInput::PlayerInput(Player *player):
 		NetworkMessage(PLAYERINPUT),
 		mNickname(player->getNickname()),
-		mNodeYaw(player->getNodeYaw()),
-		mNodePitch(player->getNodePitch()),
-		mNodeRoll(player->getNodeRoll()),
-		mNodePositionX(player->getNodePositionX()),
-		mNodePositionY(player->getNodePositionY()),
-		mNodePositionZ(player->getNodePositionZ()),
+		mNodeYaw(player->getYaw()),
+		mNodePitch(player->getPitch()),
+		mNodeRoll(player->getRoll()),
+		mNodePositionX(player->getX()),
+		mNodePositionY(player->getY()),
+		mNodePositionZ(player->getZ()),
 		mGoingForward(player->getGoingForward()),
 		mGoingBack(player->getGoingBack()),
 		mGoingLeft(player->getGoingLeft()),
@@ -62,13 +62,13 @@ namespace NetworkMessage{
 
 	std::string PlayerInput::getNickname(){return mNickname;}
 
-	double PlayerInput::getNodeYaw(){return mNodeYaw;}
-	double PlayerInput::getNodePitch(){return mNodePitch;}
-	double PlayerInput::getNodeRoll(){return mNodeRoll;}
+	double PlayerInput::getYaw(){return mNodeYaw;}
+	double PlayerInput::getPitch(){return mNodePitch;}
+	double PlayerInput::getRoll(){return mNodeRoll;}
 
-	double PlayerInput::getNodePositionX(){return mNodePositionX;}
-	double PlayerInput::getNodePositionY(){return mNodePositionY;}
-	double PlayerInput::getNodePositionZ(){return mNodePositionZ;}
+	double PlayerInput::getX(){return mNodePositionX;}
+	double PlayerInput::getY(){return mNodePositionY;}
+	double PlayerInput::getZ(){return mNodePositionZ;}
 
 	bool PlayerInput::getGoingForward(){return mGoingForward;}
 	bool PlayerInput::getGoingBack(){return mGoingBack;}

@@ -5,12 +5,12 @@ Player::Player(std::string nickname):
 	mTopSpeed(300),
 	mTopAccel(1),
 	mFastMove(false),
-	mNodeYaw(0),
-	mNodePitch(0),
-	mNodeRoll(0),
-	mNodePositionX(0),
-	mNodePositionY(0),
-	mNodePositionZ(0),
+	mYaw(0),
+	mPitch(0),
+	mRoll(0),
+	mX(0),
+	mY(0),
+	mZ(0),
 	mGoingForward(false),
 	mGoingBack(false),
 	mGoingLeft(false),
@@ -18,6 +18,7 @@ Player::Player(std::string nickname):
 	mGoingUp(false),
 	mGoingDown(false),
 	mPuttingBomb(false),
+	mHasWon(false),
 	mIsDead(false)
 {
 }
@@ -27,21 +28,24 @@ Player::~Player(){
 
 std::string Player::getNickname(){return mNickname;}
 
-double Player::getNodeYaw(){return mNodeYaw;}
-double Player::getNodePitch(){return mNodePitch;}
-double Player::getNodeRoll(){return mNodeRoll;}
+double Player::getYaw(){return mYaw;}
+double Player::getPitch(){return mPitch;}
+double Player::getRoll(){return mRoll;}
 
-double Player::getNodePositionX(){return mNodePositionX;}
-double Player::getNodePositionY(){return mNodePositionY;}
-double Player::getNodePositionZ(){return mNodePositionZ;}
-void Player::setNodePositionX(double nodePositionX){
-	mNodePositionX = nodePositionX;
-}
-void Player::setNodePositionY(double nodePositionY){
-	mNodePositionY = nodePositionY;
-}
-void Player::setNodePositionZ(double nodePositionZ){
-	mNodePositionZ = nodePositionZ;
+double Player::getX(){return mX;}
+double Player::getY(){return mY;}
+double Player::getZ(){return mZ;}
+void Player::setX(double x){mX = x;}
+void Player::setY(double y){mY = y;}
+void Player::setZ(double z){mZ = z;}
+
+void Player::setStartingPosition(double x, double y, double z){
+	mX = x;
+	mStartingX = x;
+	mY = y;
+	mStartingY = y;
+	mZ = z;
+	mStartingZ = z;
 }
 
 bool Player::getGoingForward(){return mGoingForward;}
@@ -52,5 +56,8 @@ bool Player::getGoingUp(){return mGoingUp;}
 bool Player::getGoingDown(){return mGoingDown;}
 
 bool Player::getPuttingBomb(){return mPuttingBomb;}
+
+void Player::win(){mHasWon = true;}
+bool Player::hasWon(){return mIsDead;}
 void Player::die(){mIsDead = true;}
 bool Player::isDead(){return mIsDead;}

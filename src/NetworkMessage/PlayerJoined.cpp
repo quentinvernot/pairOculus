@@ -7,9 +7,9 @@ namespace NetworkMessage{
 	):
 		NetworkMessage(PLAYERJOINED),
 		mNickname(player->getNickname()),
-		mX(player->getNodePositionX()),
-		mY(player->getNodePositionY()),
-		mZ(player->getNodePositionZ())
+		mX(player->getX()),
+		mY(player->getY()),
+		mZ(player->getZ())
 	{
 		buildSelf();
 	}
@@ -33,9 +33,9 @@ namespace NetworkMessage{
 	}
 
 	std::string PlayerJoined::getNickname(){return mNickname;}
-	double PlayerJoined::getPositionX(){return mX;}
-	double PlayerJoined::getPositionY(){return mY;}
-	double PlayerJoined::getPositionZ(){return mZ;}
+	double PlayerJoined::getX(){return mX;}
+	double PlayerJoined::getY(){return mY;}
+	double PlayerJoined::getZ(){return mZ;}
 
 	void PlayerJoined::buildSelf(){
 		std::ostringstream convert;

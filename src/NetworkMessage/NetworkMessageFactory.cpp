@@ -36,9 +36,9 @@ namespace NetworkMessage{
 					y = atof(parts[4*j+4].c_str());
 					z = atof(parts[4*j+5].c_str());
 
-					playerList[j]->setNodePositionX(x);
-					playerList[j]->setNodePositionY(y);
-					playerList[j]->setNodePositionZ(z);
+					playerList[j]->setX(x);
+					playerList[j]->setY(y);
+					playerList[j]->setZ(z);
 
 				}
 

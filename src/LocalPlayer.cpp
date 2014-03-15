@@ -39,9 +39,9 @@ void LocalPlayer::lookAt(Ogre::Vector3 vec){
 
 	mCameraManager->lookAt(vec);
 
-	mNodeYaw = mCameraManager->getOrientation().getYaw().valueDegrees();
-	mNodePitch = mCameraManager->getOrientation().getPitch().valueDegrees();
-	mNodeRoll = mCameraManager->getOrientation().getRoll().valueDegrees();
+	mYaw = mCameraManager->getOrientation().getYaw().valueDegrees();
+	mPitch = mCameraManager->getOrientation().getPitch().valueDegrees();
+	mRoll = mCameraManager->getOrientation().getRoll().valueDegrees();
 
 	mStartingTarget = vec;
 
@@ -50,7 +50,7 @@ void LocalPlayer::lookAt(Ogre::Vector3 vec){
 bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 
 	mYawCorrection += Ogre::Degree(-arg.state.X.rel * 0.15f);
-	//if(mCameraManager->getCameraMode() != "oculus")
+	if(mCameraManager->getCameraMode() != "oculus")
 		mPitchCorrection += Ogre::Degree(-arg.state.Y.rel * 0.15f);
 
 	if(mPlayerEventListener)
@@ -70,7 +70,7 @@ bool LocalPlayer::injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID i
 
 bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 
-	if(mIsDead)
+	if(mIsDead || mHasWon)
 		return true;
 
 	if (arg.key == OIS::KC_Z || arg.key == OIS::KC_UP)
@@ -116,7 +116,7 @@ bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 
 bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 
-	if(mIsDead)
+	if(mIsDead || mHasWon)
 		return true;
 
 	if (arg.key == OIS::KC_Z || arg.key == OIS::KC_UP)
@@ -181,12 +181,12 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	mBombCooldown -= evt.timeSinceLastFrame;
 
 	if(mPuttingBomb && mBombCooldown <= 0) {
-		mBombManager->add(mNickname + "bomb", Ogre::Vector3(getNodePositionX() ,getNodePositionY() ,getNodePositionZ()) + getForwardDirection());
+		mBombManager->add(mNickname + "bomb", Ogre::Vector3(getX() ,getY() ,getZ()) + getForwardDirection());
 		mBombCooldown = 1;
 	}
 
 	mCameraManager->setPosition(
-		Ogre::Vector3(mNodePositionX, mNodePositionY + 0.7, mNodePositionZ)
+		Ogre::Vector3(mX, mY + 0.7, mZ)
 	);
 
 	mCameraManager->yaw(mYawCorrection);
@@ -203,7 +203,35 @@ void LocalPlayer::setPlayerEventListener(PlayerEventListener *pel){
 	mPlayerEventListener = pel;
 }
 
+void LocalPlayer::win(){
+
+	if(mIsDead)
+		return;
+
+	mHasWon = true;
+
+	mGoingForward = false;
+	mGoingBack = false;
+	mGoingLeft = false;
+	mGoingRight = false;
+	mGoingUp = false;
+	mGoingDown = false;
+	mFastMove = false;
+
+	mX = mStartingX;
+	mY = mStartingY + 10;
+	mZ = mStartingZ;
+
+	mWasTeleported = true;
+
+	if(mPlayerEventListener)
+		mPlayerEventListener->playerInput();
+
+}
 void LocalPlayer::die(){
+
+	if(mHasWon)
+		return;
 
 	mIsDead = true;
 
@@ -215,9 +243,9 @@ void LocalPlayer::die(){
 	mGoingDown = false;
 	mFastMove = false;
 
-	mNodePositionX = 0;
-	mNodePositionY = 10;
-	mNodePositionZ = 0;
+	mX = mStartingX;
+	mY = mStartingY + 10;
+	mZ = mStartingZ;
 
 	mWasTeleported = true;
 

@@ -12,16 +12,17 @@ class Player{
 
 		std::string getNickname();
 
-		double getNodeYaw();
-		double getNodePitch();
-		double getNodeRoll();
+		double getYaw();
+		double getPitch();
+		double getRoll();
 
-		virtual double getNodePositionX();
-		virtual double getNodePositionY();
-		virtual double getNodePositionZ();
-		virtual void setNodePositionX(double nodePositionX);
-		virtual void setNodePositionY(double nodePositionY);
-		virtual void setNodePositionZ(double nodePositionZ);
+		virtual double getX();
+		virtual double getY();
+		virtual double getZ();
+		virtual void setX(double x);
+		virtual void setY(double y);
+		virtual void setZ(double z);
+		virtual void setStartingPosition(double x, double y, double z);
 
 		bool getGoingForward();
 		bool getGoingBack();
@@ -32,6 +33,8 @@ class Player{
 
 		bool getPuttingBomb();
 
+		virtual void win();
+		virtual bool hasWon();
 		virtual void die();
 		virtual bool isDead();
 
@@ -44,13 +47,16 @@ class Player{
 
 		bool mFastMove;
 
-		double mNodeYaw;
-		double mNodePitch;
-		double mNodeRoll;
+		double mYaw;
+		double mPitch;
+		double mRoll;
 
-		double mNodePositionX;
-		double mNodePositionY;
-		double mNodePositionZ;
+		double mX;
+		double mY;
+		double mZ;
+		double mStartingX;
+		double mStartingY;
+		double mStartingZ;
 
 		bool mGoingForward;
 		bool mGoingBack;
@@ -61,6 +67,7 @@ class Player{
 
 		bool mPuttingBomb;
 
+		bool mHasWon;
 		bool mIsDead;
 
 };

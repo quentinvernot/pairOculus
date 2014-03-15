@@ -48,7 +48,7 @@ bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	mBombCooldown -= evt.timeSinceLastFrame;
 
 	if(mPuttingBomb && mBombCooldown <= 0) {
-		mBombManager->add(mNickname + "bomb", Ogre::Vector3(getNodePositionX() ,getNodePositionY() ,getNodePositionZ()) + getForwardDirection());
+		mBombManager->add(mNickname + "bomb", Ogre::Vector3(getX() ,getY() ,getZ()) + getForwardDirection());
 		mBombCooldown = 1;
 	}
 
@@ -61,8 +61,8 @@ bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 		mBody->getBulletRigidBody()->proceedToTransform(
 			btTransform(
-				btQuaternion(Ogre::Degree(mNodeYaw + 180).valueRadians(), 0, 0),
-				btVector3(mNodePositionX, mNodePositionY, mNodePositionZ)
+				btQuaternion(Ogre::Degree(mYaw + 180).valueRadians(), 0, 0),
+				btVector3(mX, mY, mZ)
 			)
 		);
 

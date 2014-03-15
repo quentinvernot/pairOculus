@@ -33,13 +33,13 @@ namespace NetworkMessage{
 
 			std::string getNickname();
 
-			double getNodeYaw();
-			double getNodePitch();
-			double getNodeRoll();
+			double getYaw();
+			double getPitch();
+			double getRoll();
 
-			double getNodePositionX();
-			double getNodePositionY();
-			double getNodePositionZ();
+			double getX();
+			double getY();
+			double getZ();
 
 			bool getGoingForward();
 			bool getGoingBack();

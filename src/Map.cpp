@@ -115,24 +115,16 @@ void Map::setStartingPosition(int pos, Player *player) {
 
 	switch (pos) {
 		case 0:
-			player->setNodePositionX(1.5f * mScale);
-			player->setNodePositionY(1);
-			player->setNodePositionZ(1.5f * mScale);
+			player->setStartingPosition(1.5f * mScale, 1, 1.5f * mScale);
 			break;
 		case 1:
-			player->setNodePositionX((mHeight-1.5f) * mScale);
-			player->setNodePositionY(1);
-			player->setNodePositionZ((mWidth-1.5f) * mScale);
+			player->setStartingPosition((mHeight-1.5f) * mScale, 1, (mWidth-1.5f) * mScale);
 			break;
 		case 2:
-			player->setNodePositionX((mHeight-1.5f) * mScale);
-			player->setNodePositionY(1);
-			player->setNodePositionZ(1.5f * mScale);
+			player->setStartingPosition((mHeight-1.5f) * mScale, 1, 1.5f * mScale);
 			break;
 		case 3:
-			player->setNodePositionX(1.5f * mScale);
-			player->setNodePositionY(1);
-			player->setNodePositionZ((mWidth-1.5f) * mScale);
+			player->setStartingPosition(1.5f * mScale, 1, (mWidth-1.5f) * mScale);
 			break;
 		default:
 			std::cerr << "ERROR Position \"" << pos << "\" is invalid." << std::endl;

@@ -19,9 +19,9 @@ namespace NetworkMessage{
 
 		for(unsigned int i = 0; i < playerList->size(); i++){
 			convert << mPlayerList[i]->getNickname() << "\n";
-			convert << mPlayerList[i]->getNodePositionX() << "\n";
-			convert << mPlayerList[i]->getNodePositionY() << "\n";
-			convert << mPlayerList[i]->getNodePositionZ() << "\n";
+			convert << mPlayerList[i]->getX() << "\n";
+			convert << mPlayerList[i]->getY() << "\n";
+			convert << mPlayerList[i]->getZ() << "\n";
 		}
 
 		convert << mMapHeight << "\n";
