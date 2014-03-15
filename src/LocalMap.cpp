@@ -130,9 +130,6 @@ int LocalMap::getCol(Ogre::Vector3 pos){
 
 }
 
-void LocalMap::viewMap() {
-}
-
 void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 
 	if(pos.y < 0 || pos.y >= mScale/3) //above or below the map
@@ -154,10 +151,12 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 			if(mMap[row + i][col] == EMPTY)
 				searchAndDestroyObjects(row + i, col);
 
-			destroyBlock(row + i, col);
-
-			if(isBreakable(row + i, col))
+			if(isBreakable(row + i, col)){
+				destroyBlock(row + i, col);
 				i = range;
+			}
+			else
+				destroyBlock(row + i, col);
 
 			i++;
 		}
@@ -168,10 +167,12 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 			if(mMap[row + i][col] == EMPTY)
 				searchAndDestroyObjects(row + i, col);
 
-			destroyBlock(row + i, col);
-
-			if(isBreakable(row + i, col))
+			if(isBreakable(row + i, col)){
+				destroyBlock(row + i, col);
 				i = range;
+			}
+			else
+				destroyBlock(row + i, col);
 
 			i--;
 		}
@@ -182,10 +183,12 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 			if(mMap[row][col + i] == EMPTY)
 				searchAndDestroyObjects(row, col + i);
 
-			destroyBlock(row, col + i);
-
-			if(isBreakable(row, col + i))
+			if(isBreakable(row, col + i)){
+				destroyBlock(row, col + i);
 				i = range;
+			}
+			else
+				destroyBlock(row, col + i);
 
 			i++;
 		}
@@ -196,10 +199,12 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 			if(mMap[row][col + i] == EMPTY)
 				searchAndDestroyObjects(row, col + i);
 
-			destroyBlock(row, col + i);
-
-			if(isBreakable(row , col + i))
+			if(isBreakable(row, col + i)){
+				destroyBlock(row, col + i);
 				i = range;
+			}
+			else
+				destroyBlock(row, col + i);
 
 			i--;
 		}

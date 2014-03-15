@@ -1,6 +1,8 @@
 #ifndef LOCALMAP_H
 #define LOCALMAP_H
 
+#include <list>
+
 #include <OgreManualObject.h>
 
 #include <OgreBulletDynamicsRigidBody.h>
@@ -36,7 +38,6 @@ class LocalMap : public Map, public ExplosionListener {
 		//Methodes
 		int getRow(Ogre::Vector3 pos);
 		int getCol(Ogre::Vector3 pos);
-		void viewMap();
 
 		void createExplosion(Ogre::Vector3 pos, int range);
 		void destroyBlock(unsigned int i, unsigned int j);
@@ -47,6 +48,8 @@ class LocalMap : public Map, public ExplosionListener {
 		OgreBulletDynamics::RigidBody ***mBodies;
 		OgrePlayerList *mPlayerList;
 		BombManager *mBombManager;
+
+		std::list<Ogre::SceneNode *> mCrumblingBlocks;
 
 };
 
