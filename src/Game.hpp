@@ -125,7 +125,6 @@ class Game : public Ogre::FrameListener, public PlayerEventListener{
 		bool mSceneCreated;
 		bool mGameRunning;
 		bool mShutDownFlag;
-		double cd;
 
 };
 

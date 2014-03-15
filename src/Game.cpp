@@ -23,8 +23,7 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mGameSetUp(false),
 	mSceneCreated(false),
 	mGameRunning(false),
-	mShutDownFlag(false),
-	cd(0.5)
+	mShutDownFlag(false)
 {
 	if(mAddress != "")
 		mOnlineMode = true;
@@ -544,13 +543,6 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
 
 		mBombManager->frameRenderingQueued();
-
-		cd -= evt.timeSinceLastFrame;
-
-		if(cd < 0){
-			mBombManager->add("Target6", Ogre::Vector3(10,5,10));
-			cd = 0.5;
-		}
 
 		mBombManager->frameRenderingQueued();
 		mExplosionManager->frameRenderingQueued(evt);
