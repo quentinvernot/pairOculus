@@ -16,7 +16,6 @@ namespace NetworkMessage{
 			std::string getNickname();
 
 		private:
-			//methods
 			//arguments
 			std::string mNickname;
 

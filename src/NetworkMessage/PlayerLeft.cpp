@@ -3,7 +3,8 @@
 namespace NetworkMessage{
 
 	PlayerLeft::PlayerLeft(std::string nickname):
-		NetworkMessage(PLAYERLEFT)
+		NetworkMessage(PLAYERLEFT),
+		mNickname(nickname)
 	{
 		mBody = nickname + "\n";
 	}
