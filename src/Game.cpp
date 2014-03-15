@@ -244,7 +244,7 @@ void Game::injectGameEnd(NetworkMessage::GameEnd *message){
 
 	for(unsigned int i = 0; i < mPlayerList->size(); i++){
 		if(!(*mPlayerList)[i]->isDead()){
-			(*mPlayerList)[i]->win()
+			(*mPlayerList)[i]->win();
 			std::cout << (*mPlayerList)[i]->getNickname() << " wins !" << std::endl;
 		}
 	}

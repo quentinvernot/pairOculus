@@ -70,7 +70,7 @@ bool LocalPlayer::injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID i
 
 bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 
-	if(mIsDead || mHasWon)
+	if(mIsDead || mHasWon)
 		return true;
 
 	if (arg.key == OIS::KC_Z || arg.key == OIS::KC_UP)
@@ -116,7 +116,7 @@ bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 
 bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 
-	if(mIsDead || mHasWon)
+	if(mIsDead || mHasWon)
 		return true;
 
 	if (arg.key == OIS::KC_Z || arg.key == OIS::KC_UP)
