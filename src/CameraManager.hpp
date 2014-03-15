@@ -36,6 +36,9 @@ class CameraManager{
 		void setOrientation(Ogre::Quaternion ori);
 		void lookAt(Ogre::Vector3 vec);
 
+		void increaseIPD();
+		void decreaseIPD();
+
 		Ogre::Vector3 getDirection();
 		Ogre::Vector3 getUp();
 		Ogre::Vector3 getRight();

@@ -166,6 +166,15 @@ void CameraManager::lookAt(Ogre::Vector3 vec){
 
 }
 
+void CameraManager::increaseIPD(){
+	if(mOculusCamera)
+		mOculusCamera->increaseIPD();
+}
+void CameraManager::decreaseIPD(){
+	if(mOculusCamera)
+		mOculusCamera->decreaseIPD();
+}
+
 Ogre::Vector3 CameraManager::getDirection(){
 
 	if(mCameraMode == "oculus")

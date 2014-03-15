@@ -108,6 +108,10 @@ bool Game::injectKeyDown(const OIS::KeyEvent &arg){
 
 	if(arg.key == OIS::KC_ESCAPE)
 		mShutDownFlag = true;
+	if(arg.key == OIS::KC_P)
+		mCameraManager->increaseIPD();
+	if(arg.key == OIS::KC_M)
+		mCameraManager->decreaseIPD();
 	if(mOnlineMode && arg.key == OIS::KC_R)
 		mGCListener->sendMessage(
 			mNMFactory->buildMessage(NetworkMessage::GAMESTART)
@@ -392,7 +396,7 @@ bool Game::bulletSetup(){
 	debugDrawer->setDrawWireframe(true);	// we want to see the Bullet containers
 
 	mWorld->setDebugDrawer(debugDrawer);
-	//mWorld->setShowDebugShapes(true);		// enable it if you want to see the Bullet containers
+	mWorld->setShowDebugShapes(true);		// enable it if you want to see the Bullet containers
 	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
 	node->attachObject(static_cast <SimpleRenderable *> (debugDrawer));
 
