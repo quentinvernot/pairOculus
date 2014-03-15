@@ -9,10 +9,7 @@ Map::Map(unsigned int height, unsigned int width, time_t seed):
 }
 
 Map::~Map() {
-	for(unsigned int i = 0; i < mHeight; i++)
-		delete mMap[i];
-
-	delete mMap;
+	delete[] mMap;
 }
 
 Map::PrintType** Map::generateMap() {
