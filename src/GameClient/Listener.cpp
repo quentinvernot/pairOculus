@@ -43,7 +43,6 @@ namespace GameClient{
 
 	void Listener::stop(){
 		delete mConnector;
-		mThread->join();
 	}
 
 	void Listener::sendMessage(NetworkMessage::NetworkMessage *message){

@@ -39,8 +39,10 @@ Game::~Game(){
 	delete mCameraManager;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Local Map");
 	delete mLocalMap;
-	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Local Player");
-	delete mLocalPlayer;
+	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Players");
+	for(unsigned int i = 0; i < mPlayerList->size(); i++)
+		delete (*mPlayerList)[i];
+	delete mPlayerList;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting Game Window");
 	delete mGameWindow;
 	Ogre::LogManager::getSingletonPtr()->logMessage("Deleting OGRE Root");
@@ -225,9 +227,10 @@ void Game::injectPlayerJoined(NetworkMessage::PlayerJoined *message){
 void Game::injectPlayerLeft(NetworkMessage::PlayerLeft *message){
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Removing player");
-	mPlayerList->removePlayer(
-		mPlayerList->getPlayerByName(message->getNickname())
-	);
+	if(mPlayerList->getPlayerByName(message->getNickname()))
+		mPlayerList->getPlayerByName(
+			message->getNickname()
+		)->die();
 
 }
 
@@ -270,6 +273,9 @@ void Game::injectPlayerKilled(NetworkMessage::PlayerKilled *message){
 
 bool Game::playerInput(){
 
+	if(!mOnlineMode || mGCListener->isClosed())
+		return false;
+
 	mGCListener->sendMessage(
 		mNMFactory->buildMessage(NetworkMessage::PLAYERINPUT, mLocalPlayer)
 	);
@@ -279,6 +285,9 @@ bool Game::playerInput(){
 }
 
 bool Game::playerDied(){
+
+	if(!mOnlineMode || mGCListener->isClosed())
+		return false;
 
 	mGCListener->sendMessage(
 		mNMFactory->buildMessage(NetworkMessage::PLAYERKILLED, mNickname)
@@ -535,19 +544,16 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 	if(mGameRunning){
 
-		if(!mSceneCreated){
+		if(!mSceneCreated)
 			createScene();
-		}
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
 
 		mBombManager->frameRenderingQueued();
-
-		mBombManager->frameRenderingQueued();
 		mExplosionManager->frameRenderingQueued(evt);
-
 		mWorld->stepSimulation(evt.timeSinceLastFrame);
+
 	}
 
 	return true;

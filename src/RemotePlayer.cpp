@@ -76,3 +76,49 @@ bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 	return true;
 
 }
+
+void RemotePlayer::win(){
+
+	if(mIsDead)
+		return;
+
+	mHasWon = true;
+
+	mGoingForward = false;
+	mGoingBack = false;
+	mGoingLeft = false;
+	mGoingRight = false;
+	mGoingUp = false;
+	mGoingDown = false;
+	mFastMove = false;
+
+	mX = mStartingX;
+	mY = mStartingY + 10;
+	mZ = mStartingZ;
+
+	mWasTeleported = true;
+
+}
+
+void RemotePlayer::die(){
+
+	if(mHasWon)
+		return;
+
+	mIsDead = true;
+
+	mGoingForward = false;
+	mGoingBack = false;
+	mGoingLeft = false;
+	mGoingRight = false;
+	mGoingUp = false;
+	mGoingDown = false;
+	mFastMove = false;
+
+	mX = mStartingX;
+	mY = mStartingY + 10;
+	mZ = mStartingZ;
+
+	mWasTeleported = true;
+
+}

@@ -7,8 +7,7 @@ NetworkIO::NetworkIO(boost::asio::io_service& io_service):
 	mMessageBuffer(""),
 	mNMFactory(new NetworkMessage::NetworkMessageFactory()),
 	mMessageList(),
-	mIsClosed(false),
-	mWriting(false)
+	mIsClosed(false)
 {
 	mHeaderBuffer = new char[NetworkMessage::HEADERLENGTH+1];
 	mBodyBuffer = new char[NetworkMessage::MAXBODYLENGTH+1];
@@ -28,21 +27,26 @@ void NetworkIO::start(){
 }
 
 void NetworkIO::close(){
+	mSocket.shutdown(mSocket.shutdown_both);
+	mSocket.close();
 	mIsClosed = true;
 }
 
 void NetworkIO::sendMessage(NetworkMessage::NetworkMessage *message){
 
-	mMessageList.push_back(*message);
+	if(mIsClosed)
+		return;
+	
+	mMessageList.push_back(message);
 
-	if(mMessageList.size() < 2)
+	if(mMessageList.size() == 1)
 		handleWrite(boost::system::error_code());
 
 }
 
 void NetworkIO::handleReadHeader(const boost::system::error_code& error){
 
-	if(!error){
+	if(!mIsClosed && !error){
 		
 		mMessageBuffer = mHeaderBuffer;
 		std::fill_n(mBodyBuffer, (int)NetworkMessage::MAXBODYLENGTH+1, 0);
@@ -69,7 +73,7 @@ void NetworkIO::handleReadHeader(const boost::system::error_code& error){
 
 void NetworkIO::handleReadBody(const boost::system::error_code& error){
 
-	if(!error){
+	if(!mIsClosed && !error){
 
 		if(mMessageBuffer != ""){
 			mMessageBuffer += mBodyBuffer;
@@ -102,26 +106,20 @@ void NetworkIO::handleWrite(const boost::system::error_code& error){
 
 	using namespace NetworkMessage;
 
-	if(!error){
+	if(!mIsClosed && !error){
 
-		if(mMessageList.size() == 0){
-			mWriting = false;
+		if(mMessageList.size() == 0)
 			return;
-		}
 
-		NetworkMessage::NetworkMessage nm = mMessageList.front();
 		char *str = new char[NetworkMessage::HEADERLENGTH + NetworkMessage::MAXBODYLENGTH + 1];
-		strcpy(str, nm.getMessage().c_str());
-		int length = nm.getMessage().length();
+		strcpy(str, mMessageList.front()->getMessage().c_str());
+		int length = mMessageList.front()->getMessage().length();
+		delete mMessageList.front();
 		mMessageList.pop_front();
-		mWriting = true;
 
 		boost::asio::async_write(
 			mSocket,
-			boost::asio::buffer(
-				str,
-				length
-			),
+			boost::asio::buffer(str, length),
 			boost::bind(
 				&NetworkIO::handleWrite,
 				this,
@@ -132,4 +130,5 @@ void NetworkIO::handleWrite(const boost::system::error_code& error){
 	else{
 		close();
 	}
+
 }

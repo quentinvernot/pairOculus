@@ -56,8 +56,8 @@ class LocalPlayer : public OgrePlayer{
 		CameraManager *mCameraManager;
 		double mBombCooldown;
 		PlayerEventListener *mPlayerEventListener;
-		Ogre::Vector3 mStartingPosition;
 		Ogre::Vector3 mStartingTarget;
+		bool mHadUsefullInput;
 
 };
 

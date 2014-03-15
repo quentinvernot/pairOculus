@@ -15,9 +15,11 @@ namespace GameClient{
 		mClose(close),
 		mReceive(receive)
 	{
+		close();
 	}
 
 	Connector::~Connector(){
+		close();
 	}
 
 	void Connector::start(){
@@ -33,7 +35,15 @@ namespace GameClient{
 	}
 
 	void Connector::close(){
+
+		if(mSocket.is_open()){
+			mSocket.shutdown(mSocket.shutdown_both);
+			mSocket.close();
+		}
+
 		mClose();
+		mIsClosed = true;
+
 	}
 
 	void Connector::handleReceive(NetworkMessage::NetworkMessage *message){

@@ -1,5 +1,5 @@
-#ifndef __NETWORKCOMMONNETWORKIO_H
-#define __NETWORKCOMMONNETWORKIO_H
+#ifndef __NETWORKIO_H
+#define __NETWORKIO_H
 
 #include <cstring>
 #include <list>
@@ -41,10 +41,9 @@ class NetworkIO{
 		char *mBodyBuffer;
 		std::string mMessageBuffer;
 		NetworkMessage::NetworkMessageFactory *mNMFactory;
-		std::list<NetworkMessage::NetworkMessage> mMessageList;
+		std::list<NetworkMessage::NetworkMessage *> mMessageList;
 		bool mIsClosed;
-		bool mWriting;
 
 };
 
-#endif //__NETWORKCOMMONNETWORKIO_H
+#endif //__NETWORKIO_H

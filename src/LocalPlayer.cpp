@@ -9,7 +9,9 @@ LocalPlayer::LocalPlayer(
 	OgrePlayer(name, world, bombManager),
 	mCameraManager(cameraManager),
 	mBombCooldown(0),
-	mPlayerEventListener(0)
+	mPlayerEventListener(0),
+	mStartingTarget(Ogre::Vector3::ZERO),
+	mHadUsefullInput(false)
 {
 }
 
@@ -53,8 +55,7 @@ bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 	if(mCameraManager->getCameraMode() != "oculus")
 		mPitchCorrection += Ogre::Degree(-arg.state.Y.rel * 0.15f);
 
-	if(mPlayerEventListener)
-		mPlayerEventListener->playerInput();
+	mHadUsefullInput = true;
 
 	return true;
 
@@ -91,24 +92,20 @@ bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 		mFastMove = true;
 
 	if(
-		mPlayerEventListener &&
-		(
-			arg.key == OIS::KC_Z ||
-			arg.key == OIS::KC_UP ||
-			arg.key == OIS::KC_S ||
-			arg.key == OIS::KC_DOWN ||
-			arg.key == OIS::KC_Q ||
-			arg.key == OIS::KC_LEFT ||
-			arg.key == OIS::KC_D ||
-			arg.key == OIS::KC_RIGHT ||
-			arg.key == OIS::KC_E ||
-			arg.key == OIS::KC_SPACE ||
-			arg.key == OIS::KC_PGUP ||
-			arg.key == OIS::KC_PGDOWN
-		)
+		arg.key == OIS::KC_Z ||
+		arg.key == OIS::KC_UP ||
+		arg.key == OIS::KC_S ||
+		arg.key == OIS::KC_DOWN ||
+		arg.key == OIS::KC_Q ||
+		arg.key == OIS::KC_LEFT ||
+		arg.key == OIS::KC_D ||
+		arg.key == OIS::KC_RIGHT ||
+		arg.key == OIS::KC_E ||
+		arg.key == OIS::KC_SPACE ||
+		arg.key == OIS::KC_PGUP ||
+		arg.key == OIS::KC_PGDOWN
 	)
-		mPlayerEventListener->playerInput();
-
+		mHadUsefullInput = true;
 
 	return true;
 
@@ -137,23 +134,20 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 		mFastMove = false;
 
 	if(
-		mPlayerEventListener &&
-		(
-			arg.key == OIS::KC_Z ||
-			arg.key == OIS::KC_UP ||
-			arg.key == OIS::KC_S ||
-			arg.key == OIS::KC_DOWN ||
-			arg.key == OIS::KC_Q ||
-			arg.key == OIS::KC_LEFT ||
-			arg.key == OIS::KC_D ||
-			arg.key == OIS::KC_RIGHT ||
-			arg.key == OIS::KC_E ||
-			arg.key == OIS::KC_SPACE ||
-			arg.key == OIS::KC_PGUP ||
-			arg.key == OIS::KC_PGDOWN
-		)
+		arg.key == OIS::KC_Z ||
+		arg.key == OIS::KC_UP ||
+		arg.key == OIS::KC_S ||
+		arg.key == OIS::KC_DOWN ||
+		arg.key == OIS::KC_Q ||
+		arg.key == OIS::KC_LEFT ||
+		arg.key == OIS::KC_D ||
+		arg.key == OIS::KC_RIGHT ||
+		arg.key == OIS::KC_E ||
+		arg.key == OIS::KC_SPACE ||
+		arg.key == OIS::KC_PGUP ||
+		arg.key == OIS::KC_PGDOWN
 	)
-		mPlayerEventListener->playerInput();
+		mHadUsefullInput = true;
 
 	return true;
 
@@ -164,9 +158,7 @@ bool LocalPlayer::injectHeadMove(const Ogre::Vector3 &evt){
 	mYawCorrection += Ogre::Radian(evt.x);
 	mPitchCorrection  += Ogre::Radian(evt.y);
 	mRollCorrection += Ogre::Radian(evt.z);
-
-	if(mPlayerEventListener)
-		mPlayerEventListener->playerInput();
+	mHadUsefullInput = true;
 
 	return true;
 
@@ -185,15 +177,18 @@ bool LocalPlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		mBombCooldown = 1;
 	}
 
-	mCameraManager->setPosition(
-		Ogre::Vector3(mX, mY + 0.7, mZ)
-	);
+	mCameraManager->setPosition(Ogre::Vector3(mX, mY + 0.7, mZ));
 
 	mCameraManager->yaw(mYawCorrection);
 	mCameraManager->pitch(mPitchCorrection);
 	mCameraManager->roll(mRollCorrection);
 
 	resetCorrection();
+
+	if(mPlayerEventListener && mHadUsefullInput){
+		mPlayerEventListener->playerInput();
+		mHadUsefullInput = false;
+	}
 
 	return true;
 
@@ -228,6 +223,7 @@ void LocalPlayer::win(){
 		mPlayerEventListener->playerInput();
 
 }
+
 void LocalPlayer::die(){
 
 	if(mHasWon)
