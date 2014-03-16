@@ -52,8 +52,17 @@ void LocalPlayer::lookAt(Ogre::Vector3 vec){
 bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 
 	mYawCorrection += Ogre::Degree(-arg.state.X.rel * 0.15f);
-	if(mCameraManager->getCameraMode() != "oculus")
+
+	if(mCameraManager->getCameraMode() != "oculus"){
+
 		mPitchCorrection += Ogre::Degree(-arg.state.Y.rel * 0.15f);
+		if(
+			(Ogre::Degree(mPitch) + mPitchCorrection).valueDegrees() < -90 ||
+			(Ogre::Degree(mPitch) + mPitchCorrection).valueDegrees() > 90
+		)
+			mPitchCorrection = 0;
+
+	}
 
 	mHadUsefullInput = true;
 
