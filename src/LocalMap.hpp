@@ -1,7 +1,7 @@
 #ifndef LOCALMAP_H
 #define LOCALMAP_H
 
-#include <list>
+#include <deque>
 
 #include <OgreManualObject.h>
 
@@ -33,6 +33,7 @@ class LocalMap : public Map, public ExplosionListener {
 
 		Ogre::Vector3 getMapCenter();
 		bool bombExploded(Ogre::Vector3 position, int range);
+		void frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 	private:
 		//Methodes
@@ -49,7 +50,7 @@ class LocalMap : public Map, public ExplosionListener {
 		OgrePlayerList *mPlayerList;
 		BombManager *mBombManager;
 
-		std::list<Ogre::SceneNode *> mCrumblingBlocks;
+		std::deque<Ogre::SceneNode *> mCrumblingBlocks;
 
 };
 

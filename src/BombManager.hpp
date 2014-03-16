@@ -15,10 +15,7 @@ class BombManager{
 
 	public:
 		//Methods
-		BombManager(
-			OgreBulletDynamics::DynamicsWorld *world,
-			ExplosionManager *explosionManager
-		);
+		BombManager(OgreBulletDynamics::DynamicsWorld *world);
 		~BombManager();
 
 		void add(
@@ -27,7 +24,7 @@ class BombManager{
 		);
 		void detonate(unsigned int i);
 
-		void frameRenderingQueued();
+		void frameRenderingQueued(const Ogre::FrameEvent &evt);
 		unsigned int size();
 		Bomb *operator[](unsigned int i);
 

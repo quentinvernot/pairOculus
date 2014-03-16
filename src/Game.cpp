@@ -12,7 +12,6 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mLocalPlayer(0),
 	mPlayerList(new OgrePlayerList()),
 	mBombManager(0),
-	mExplosionManager(0),
 	mLocalMap(0),
 	mAddress(address),
 	mPort(port),
@@ -167,8 +166,7 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 	PlayerList *pl = message->getPlayerList();
 	OgrePlayer *tmp;
 
-	mExplosionManager = new ExplosionManager(mWorld);
-	mBombManager = new BombManager(mWorld, mExplosionManager);
+	mBombManager = new BombManager(mWorld);
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Local Map");
 	mLocalMap = new LocalMap(
@@ -376,8 +374,7 @@ bool Game::networkSetup(){
 
 bool Game::offlineSetup(){
 
-	mExplosionManager = new ExplosionManager(mWorld);
-	mBombManager = new BombManager(mWorld, mExplosionManager);
+	mBombManager = new BombManager(mWorld);
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Generating Local Map");
 	mLocalMap = new LocalMap(mWorld, mPlayerList, mBombManager, 15, 15);
@@ -550,8 +547,8 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);
 
-		mBombManager->frameRenderingQueued();
-		mExplosionManager->frameRenderingQueued(evt);
+		mLocalMap->frameRenderingQueued(evt);
+		mBombManager->frameRenderingQueued(evt);
 		mWorld->stepSimulation(evt.timeSinceLastFrame);
 
 	}

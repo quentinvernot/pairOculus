@@ -13,9 +13,7 @@ class ExplosionManager{
 
 	public:
 		//Methods
-		ExplosionManager(
-			OgreBulletDynamics::DynamicsWorld *world
-		);
+		ExplosionManager(OgreBulletDynamics::DynamicsWorld *world);
 		~ExplosionManager();
 
 		void add(std::string owner, Ogre::Vector3 position);

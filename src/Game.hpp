@@ -111,7 +111,6 @@ class Game : public Ogre::FrameListener, public PlayerEventListener{
 		LocalPlayer *mLocalPlayer;
 		OgrePlayerList *mPlayerList;
 		BombManager *mBombManager;
-		ExplosionManager *mExplosionManager;
 		LocalMap *mLocalMap;
 
 		std::string mAddress;

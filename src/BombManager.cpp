@@ -1,11 +1,8 @@
 #include "BombManager.hpp"
 
-BombManager::BombManager(
-	OgreBulletDynamics::DynamicsWorld *world,
-	ExplosionManager *explosionManager
-):
+BombManager::BombManager(OgreBulletDynamics::DynamicsWorld *world):
 	mWorld(world),
-	mExplosionManager(explosionManager),
+	mExplosionManager(new ExplosionManager(mWorld)),
 	mBombPlaced(0),
 	mExplosionListener(0)
 {
@@ -50,7 +47,7 @@ void BombManager::detonate(unsigned int i){
 
 }
 
-void BombManager::frameRenderingQueued(){
+void BombManager::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 	while(mNewBombs.size() > 0){
 		mNewBombs.front()->generateGraphics();
@@ -62,6 +59,8 @@ void BombManager::frameRenderingQueued(){
 
 	while(mActiveBombs.size() > 0 && mActiveBombs.front()->hasExploded(now))
 		detonate(0);
+
+	mExplosionManager->frameRenderingQueued(evt);
 
 }
 

@@ -17,7 +17,8 @@ LocalMap::LocalMap(
 	mBombManager->setExplosionListener(this);
 }
 
-LocalMap::~LocalMap() {
+LocalMap::~LocalMap(){
+	mCrumblingBlocks.clear();
 }
 
 void LocalMap::generate() {
@@ -112,6 +113,25 @@ bool LocalMap::bombExploded(Ogre::Vector3 position, int range){
 	return true;
 }
 
+void LocalMap::frameRenderingQueued(const Ogre::FrameEvent &evt){
+
+	Ogre::Vector3 currentVelocity(0, -4 * mScale * evt.timeSinceLastFrame, 0);
+
+	for(unsigned int i = 0; i < mCrumblingBlocks.size(); i++)
+		mCrumblingBlocks[i]->translate(currentVelocity);
+
+	while(
+		mCrumblingBlocks.size() > 0 && 
+		mCrumblingBlocks.front()->getPosition().y < -mScale/2
+	){
+			mWorld->getSceneManager()->destroyManualObject(
+				mCrumblingBlocks.front()->getAttachedObject(0)->getName()
+			);
+			mCrumblingBlocks.pop_front();
+	}
+
+}
+
 int LocalMap::getRow(Ogre::Vector3 pos){
 
 	if(pos.x < 0 || pos.x >= mHeight * mScale)
@@ -176,7 +196,7 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 
 			i--;
 		}
-		
+
 		i = 1;
 		while(range - i > 0 && !isUnbreakable(row, col + i)){
 
@@ -218,12 +238,13 @@ void LocalMap::destroyBlock(unsigned int i, unsigned int j){
 	stringstream genName;
 
 	mMap[i][j] = EMPTY;
-	genName << "manualBlock_" << i << "_" << j;
-	mWorld->getSceneManager()->destroyManualObject(genName.str());
 
 	if(mBodies[i][j] != 0){
+
+		mCrumblingBlocks.push_back(mBodies[i][j]->getSceneNode());
 		delete mBodies[i][j];
 		mBodies[i][j] = 0;
+
 	}
 
 }
