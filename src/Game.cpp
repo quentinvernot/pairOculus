@@ -22,6 +22,7 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mGameSetUp(false),
 	mSceneCreated(false),
 	mGameRunning(false),
+	mGameEnded(false),
 	mShutDownFlag(false)
 {
 	if(mAddress != "")
@@ -188,9 +189,11 @@ void Game::injectJoinAccept(NetworkMessage::JoinAccept *message){
 		else
 			tmp = new RemotePlayer((*pl)[i]->getNickname(), mWorld, mBombManager);
 
-		tmp->setX((*pl)[i]->getX());
-		tmp->setY((*pl)[i]->getY());
-		tmp->setZ((*pl)[i]->getZ());
+		tmp->setStartingPosition(
+			(*pl)[i]->getX(),
+			(*pl)[i]->getY(),
+			(*pl)[i]->getZ()
+		);
 
 		mPlayerList->addPlayer(tmp);
 
@@ -213,9 +216,11 @@ void Game::injectPlayerJoined(NetworkMessage::PlayerJoined *message){
 		Ogre::LogManager::getSingletonPtr()->logMessage("Adding new player");
 
 		RemotePlayer *rp = new RemotePlayer(message->getNickname(), mWorld, mBombManager);
-		rp->setX(message->getX());
-		rp->setY(message->getY());
-		rp->setZ(message->getZ());
+		rp->setStartingPosition(
+			message->getX(),
+			message->getY(),
+			message->getZ()
+		);
 		mPlayerList->addPlayer(rp);
 
 	}
@@ -240,7 +245,7 @@ void Game::injectGameStart(NetworkMessage::GameStart *message){
 void Game::injectGameEnd(NetworkMessage::GameEnd *message){
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Ending game");
-	mGameRunning = false;
+	mGameEnded = true;
 
 	for(unsigned int i = 0; i < mPlayerList->size(); i++){
 		if(!(*mPlayerList)[i]->isDead()){
