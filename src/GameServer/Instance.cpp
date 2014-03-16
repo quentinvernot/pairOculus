@@ -267,7 +267,7 @@ namespace GameServer{
 	){
 
 		std::cout << "Received PLAYERINPUT" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << message->getNickname() << std::endl;
 
 		if(sourceSession->getPlayer() != 0){
 			std::string nickname = sourceSession->getPlayer()->getNickname();

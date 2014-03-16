@@ -114,7 +114,7 @@ void NetworkIO::handleWrite(const boost::system::error_code& error){
 		char *str = new char[NetworkMessage::HEADERLENGTH + NetworkMessage::MAXBODYLENGTH + 1];
 		strcpy(str, mMessageList.front()->getMessage().c_str());
 		int length = mMessageList.front()->getMessage().length();
-		delete mMessageList.front();
+		//delete mMessageList.front();
 		mMessageList.pop_front();
 
 		boost::asio::async_write(
