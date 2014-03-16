@@ -26,7 +26,6 @@ namespace GameServer{
 	}
 
 	void Session::close(){
-		mSocket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 		mSocket.close();
 		mClose(this);
 	}

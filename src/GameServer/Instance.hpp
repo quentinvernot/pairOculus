@@ -80,7 +80,10 @@ namespace GameServer{
 			);
 			
 			void sendJoinAccept(Session *sourceSession);
-			void sendJoinRefuse(Session *sourceSession);
+			void sendJoinRefuse(
+				Session *sourceSession,
+				std::string reason
+			);
 			void sendPlayerJoined(Player *player);
 			void sendPlayerLeft(std::string nickname);
 			void sendGameStart();
@@ -105,6 +108,7 @@ namespace GameServer{
 			Map *mMap;
 			int mOpenedSessions;
 			bool mGameRunning;
+			bool mGameEnded;
 
 	};
 

@@ -11,7 +11,8 @@ namespace GameServer{
 		mPlayerList(new PlayerList()),
 		mMap(new Map(15, 15)),
 		mOpenedSessions(0),
-		mGameRunning(false)
+		mGameRunning(false),
+		mGameEnded(false)
 	{
 	}
 
@@ -139,7 +140,12 @@ namespace GameServer{
 		std::cout << message->getMessage() << std::endl;
 
 		std::string nickname = message->getNickname();
-		if(
+
+		if(mGameRunning){
+			sendJoinRefuse(sourceSession, "A game is already ongoing.");
+			mSessionList->removeSession(sourceSession);
+		}
+		else if(
 			mPlayerList->getPlayerByName(nickname) == 0 &&
 			sourceSession->getPlayer() == 0
 		){
@@ -153,7 +159,7 @@ namespace GameServer{
 
 		}
 		else{
-			sendJoinRefuse(sourceSession);
+			sendJoinRefuse(sourceSession, "Nickname already in use.");
 			mSessionList->removeSession(sourceSession);
 		}
 
@@ -168,6 +174,13 @@ namespace GameServer{
 		std::cout << message->getMessage() << std::endl;
 
 		sendPlayerLeft(sourceSession->getPlayer()->getNickname());
+		mPlayerList->removePlayer(sourceSession->getPlayer()->getNickname());
+		mSessionList->removeSession(sourceSession);
+
+		if(mPlayerList->size() == 0){
+			mGameRunning = false;
+			mGameEnded = false;
+		}
 
 	}
 
@@ -272,7 +285,7 @@ namespace GameServer{
 		std::cout << "Received PLAYERKILLED" << std::endl;
 		std::cout << message->getMessage() << std::endl;
 
-		if(mGameRunning && sourceSession->getPlayer() != 0){
+		if(mGameRunning && !mGameEnded && sourceSession->getPlayer() != 0){
 			std::string nickname = sourceSession->getPlayer()->getNickname();
 			mPlayerList->getPlayerByName(nickname)->die();
 			sendPlayerKilled(nickname, message);
@@ -285,7 +298,7 @@ namespace GameServer{
 			if(deadCount == mPlayerList->size() - 1){
 				std::cout << "Only one player is alive" << std::endl;
 				sendGameEnd();
-				mGameRunning = false;
+				mGameEnded = true;
 			}
 
 		}
@@ -311,12 +324,15 @@ namespace GameServer{
 
 	}
 
-	void Instance::sendJoinRefuse(Session *sourceSession){
+	void Instance::sendJoinRefuse(
+		Session *sourceSession,
+		std::string reason
+	){
 
 		using namespace NetworkMessage;
 		std::cout << "Sending JOINREFUSE to source" << std::endl;
 		sourceSession->sendMessage(
-			mNMFactory->buildMessage(JOINREFUSE, "Nickname already in use.")
+			mNMFactory->buildMessage(JOINREFUSE, reason)
 		);
 
 	}
@@ -361,8 +377,6 @@ namespace GameServer{
 				}
 
 			}
-
-			mPlayerList->removePlayer(nickname);
 
 		}
 
