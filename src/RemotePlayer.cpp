@@ -88,6 +88,7 @@ void RemotePlayer::win(){
 	mGoingBack = false;
 	mGoingLeft = false;
 	mGoingRight = false;
+	mPuttingBomb = false;
 	mGoingUp = false;
 	mGoingDown = false;
 	mFastMove = false;
@@ -111,6 +112,7 @@ void RemotePlayer::die(){
 	mGoingBack = false;
 	mGoingLeft = false;
 	mGoingRight = false;
+	mPuttingBomb = false;
 	mGoingUp = false;
 	mGoingDown = false;
 	mFastMove = false;
