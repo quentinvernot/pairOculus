@@ -218,6 +218,7 @@ void LocalPlayer::win(){
 	mGoingBack = false;
 	mGoingLeft = false;
 	mGoingRight = false;
+	mPuttingBomb = false;
 	mGoingUp = false;
 	mGoingDown = false;
 	mFastMove = false;
@@ -244,6 +245,7 @@ void LocalPlayer::die(){
 	mGoingBack = false;
 	mGoingLeft = false;
 	mGoingRight = false;
+	mPuttingBomb = false;
 	mGoingUp = false;
 	mGoingDown = false;
 	mFastMove = false;
