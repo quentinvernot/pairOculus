@@ -189,7 +189,7 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 
 			if(isBreakable(row + i, col)){
 				destroyBlock(row + i, col);
-				i = range;
+				i = -range;
 			}
 			else
 				destroyBlock(row + i, col);
@@ -221,7 +221,7 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 
 			if(isBreakable(row, col + i)){
 				destroyBlock(row, col + i);
-				i = range;
+				i = -range;
 			}
 			else
 				destroyBlock(row, col + i);

@@ -72,34 +72,36 @@ Map::PrintType** Map::generateMap() {
 	return mMap;
 }
 
-bool Map::isBreakable(int i, int j) {
+bool Map::isBreakable(unsigned int i, unsigned int j) {
+
+	if(i < 0 || i > mHeight || j < 0 || j > mWidth)
+		return false;
+
 	switch (mMap[i][j]) {
 		case BREAKABLE:
 			return true;
-			break;
 		case EMPTY:
 		case UNBREAKABLE:
-			return false;
-			break;
 		default:
-			;	// TODO generate exception
+			return false;
 	}
 
 	std::cerr << "WARNING Found an unknow kind of block in isBreakable" << std::endl;
 	return false;	// You must never come here
 }
 
-bool Map::isUnbreakable(int i, int j) {
+bool Map::isUnbreakable(unsigned int i, unsigned int j) {
+
+	if(i < 0 || i > mHeight || j < 0 || j > mWidth)
+		return false;
+
 	switch (mMap[i][j]) {
 		case UNBREAKABLE:
 			return true;
-			break;
 		case EMPTY:
 		case BREAKABLE:
-			return false;
-			break;
 		default:
-			;	// TODO generate exception
+			return false;
 	}
 
 	std::cerr << "WARNING Found an unknow kind of block in isUnbreakable" << std::endl;

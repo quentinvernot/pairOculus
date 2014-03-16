@@ -27,24 +27,16 @@ class Map {
 		 * \param the coordonees of the cell
 		 * \return true if a block is breakable here
 		 */
-		bool isBreakable(int i, int j);
+		bool isBreakable(unsigned int i, unsigned int j);
 		/** Asks if a cell is unbreakable
 		 * \param the coordonees of the cell
 		 * \return true if a block is unbreakable here
 		 */
-		bool isUnbreakable(int i, int j);
+		bool isUnbreakable(unsigned int i, unsigned int j);
 		/** set in Player the start position
 		 * \param The player witch we are asking the starting position
 		 */
 		void setStartingPosition(int pos, Player *player);
-		/** Access mMap
-		 * \return The current value of mMap
-		 */
-//		int** getMap() { return mMap; }
-		/** Set mMap
-		 * \param val New value to set
-		 */
-//		void setMap(int** val) { mMap = val; }
 		/** Access mMap
 		 * \return The current value of mMap[i][j]
 		 */
