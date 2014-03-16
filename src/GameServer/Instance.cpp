@@ -137,7 +137,6 @@ namespace GameServer{
 		using namespace NetworkMessage;
 
 		std::cout << "Received JOIN" << std::endl;
-		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 		std::cout << message->getNickname() << std::endl;
 
 		std::string nickname = message->getNickname();
