@@ -174,14 +174,7 @@ namespace GameServer{
 		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 
 		sendPlayerLeft(sourceSession->getPlayer()->getNickname());
-		mPlayerList->removePlayer(sourceSession->getPlayer()->getNickname());
 		mSessionList->removeSession(sourceSession);
-
-		if(mPlayerList->size() == 0){
-			std::cout << "Everyone left, resetting the server for the next game." << std::endl;
-			mGameRunning = false;
-			mGameEnded = false;
-		}
 
 	}
 
@@ -380,6 +373,14 @@ namespace GameServer{
 
 			}
 
+			mPlayerList->removePlayer(nickname);
+
+		}
+
+		if(mPlayerList->size() == 0){
+			std::cout << "Everyone left, resetting the server for the next game." << std::endl;
+			mGameRunning = false;
+			mGameEnded = false;
 		}
 
 	}
