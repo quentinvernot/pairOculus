@@ -14,9 +14,12 @@ namespace NetworkMessage{
 			JoinRefuse(std::string reason);
 			~JoinRefuse();
 
+			std::string getReason();
+
 		private:
 			//methods
 			//arguments
+			std::string mReason;
 
 	};
 

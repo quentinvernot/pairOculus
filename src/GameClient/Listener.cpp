@@ -224,7 +224,7 @@ namespace GameClient{
 		using namespace NetworkMessage;
 
 		std::cout << "Received JOINREFUSE" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << message->getReason() << std::endl;
 
 		if(mCallbackJoinRefuse != 0)
 			mCallbackJoinRefuse(message);
@@ -236,7 +236,7 @@ namespace GameClient{
 		using namespace NetworkMessage;
 
 		std::cout << "Received PLAYERJOINED" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << message->getNickname() << std::endl;
 
 		if(mCallbackPlayerJoined != 0)
 			mCallbackPlayerJoined(message);
@@ -248,7 +248,7 @@ namespace GameClient{
 		using namespace NetworkMessage;
 
 		std::cout << "Received PLAYERLEFT" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << message->getNickname() << std::endl;
 
 		if(mCallbackPlayerLeft != 0)
 			mCallbackPlayerLeft(message);
@@ -260,7 +260,6 @@ namespace GameClient{
 		using namespace NetworkMessage;
 
 		std::cout << "Received GAMESTART" << std::endl;
-		std::cout << message->getMessage() << std::endl;
 
 		if(mCallbackGameStart != 0)
 			mCallbackGameStart(message);
@@ -272,7 +271,6 @@ namespace GameClient{
 		using namespace NetworkMessage;
 
 		std::cout << "Received GAMEEND" << std::endl;
-		std::cout << message->getMessage() << std::endl;
 
 		if(mCallbackGameEnd != 0)
 			mCallbackGameEnd(message);
@@ -296,7 +294,7 @@ namespace GameClient{
 		using namespace NetworkMessage;
 
 		std::cout << "Received PLAYERKILLED" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << message->getNickname() << std::endl;
 
 		if(mCallbackPlayerKilled != 0)
 			mCallbackPlayerKilled(message);

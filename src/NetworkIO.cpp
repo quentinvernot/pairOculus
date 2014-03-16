@@ -77,7 +77,6 @@ void NetworkIO::handleReadBody(const boost::system::error_code& error){
 
 		if(mMessageBuffer != ""){
 			mMessageBuffer += mBodyBuffer;
-			std::cout << mMessageBuffer << std::endl;
 			handleReceive(mNMFactory->buildMessage(mMessageBuffer));
 			mMessageBuffer = "";
 			std::fill_n(mHeaderBuffer, (int)NetworkMessage::HEADERLENGTH+1, 0);

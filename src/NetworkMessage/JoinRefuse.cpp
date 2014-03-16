@@ -3,12 +3,15 @@
 namespace NetworkMessage{
 
 	JoinRefuse::JoinRefuse(std::string reason):
-		NetworkMessage(JOINREFUSE)
+		NetworkMessage(JOINREFUSE),
+		mReason(reason)
 	{
-		mBody = reason + "\n";
+		mBody = mReason + "\n";
 	}
 
 	JoinRefuse::~JoinRefuse(){
 	}
+
+	std::string JoinRefuse::getReason(){return mReason;}
 
 };

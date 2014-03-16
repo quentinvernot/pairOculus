@@ -137,7 +137,8 @@ namespace GameServer{
 		using namespace NetworkMessage;
 
 		std::cout << "Received JOIN" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
+		std::cout << message->getNickname() << std::endl;
 
 		std::string nickname = message->getNickname();
 
@@ -171,13 +172,14 @@ namespace GameServer{
 	){
 
 		std::cout << "Received LEAVE" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 
 		sendPlayerLeft(sourceSession->getPlayer()->getNickname());
 		mPlayerList->removePlayer(sourceSession->getPlayer()->getNickname());
 		mSessionList->removeSession(sourceSession);
 
 		if(mPlayerList->size() == 0){
+			std::cout << "Everyone left, resetting the server for the next game." << std::endl;
 			mGameRunning = false;
 			mGameEnded = false;
 		}
@@ -190,7 +192,7 @@ namespace GameServer{
 	){
 
 		std::cout << "Received JOINACCEPT" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 
 	}
 
@@ -200,7 +202,7 @@ namespace GameServer{
 	){
 
 		std::cout << "Received JOINREFUSE" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 
 	}
 
@@ -211,7 +213,7 @@ namespace GameServer{
 		using namespace NetworkMessage;
 
 		std::cout << "Received PLAYERJOINED" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 
 	}
 
@@ -222,7 +224,7 @@ namespace GameServer{
 		using namespace NetworkMessage;
 
 		std::cout << "Received PLAYERLEFT" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 
 	}
 
@@ -232,7 +234,7 @@ namespace GameServer{
 	){
 
 		std::cout << "Received GAMESTART" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 
 		sourceSession->setIsReady(true);
 
@@ -255,9 +257,7 @@ namespace GameServer{
 	){
 
 		std::cout << "Received GAMEEND" << std::endl;
-		std::cout << message->getMessage() << std::endl;
-
-		sendGameEnd();
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 
 	}
 
@@ -267,6 +267,7 @@ namespace GameServer{
 	){
 
 		std::cout << "Received PLAYERINPUT" << std::endl;
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
 		std::cout << message->getNickname() << std::endl;
 
 		if(sourceSession->getPlayer() != 0){
@@ -283,7 +284,8 @@ namespace GameServer{
 		using namespace NetworkMessage;
 
 		std::cout << "Received PLAYERKILLED" << std::endl;
-		std::cout << message->getMessage() << std::endl;
+		std::cout << "From : " << sourceSession->getPlayer()->getNickname() << std::endl;
+		std::cout << message->getNickname() << std::endl;
 
 		if(mGameRunning && !mGameEnded && sourceSession->getPlayer() != 0){
 			std::string nickname = sourceSession->getPlayer()->getNickname();
@@ -331,6 +333,7 @@ namespace GameServer{
 
 		using namespace NetworkMessage;
 		std::cout << "Sending JOINREFUSE to source" << std::endl;
+		std::cout << reason << std::endl;
 		sourceSession->sendMessage(
 			mNMFactory->buildMessage(JOINREFUSE, reason)
 		);
