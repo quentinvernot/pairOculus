@@ -1,6 +1,8 @@
 #ifndef __OCULUSCAMERA_H
 #define __OCULUSCAMERA_H
 
+#include <OVR.h>
+
 #include <OgreCamera.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
@@ -42,6 +44,8 @@ class OculusCamera{
 		Ogre::Vector3 mNodePosition;
 		Ogre::Vector3 mBaseOffset;
 		Ogre::Vector3 mCameraOffset;
+
+		OVR::Util::Render::StereoConfig *mStereoConfig;
 
 };
 

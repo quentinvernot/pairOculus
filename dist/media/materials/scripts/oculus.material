@@ -7,10 +7,9 @@ fragment_program Ogre/Compositor/OculusFP_cg cg
 	default_params
 	{
 		param_named LensCentre float2 0.5 0.5
-		//param_named ScreenCentre float2 0 0
 		param_named Scale float2 0.3 0.3
 		param_named ScaleIn float2 2 2
-		param_named HmdWarpParam float4 1.0f, 0.22f, 0.24f 0
+		param_named HmdWarpParam float4 1.0f, 0.22f, 0.24f, 0
 	}
 }
 
@@ -59,3 +58,4 @@ material Ogre/Compositor/Oculus
 		}
 	}
 }
+

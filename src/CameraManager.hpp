@@ -2,18 +2,9 @@
 #define __CAMERAMANAGER_H
 
 #include <OgreCamera.h>
-#include <OgreEntity.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
-#include <OgreViewport.h>
 #include <OgreSceneManager.h>
-#include <OgreRenderWindow.h>
-#include <OgreConfigFile.h>
-
-#include <OISEvents.h>
-#include <OISInputManager.h>
-#include <OISKeyboard.h>
-#include <OISMouse.h>
 
 #include "SimpleCamera.hpp"
 #include "OculusCamera.hpp"
@@ -22,7 +13,7 @@ class CameraManager{
 
 	public:
 		//Methods
-		CameraManager(Ogre::SceneManager *_sceneMgr);
+		CameraManager(Ogre::SceneManager *sceneMgr);
 		~CameraManager();
 
 		void move(const Ogre::Vector3 vec);

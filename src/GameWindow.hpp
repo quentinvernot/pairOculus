@@ -3,14 +3,17 @@
 
 #include "CameraManager.hpp"
 
+#include <OVR.h>
+
 #include <OgreCamera.h>
-#include <OgreEntity.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
 #include <OgreViewport.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreCompositorManager.h>
+#include <OgreCompositionTargetPass.h>
+#include <OgreCompositionPass.h>
 
 #include <OISEvents.h>
 #include <OISKeyboard.h>
@@ -41,6 +44,8 @@ class GameWindow{
 		CameraManager *mCameraManager;
 		Ogre::RenderWindow *mOgreWindow;
 		Ogre::String mViewMode;
+
+		OVR::Util::Render::StereoConfig *mStereoConfig;
 
 };
 

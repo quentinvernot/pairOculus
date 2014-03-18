@@ -31,7 +31,7 @@ $(OBJDIR)Game.o: Game.hpp Game.cpp $(shell ls *.hpp) $(shell ls NetworkMessage/*
 	$(CC) $(OGRE) $(OIS) $(OVR) $(BULLET) $(CFLAGS) -c Game.cpp -o $(OBJDIR)Game.o
 
 $(OBJDIR)GameWindow.o: GameWindow.hpp GameWindow.cpp CameraManager.hpp SimpleCamera.hpp OculusCamera.hpp
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c GameWindow.cpp -o $(OBJDIR)GameWindow.o
+	$(CC) $(OGRE) $(OIS) $(OVR) $(CFLAGS) -c GameWindow.cpp -o $(OBJDIR)GameWindow.o
 
 $(OBJDIR)Input.o: Input.hpp Input.cpp SensorFusionListener.hpp SensorFusionDevice.hpp
 	$(CC) $(OGRE) $(OIS) $(OVR) $(CFLAGS) -c Input.cpp -o $(OBJDIR)Input.o
@@ -46,10 +46,10 @@ $(OBJDIR)PlayerList.o: PlayerList.hpp PlayerList.cpp Player.hpp
 	$(CC) $(CFLAGS) -c PlayerList.cpp -o $(OBJDIR)PlayerList.o
 
 $(OBJDIR)OgrePlayer.o: OgrePlayer.hpp OgrePlayer.cpp Player.hpp BombManager.hpp Bomb.hpp LocalMap.hpp Block.hpp Cube.hpp Pyramid.hpp FloorPanel.hpp BlockFactory.hpp Player.hpp Map.hpp $(ls NetworkMessage/.*hpp)
-	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c OgrePlayer.cpp -o $(OBJDIR)OgrePlayer.o
+	$(CC) $(OGRE) $(OIS) $(OVR) $(BULLET) $(CFLAGS) -c OgrePlayer.cpp -o $(OBJDIR)OgrePlayer.o
 
 $(OBJDIR)LocalPlayer.o: LocalPlayer.hpp LocalPlayer.cpp PlayerEventListener.hpp OgrePlayer.hpp Player.hpp CameraManager.hpp SimpleCamera.hpp OculusCamera.hpp PlayerAnimation.hpp BombManager.hpp Bomb.hpp LocalMap.hpp Block.hpp Cube.hpp Pyramid.hpp FloorPanel.hpp BlockFactory.hpp Player.hpp Map.hpp $(ls NetworkMessage/.*hpp)
-	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c LocalPlayer.cpp -o $(OBJDIR)LocalPlayer.o
+	$(CC) $(OGRE) $(OIS) $(OVR) $(BULLET) $(CFLAGS) -c LocalPlayer.cpp -o $(OBJDIR)LocalPlayer.o
 
 $(OBJDIR)RemotePlayer.o: RemotePlayer.hpp RemotePlayer.cpp OgrePlayer.hpp Player.hpp PlayerAnimation.hpp BombManager.hpp Bomb.hpp LocalMap.hpp Block.hpp Cube.hpp Pyramid.hpp FloorPanel.hpp BlockFactory.hpp Player.hpp Map.hpp $(ls NetworkMessage/.*hpp)
 	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c RemotePlayer.cpp -o $(OBJDIR)RemotePlayer.o
@@ -61,13 +61,13 @@ $(OBJDIR)PlayerAnimation.o: PlayerAnimation.hpp PlayerAnimation.cpp
 	$(CC) $(OGRE) $(CFLAGS) -c PlayerAnimation.cpp -o $(OBJDIR)PlayerAnimation.o
 
 $(OBJDIR)CameraManager.o: CameraManager.hpp CameraManager.cpp SimpleCamera.hpp OculusCamera.hpp
-	$(CC) $(OGRE) $(OIS) $(CFLAGS) -c CameraManager.cpp -o $(OBJDIR)CameraManager.o
+	$(CC) $(OGRE) $(OVR) $(CFLAGS) -c CameraManager.cpp -o $(OBJDIR)CameraManager.o
 
 $(OBJDIR)SimpleCamera.o: SimpleCamera.hpp SimpleCamera.cpp
 	$(CC) $(OGRE) $(CFLAGS) -c SimpleCamera.cpp -o $(OBJDIR)SimpleCamera.o
 
 $(OBJDIR)OculusCamera.o: OculusCamera.hpp OculusCamera.cpp
-	$(CC) $(OGRE) $(CFLAGS) -c OculusCamera.cpp -o $(OBJDIR)OculusCamera.o
+	$(CC) $(OGRE) $(OVR) $(CFLAGS) -c OculusCamera.cpp -o $(OBJDIR)OculusCamera.o
 
 $(OBJDIR)Bomb.o: Bomb.hpp Bomb.cpp
 	$(CC) $(OGRE) $(OIS) $(BULLET) $(CFLAGS) -c Bomb.cpp -o $(OBJDIR)Bomb.o

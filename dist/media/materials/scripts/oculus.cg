@@ -1,5 +1,4 @@
 uniform float2 LensCentre;
-uniform float2 ScreenCentre;
 uniform float2 Scale;
 uniform float2 ScaleIn;
 uniform float4 HmdWarpParam;
@@ -46,3 +45,4 @@ float4 oculusBaseLightMap_fp(float2 uv1 : TEXCOORD0, float2 uv2 : TEXCOORD1, uni
 		discard;
 	return float4(colour1 * colour2);
 }
+

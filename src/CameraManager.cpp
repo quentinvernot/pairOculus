@@ -1,7 +1,7 @@
 #include "CameraManager.hpp"
 
-CameraManager::CameraManager(Ogre::SceneManager *_sceneMgr) :
-	mSceneMgr(_sceneMgr),
+CameraManager::CameraManager(Ogre::SceneManager *sceneMgr) :
+	mSceneMgr(sceneMgr),
 	mCameraMode("default"),
 	mSimpleCamera(NULL),
 	mOculusCamera(NULL),
@@ -46,9 +46,7 @@ void CameraManager::createOculusCamera(){
 	Ogre::Camera *cameraRight = mSceneMgr->createCamera("PlayerCamRight");
 
 	cameraLeft->setNearClipDistance(0.5);
-	cameraLeft->setFOVy(Ogre::Degree(103));
 	cameraRight->setNearClipDistance(0.5);
-	cameraRight->setFOVy(Ogre::Degree(103));
 
 	if(mOculusCamera == 0)
 		mOculusCamera = new OculusCamera(cameraLeft, cameraRight);
@@ -56,7 +54,7 @@ void CameraManager::createOculusCamera(){
 		mOculusCamera->setLeftCamera(cameraLeft);
 		mOculusCamera->setRightCamera(cameraRight);
 	}
-	
+
 	mOculusCamera->setPosition(mNodePosition);
 	mOculusCamera->yaw(mNodeYaw);
 	mOculusCamera->pitch(mNodePitch);

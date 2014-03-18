@@ -1,16 +1,21 @@
 #include "OculusCamera.hpp"
 
 OculusCamera::OculusCamera(Ogre::Camera *leftCam, Ogre::Camera *rightCam):
-	mIPD(0.64),
+	mIPD(0),
 	mLeftCamera(0),
 	mRightCamera(0),
-	mNodePosition(0,0,0),
-	mBaseOffset(mIPD/8, 0.15, 0.25),
-	mCameraOffset(0, 0, 0)
+	mNodePosition(Ogre::Vector3::ZERO),
+	mBaseOffset(Ogre::Vector3::ZERO),
+	mCameraOffset(Ogre::Vector3::ZERO),
+	mStereoConfig(new OVR::Util::Render::StereoConfig())
 {
 
 	setLeftCamera(leftCam);
 	setRightCamera(rightCam);
+	mIPD = mStereoConfig->GetIPD() * 0.5f;
+	mBaseOffset.x = mIPD/2;
+	mBaseOffset.y = 0.55;
+	mBaseOffset.z = 0.75;
 	setPosition(mNodePosition);
 	applyOffset();
 
@@ -82,28 +87,48 @@ void OculusCamera::lookAt(Ogre::Vector3 vec){
 	applyOffset();
 
 }
-
+#include <iostream>
 void OculusCamera::increaseIPD(){
-	mIPD += 0.02;
-	mBaseOffset.x = mIPD/8;
+	mIPD += 0.001/2;
+	mBaseOffset.x = mIPD/4;
+	std::cout << mIPD << std::endl;
 }
 
 void OculusCamera::decreaseIPD(){
-	mIPD -= 0.02;
-	mBaseOffset.x = mIPD/8;
+	mIPD -= 0.001;
+	mBaseOffset.x = mIPD/4;
+	std::cout << mIPD << std::endl;
 }
 
 void OculusCamera::setCameras(Ogre::Camera *leftCam, Ogre::Camera *rightCam){
-	mLeftCamera = leftCam;
-	mRightCamera = rightCam;
+	setLeftCamera(leftCam);
+	setRightCamera(rightCam);
 }
 
 void OculusCamera::setLeftCamera(Ogre::Camera *cam){
+
 	mLeftCamera = cam;
+
+	mLeftCamera->setAspectRatio(mStereoConfig->GetAspect());
+	mLeftCamera->setFOVy(Ogre::Radian(mStereoConfig->GetYFOVRadians()));
+
+	Ogre::Matrix4 proj = Ogre::Matrix4::IDENTITY;
+	proj.setTrans(Ogre::Vector3(mStereoConfig->GetProjectionCenterOffset(), 0, 0));
+	mLeftCamera->setCustomProjectionMatrix(true, proj * mLeftCamera->getProjectionMatrix());
+
 }
 
 void OculusCamera::setRightCamera(Ogre::Camera *cam){
+
 	mRightCamera = cam;
+
+	mRightCamera->setAspectRatio(mStereoConfig->GetAspect());
+	mRightCamera->setFOVy(Ogre::Radian(mStereoConfig->GetYFOVRadians()));
+
+	Ogre::Matrix4 proj = Ogre::Matrix4::IDENTITY;
+	proj.setTrans(Ogre::Vector3(-mStereoConfig->GetProjectionCenterOffset(), 0, 0));
+	mRightCamera->setCustomProjectionMatrix(true, proj * mRightCamera->getProjectionMatrix());
+
 }
 
 Ogre::Camera *OculusCamera::getLeftCamera(){
@@ -124,12 +149,12 @@ void OculusCamera::removeOffset(){
 void OculusCamera::applyOffset(){
 
 	mCameraOffset = Ogre::Vector3::ZERO;
-	mCameraOffset += mRightCamera->getRight() * mBaseOffset.x;
-	mCameraOffset += mRightCamera->getUp() * mBaseOffset.y;
-	mCameraOffset += mRightCamera->getDirection() * mBaseOffset.z;
+	mCameraOffset = - mRightCamera->getRight() * mBaseOffset.x;
+	mCameraOffset = mRightCamera->getUp() * mBaseOffset.y;
+	mCameraOffset = mRightCamera->getDirection() * mBaseOffset.z;
 
 	mRightCamera->move(mCameraOffset);
-	mCameraOffset -= 2 * mRightCamera->getRight() * mBaseOffset.x;
+	mCameraOffset += 2 * mRightCamera->getRight() * mBaseOffset.x;
 	mLeftCamera->move(mCameraOffset);
 
 }

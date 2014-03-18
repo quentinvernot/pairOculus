@@ -3,7 +3,8 @@
 GameWindow::GameWindow() :
 	mCameraManager(0),
 	mOgreWindow(0),
-	mViewMode("default")
+	mViewMode("default"),
+	mStereoConfig(0)
 {
 }
 
@@ -76,6 +77,8 @@ void GameWindow::createSimpleViewport(){
 
 void GameWindow::createOculusViewports(){
 
+	mStereoConfig = new OVR::Util::Render::StereoConfig();
+
 	Ogre::Viewport* vpLeft = mOgreWindow->addViewport(
 		mCameraManager->getOculusCameraLeft(), 1, 0, 0, 0.5, 1
 	);
@@ -86,29 +89,44 @@ void GameWindow::createOculusViewports(){
 	vpLeft->setBackgroundColour(Ogre::ColourValue(1,1,1));
 	vpRight->setBackgroundColour(Ogre::ColourValue(1,1,1));
 
-	mCameraManager->getOculusCameraLeft()->setAspectRatio(
-		Ogre::Real(vpLeft->getActualWidth())
-		/ Ogre::Real(vpLeft->getActualHeight())
-	);
-	mCameraManager->getOculusCameraRight()->setAspectRatio(
-		Ogre::Real(vpRight->getActualWidth())
-		/ Ogre::Real(vpRight->getActualHeight())
-	);
-
 	vpLeft->setOverlaysEnabled(false);
 	vpRight->setOverlaysEnabled(false);
 
+	Ogre::MaterialPtr matLeft = Ogre::MaterialManager::getSingleton().getByName("Ogre/Compositor/Oculus");
+	Ogre::MaterialPtr matRight = matLeft->clone("Ogre/Compositor/Oculus/Right");
+	Ogre::GpuProgramParametersSharedPtr pParamsLeft = matLeft->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+	Ogre::GpuProgramParametersSharedPtr pParamsRight = matRight->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+
+	Ogre::Vector4 hmdwarp(0,0,0,0);
+
+	if(mStereoConfig){
+		hmdwarp = Ogre::Vector4(
+			mStereoConfig->GetDistortionK(0),
+			mStereoConfig->GetDistortionK(1),
+			mStereoConfig->GetDistortionK(2),
+			mStereoConfig->GetDistortionK(3)
+		);
+	}
+
+	pParamsLeft->setNamedConstant("HmdWarpParam", hmdwarp);
+	pParamsRight->setNamedConstant("HmdWarpParam", hmdwarp);
+	pParamsLeft->setNamedConstant("LensCentre", 0.5f+(mStereoConfig->GetProjectionCenterOffset()/2.0f));
+	pParamsRight->setNamedConstant("LensCentre", 0.5f-(mStereoConfig->GetProjectionCenterOffset()/2.0f));
+
+	Ogre::CompositorPtr comp = Ogre::CompositorManager::getSingleton().getByName("OculusRight");
+	comp->getTechnique(0)->getOutputTargetPass()->getPass(0)->setMaterialName("Ogre/Compositor/Oculus/Right");
+
 	Ogre::CompositorManager::getSingleton().addCompositor(
-		mCameraManager->getOculusCameraLeft()->getViewport(), "Oculus"
+		vpLeft, "OculusLeft"
 	);
 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(
-		mCameraManager->getOculusCameraLeft()->getViewport(), "Oculus", true
+		vpLeft, "OculusLeft", true
 	);
 	Ogre::CompositorManager::getSingleton().addCompositor(
-		mCameraManager->getOculusCameraRight()->getViewport(), "Oculus"
+		vpRight, "OculusRight"
 	);
 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(
-		mCameraManager->getOculusCameraRight()->getViewport(), "Oculus", true
+		vpRight, "OculusRight", true
 	);
 
 }
