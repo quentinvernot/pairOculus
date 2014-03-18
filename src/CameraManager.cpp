@@ -1,8 +1,34 @@
+/*
+This source file is part of pairOculus, a student project aiming at creating a
+simple 3D multiplayer game for the Oculus Rift.
+
+Repository can be found here : https://github.com/Target6/pairOculus 
+
+Copyright (c) 2013 Target6
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "CameraManager.hpp"
 
 CameraManager::CameraManager(Ogre::SceneManager *sceneMgr) :
 	mSceneMgr(sceneMgr),
-	mCameraMode("default"),
+	mCameraMode(SIMPLE),
 	mSimpleCamera(NULL),
 	mOculusCamera(NULL),
 	mNodeYaw(0),
@@ -23,7 +49,6 @@ CameraManager::~CameraManager(){
 
 void CameraManager::createSimpleCamera(){
 
-	// Create the camera
 	Ogre::Camera *camera = mSceneMgr->createCamera("PlayerCam");
 
 	camera->setNearClipDistance(0.5);
@@ -70,7 +95,7 @@ void CameraManager::move(const Ogre::Vector3 vec){
 
 	mNodePosition += vec;
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		mOculusCamera->move(vec);
 	else
 		mSimpleCamera->move(vec);
@@ -81,7 +106,7 @@ void CameraManager::yaw(Ogre::Radian ang){
 
 	mNodeYaw += ang;
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		mOculusCamera->yaw(ang);
 	else
 		mSimpleCamera->yaw(ang);
@@ -92,7 +117,7 @@ void CameraManager::pitch(Ogre::Radian ang){
 
 	mNodePitch += ang;
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		mOculusCamera->pitch(ang);
 	else
 		mSimpleCamera->pitch(ang);
@@ -103,7 +128,7 @@ void CameraManager::roll(Ogre::Radian ang){
 
 	mNodeRoll += ang;
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		mOculusCamera->roll(ang);
 	else
 		mSimpleCamera->roll(ang);
@@ -118,7 +143,7 @@ void CameraManager::setPosition(Ogre::Vector3 pos){
 
 	mNodePosition = pos;
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		mOculusCamera->setPosition(pos);
 	else
 		mSimpleCamera->setPosition(pos);
@@ -127,7 +152,7 @@ void CameraManager::setPosition(Ogre::Vector3 pos){
 
 Ogre::Quaternion CameraManager::getOrientation(){
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		return mOculusCamera->getOrientation();
 	else
 		return mSimpleCamera->getOrientation();
@@ -140,7 +165,7 @@ void CameraManager::setOrientation(Ogre::Quaternion ori){
 	mNodePitch = ori.getPitch();
 	mNodeRoll = ori.getRoll();
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		mOculusCamera->setOrientation(ori);
 	else
 		mSimpleCamera->setOrientation(ori);
@@ -149,7 +174,7 @@ void CameraManager::setOrientation(Ogre::Quaternion ori){
 
 void CameraManager::lookAt(Ogre::Vector3 vec){
 
-	if(mCameraMode == "oculus"){
+	if(mCameraMode == OCULUS){
 		mOculusCamera->lookAt(vec);
 		mNodeYaw = mOculusCamera->getLeftCamera()->getOrientation().getYaw();
 		mNodePitch = mOculusCamera->getLeftCamera()->getOrientation().getPitch();
@@ -175,7 +200,7 @@ void CameraManager::decreaseIPD(){
 
 Ogre::Vector3 CameraManager::getDirection(){
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		return mOculusCamera->getLeftCamera()->getDirection();
 	return mSimpleCamera->getCamera()->getDirection();
 
@@ -183,7 +208,7 @@ Ogre::Vector3 CameraManager::getDirection(){
 
 Ogre::Vector3 CameraManager::getUp(){
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		return mOculusCamera->getLeftCamera()->getUp();
 	return mSimpleCamera->getCamera()->getUp();
 
@@ -191,7 +216,7 @@ Ogre::Vector3 CameraManager::getUp(){
 
 Ogre::Vector3 CameraManager::getRight(){
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		return mOculusCamera->getLeftCamera()->getRight();
 	return mSimpleCamera->getCamera()->getRight();
 
@@ -201,7 +226,7 @@ Ogre::Vector3 CameraManager::getForwardDirection(){
 
 	Ogre::Vector3 direction;
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		direction = mOculusCamera->getLeftCamera()->getDirection();
 	else
 		direction = mSimpleCamera->getCamera()->getDirection();
@@ -214,16 +239,14 @@ Ogre::Vector3 CameraManager::getForwardDirection(){
 }
 
 Ogre::Vector3 CameraManager::getUpDirection(){
-
 	return Ogre::Vector3::UNIT_Y;
-
 }
 
 Ogre::Vector3 CameraManager::getRightDirection(){
 
 	Ogre::Vector3 direction;
 
-	if(mCameraMode == "oculus")
+	if(mCameraMode == OCULUS)
 		direction = mOculusCamera->getLeftCamera()->getRight();
 	else
 		direction = mSimpleCamera->getCamera()->getRight();
@@ -237,27 +260,27 @@ Ogre::Vector3 CameraManager::getRightDirection(){
 
 void CameraManager::switchCameraMode(){
 
-	if(mCameraMode == "default")
-		setCameraMode("default");
-	else if(mCameraMode == "oculus")
-		setCameraMode("oculus");
+	if(mCameraMode == SIMPLE)
+		setCameraMode(SIMPLE);
+	else if(mCameraMode == OCULUS)
+		setCameraMode(OCULUS);
 
 }
 
-Ogre::String CameraManager::getCameraMode(){return mCameraMode;}
+ViewMode CameraManager::getCameraMode(){return mCameraMode;}
 
-void CameraManager::setCameraMode(Ogre::String mode){
+void CameraManager::setCameraMode(ViewMode mode){
 
-	if(mode == "default"){
+	if(mode == SIMPLE){
 
-		mCameraMode = "default";
+		mCameraMode = SIMPLE;
 		destroyCameras();
 		createSimpleCamera();
 
 	}
-	else if(mode == "oculus"){
+	else if(mode == OCULUS){
 
-		mCameraMode = "oculus";
+		mCameraMode = OCULUS;
 		destroyCameras();
 		createOculusCamera();
 

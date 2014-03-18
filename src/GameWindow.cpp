@@ -1,12 +1,30 @@
-#include "GameWindow.hpp"
+/*
+This source file is part of pairOculus, a student project aiming at creating a
+simple 3D multiplayer game for the Oculus Rift.
 
-GameWindow::GameWindow() :
-	mCameraManager(0),
-	mOgreWindow(0),
-	mViewMode("default"),
-	mStereoConfig(0)
-{
-}
+Repository can be found here : https://github.com/Target6/pairOculus 
+
+Copyright (c) 2013 Target6
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+#include "GameWindow.hpp"
 
 GameWindow::GameWindow(
 	CameraManager *cameraManager,
@@ -14,7 +32,8 @@ GameWindow::GameWindow(
 ) :
 	mCameraManager(cameraManager),
 	mOgreWindow(ogreWindow),
-	mViewMode("default")
+	mViewMode(SIMPLE),
+	mStereoConfig(0)
 {
 }
 
@@ -23,26 +42,26 @@ GameWindow::~GameWindow(){
 
 void GameWindow::switchViewMode(){
 
-	if(mViewMode == "default")
-		setViewMode("oculus");
-	else if(mViewMode == "oculus")
-		setViewMode("default");
+	if(mViewMode == SIMPLE)
+		setViewMode(OCULUS);
+	else if(mViewMode == OCULUS)
+		setViewMode(SIMPLE);
 
 }
 
-void GameWindow::setViewMode(Ogre::String mode){
+void GameWindow::setViewMode(ViewMode mode){
 
-	if(mode == "default"){
+	if(mode == SIMPLE){
 
-		mViewMode = "default";
+		mViewMode = SIMPLE;
 		destroyViewports();
 		mCameraManager->setCameraMode(mode);
 		createSimpleViewport();
 
 	}
-	else if(mode == "oculus"){
+	else if(mode == OCULUS){
 
-		mViewMode = "oculus";
+		mViewMode = OCULUS;
 		destroyViewports();
 		mCameraManager->setCameraMode(mode);
 		createOculusViewports();

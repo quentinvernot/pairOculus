@@ -320,9 +320,9 @@ bool Game::setup(){
 	createFrameListener();
 
 	if(mInput->hasOculusRift())
-		mGameWindow->setViewMode("oculus");
+		mGameWindow->setViewMode(OCULUS);
 	else
-		mGameWindow->setViewMode("default");
+		mGameWindow->setViewMode(SIMPLE);
 
 	return true;
 
