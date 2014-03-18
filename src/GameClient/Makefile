@@ -18,7 +18,7 @@ DEP=$(SRCDIR)NetworkIO.hpp $(ls $(SRCDIRN).*hpp) $(SRCDIR)PlayerList.hpp $(SRCDI
 $(OBJDIRC)Listener.o: Listener.hpp Listener.cpp Connector.hpp $(DEP)
 	$(CC) $(CFLAGS) -c $()Listener.cpp -o $(OBJDIRC)Listener.o
 
-$(OBJDIRC)Connector.o: Connector.hpp Connector.cpp $(DEP)
+$(OBJDIRC)Connector.o: Connector.hpp Connector.cpp $(DEP) $(SRCDIR)NetworkIO.cpp
 	$(CC) $(CFLAGS) -c Connector.cpp -o $(OBJDIRC)Connector.o
 
 clean:

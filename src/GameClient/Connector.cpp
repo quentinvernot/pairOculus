@@ -15,7 +15,6 @@ namespace GameClient{
 		mClose(close),
 		mReceive(receive)
 	{
-		close();
 	}
 
 	Connector::~Connector(){
@@ -37,8 +36,13 @@ namespace GameClient{
 	void Connector::close(){
 
 		if(mSocket.is_open()){
-			mSocket.shutdown(mSocket.shutdown_both);
-			mSocket.close();
+			try{
+				mSocket.shutdown(mSocket.shutdown_both);
+				mSocket.close();
+			}
+			catch(std::exception& e){
+				std::cout << e.what() << std::endl;
+			}
 		}
 
 		mClose();

@@ -18,7 +18,7 @@ DEP=$(SRCDIR)NetworkIO.hpp $(shell ls $(SRCDIRN)*.hpp) $(SRCDIR)Player.hpp $(SRC
 $(OBJDIRS)Instance.o: Instance.hpp Instance.cpp Session.hpp SessionList.hpp $(DEP)
 	$(CC) $(CFLAGS) -c Instance.cpp -o $(OBJDIRS)Instance.o
 
-$(OBJDIRS)Session.o: Session.hpp Session.cpp $(DEP)
+$(OBJDIRS)Session.o: Session.hpp Session.cpp $(DEP) $(SRCDIR)NetworkIO.cpp
 	$(CC) $(CFLAGS) -c Session.cpp -o $(OBJDIRS)Session.o
 
 $(OBJDIRS)SessionList.o: SessionList.hpp SessionList.cpp Session.hpp

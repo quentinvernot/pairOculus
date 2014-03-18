@@ -38,7 +38,9 @@ namespace GameClient{
 
 	void Listener::start(){
 		mConnector->start();
-		mThread = new boost::thread(boost::bind(&boost::asio::io_service::run, &mIo_service));
+		mThread = new boost::thread(
+			boost::bind(&boost::asio::io_service::run, &mIo_service)
+		);
 	}
 
 	void Listener::stop(){

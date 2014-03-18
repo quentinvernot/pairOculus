@@ -27,9 +27,17 @@ void NetworkIO::start(){
 }
 
 void NetworkIO::close(){
-	mSocket.shutdown(mSocket.shutdown_both);
-	mSocket.close();
+
+	try{
+		mSocket.shutdown(mSocket.shutdown_both);
+		mSocket.close();
+	}
+	catch(std::exception& e){
+		std::cout << e.what() << std::endl;
+	}
+
 	mIsClosed = true;
+
 }
 
 void NetworkIO::sendMessage(NetworkMessage::NetworkMessage *message){
