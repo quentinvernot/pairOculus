@@ -55,9 +55,10 @@ void BombManager::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		mNewBombs.pop_front();
 	}
 
-	clock_t now = clock();
+	for(unsigned int i = 0; i < mActiveBombs.size(); i++)
+		mActiveBombs[i]->frameRenderingQueued(evt);
 
-	while(mActiveBombs.size() > 0 && mActiveBombs.front()->hasExploded(now))
+	while(mActiveBombs.size() > 0 && mActiveBombs.front()->hasExploded())
 		detonate(0);
 
 	mExplosionManager->frameRenderingQueued(evt);

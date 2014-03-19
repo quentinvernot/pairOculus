@@ -37,8 +37,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /// Types of rendering modes.
 enum ViewMode {
-	SIMPLE,	/// Single camera.
-	OCULUS	/// Stereo cameras for the Oculus Rift.
+	SIMPLE,	//! Single camera.
+	OCULUS	//! Stereo cameras for the Oculus Rift.
 };
 
 /** Handles the cameras (coordinates and mode).
