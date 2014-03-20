@@ -35,6 +35,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <OgreLogManager.h>
 #include <OgreSceneManager.h>
 
+/** Manages the Explosions
+ *  Creates Explosions and their graphics and adapts their velocity to the game
+ *  speed. Also deletes Explosions when they reach their range.
+ */
 class ExplosionManager{
 
 	public:

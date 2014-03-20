@@ -39,7 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /** The Bomb's manager.
  *  Creates the Bombs and their graphics and injects the game time in their 
- *  timers at each frame.
+ *  timers at each frame. Also deletes the Bombs when their timer runs out.
  */
 class BombManager{
 
