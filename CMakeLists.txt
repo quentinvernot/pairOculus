@@ -57,7 +57,7 @@ IF(UNIX)
 ENDIF(UNIX)
 
 set(
-	HDRS
+	MAINHDRS
 	./src/NetworkMessage/JoinRefuse.hpp
 	./src/NetworkMessage/GameEnd.hpp
 	./src/NetworkMessage/JoinAccept.hpp
@@ -105,7 +105,7 @@ set(
 )
 
 set(
-	SRCS
+	MAINSRCS
 	./src/SimpleCamera.cpp
 	./src/PlayerList.cpp
 	./src/NetworkMessage/GameStart.cpp
@@ -149,6 +149,54 @@ set(
 	./main.cpp
 )
 
+set(
+	SERVERHDRS
+	./src/GameServer/Instance.hpp
+	./src/GameServer/Session.hpp
+	./src/GameServer/SessionList.hpp
+	./src/NetworkMessage/JoinRefuse.hpp
+	./src/NetworkMessage/GameEnd.hpp
+	./src/NetworkMessage/JoinAccept.hpp
+	./src/NetworkMessage/Leave.hpp
+	./src/NetworkMessage/PlayerInput.hpp
+	./src/NetworkMessage/Join.hpp
+	./src/NetworkMessage/PlayerKilled.hpp
+	./src/NetworkMessage/NetworkMessage.hpp
+	./src/NetworkMessage/PlayerLeft.hpp
+	./src/NetworkMessage/NetworkMessageFactory.hpp
+	./src/NetworkMessage/PlayerJoined.hpp
+	./src/NetworkMessage/GameStart.hpp
+	./src/PlayerList.hpp
+	./src/NetworkIO.hpp
+	./src/Map.hpp
+	./src/Player.hpp
+
+)
+
+set(
+	SERVERSRCS
+	./src/GameServer/SessionList.cpp
+	./src/GameServer/Instance.cpp
+	./src/GameServer/Session.cpp
+	./src/PlayerList.cpp
+	./src/NetworkMessage/GameStart.cpp
+	./src/NetworkMessage/JoinAccept.cpp
+	./src/NetworkMessage/PlayerJoined.cpp
+	./src/NetworkMessage/PlayerLeft.cpp
+	./src/NetworkMessage/NetworkMessageFactory.cpp
+	./src/NetworkMessage/NetworkMessage.cpp
+	./src/NetworkMessage/PlayerInput.cpp
+	./src/NetworkMessage/JoinRefuse.cpp
+	./src/NetworkMessage/Leave.cpp
+	./src/NetworkMessage/Join.cpp
+	./src/NetworkMessage/GameEnd.cpp
+	./src/NetworkMessage/PlayerKilled.cpp
+	./src/NetworkIO.cpp
+	./src/Map.cpp
+	./src/Player.cpp
+	./server.cpp
+)
+
 include_directories(
 	${Boost_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIRS}
@@ -159,11 +207,14 @@ include_directories(
 	${LIBOVR_INCLUDE_DIR}
 )
 
-add_executable(pairOculus WIN32 ${HDRS} ${SRCS})
+add_executable(pairOculus WIN32 ${MAINHDRS} ${MAINSRCS})
+add_executable(server WIN32 ${SERVERHDRS} ${SERVERSRCS})
 
 set_target_properties(pairOculus PROPERTIES DEBUG_POSTFIX _d)
+set_target_properties(server PROPERTIES DEBUG_POSTFIX _d)
 
 target_link_libraries(pairOculus ${Boost_LIBRARIES} ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${BULLET_LIBRARIES} ${OGREBULLET_LIBRARIES} ${LIBOVR_LIBRARIES})
+target_link_libraries(server ${Boost_LIBRARIES} ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${BULLET_LIBRARIES} ${OGREBULLET_LIBRARIES} ${LIBOVR_LIBRARIES})
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
@@ -173,6 +224,10 @@ if(WIN32 AND NOT MINGW)
 	add_custom_command( TARGET pairOculus PRE_BUILD
 	COMMAND if not exist .\\dist\\bin mkdir .\\dist\\bin )
 	add_custom_command( TARGET pairOculus POST_BUILD
+	COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
+	add_custom_command( TARGET server PRE_BUILD
+	COMMAND if not exist .\\dist\\bin mkdir .\\dist\\bin )
+	add_custom_command( TARGET server POST_BUILD
 	COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
 endif(WIN32 AND NOT MINGW)
 
@@ -184,6 +239,12 @@ if(WIN32)
 
 	install(
 		TARGETS pairOculus
+		RUNTIME DESTINATION bin
+		CONFIGURATIONS All
+	)
+
+	install(
+		TARGETS server
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All
 	)
@@ -249,6 +310,12 @@ if(UNIX)
 
 	install(
 		TARGETS pairOculus
+		RUNTIME DESTINATION bin
+		CONFIGURATIONS All
+	)
+
+	install(
+		TARGETS server
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All
 	)
