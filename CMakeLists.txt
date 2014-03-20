@@ -214,7 +214,7 @@ set_target_properties(pairOculus PROPERTIES DEBUG_POSTFIX _d)
 set_target_properties(server PROPERTIES DEBUG_POSTFIX _d)
 
 target_link_libraries(pairOculus ${Boost_LIBRARIES} ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${BULLET_LIBRARIES} ${OGREBULLET_LIBRARIES} ${LIBOVR_LIBRARIES})
-target_link_libraries(server ${Boost_LIBRARIES} ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${BULLET_LIBRARIES} ${OGREBULLET_LIBRARIES} ${LIBOVR_LIBRARIES})
+target_link_libraries(server ${Boost_LIBRARIES})
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
