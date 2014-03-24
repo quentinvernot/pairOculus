@@ -32,6 +32,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "Player.hpp"
 
+/**
+ * The Map's data
+ * Generate the map randomly and store it
+ */
 class Map {
 	public:
 		/// The type a cell can be
