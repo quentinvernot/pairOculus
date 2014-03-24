@@ -33,7 +33,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class Pyramid : public Block {
 	public:
 		/// Constructor
-		Pyramid(Ogre::ManualObject *man, PrintType print, Real px, Real py, Real pz, Real sx = 100.0, Real sy = 100.0, Real sz = 100.0);
+		Pyramid(
+			Ogre::ManualObject *man,
+			PrintType print,
+			Real px,
+			Real py,
+			Real pz,
+			Real sx = 100.0,
+			Real sy = 100.0,
+			Real sz = 100.0
+		);
 		/// Default destructor
 		virtual ~Pyramid();
 		/// Show the caracteristical points of the pyramid

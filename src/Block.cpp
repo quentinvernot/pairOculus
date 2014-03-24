@@ -39,5 +39,5 @@ Block::Block(Ogre::ManualObject *man, PrintType print, Real px, Real py, Real pz
 }
 
 Block::~Block() {
-	//dtor
+	delete[] manualBlock;
 }
