@@ -119,12 +119,6 @@ void LocalMap::generate() {
 
 	}
 
-	Entity *entity = mWorld->getSceneManager()->createEntity("bomb.mesh");
-	node = sceneMgr->getRootSceneNode()->createChildSceneNode();
-	node->setPosition(Ogre::Vector3(0, mScale/2, 0));
-	node->attachObject(entity);
-	node->scale(0.1, 0.1, 0.1);
-
 	Ogre::Light* light = sceneMgr->createLight("light");
 	light->setPosition(16, 80, 16);
 
