@@ -15,6 +15,12 @@
 # Directories
 obj
 
+# CMake
+Makefile
+CMakeCache.txt
+CMakeFiles/*
+cmake_install.cmake
+
 # Executable
 dist/bin/main
 dist/bin/server
