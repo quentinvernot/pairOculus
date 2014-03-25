@@ -22,7 +22,7 @@ CMakeFiles/*
 cmake_install.cmake
 
 # Executable
-dist/bin/main
+dist/bin/pairOculus
 dist/bin/server
 dist/bin/client
 
