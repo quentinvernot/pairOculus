@@ -286,8 +286,8 @@ void PlayerAnimation::doRunAnimation () {
 }
 
 void PlayerAnimation::stopAnimation () {
-	doIdleAnimation ();
-//	mPlayerAnimationState = NULL;
+	mPlayerAnimationState->setLoop(false);
+	mPlayerAnimationState->setTimePosition(mPlayerAnimationState->getLength());
 }
 
 Ogre::AnimationState* PlayerAnimation::getPlayerAnimationState() {return mPlayerAnimationState;}
