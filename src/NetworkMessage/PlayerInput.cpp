@@ -1,3 +1,29 @@
+/*
+This source file is part of pairOculus, a student project aiming at creating a
+simple 3D multiplayer game for the Oculus Rift.
+
+Repository can be found here : https://github.com/Target6/pairOculus 
+
+Copyright (c) 2013 Target6
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "PlayerInput.hpp"
 
 namespace NetworkMessage{
@@ -5,12 +31,12 @@ namespace NetworkMessage{
 	PlayerInput::PlayerInput(Player *player):
 		NetworkMessage(PLAYERINPUT),
 		mNickname(player->getNickname()),
-		mNodeYaw(player->getYaw()),
-		mNodePitch(player->getPitch()),
-		mNodeRoll(player->getRoll()),
-		mNodePositionX(player->getX()),
-		mNodePositionY(player->getY()),
-		mNodePositionZ(player->getZ()),
+		mYaw(player->getYaw()),
+		mPitch(player->getPitch()),
+		mRoll(player->getRoll()),
+		mX(player->getX()),
+		mY(player->getY()),
+		mZ(player->getZ()),
 		mGoingForward(player->getGoingForward()),
 		mGoingBack(player->getGoingBack()),
 		mGoingLeft(player->getGoingLeft()),
@@ -27,9 +53,9 @@ namespace NetworkMessage{
 		double nodeYaw,
 		double nodePitch,
 		double nodeRoll,
-		double nodePositionX,
-		double nodePositionY,
-		double nodePositionZ,
+		double nodeX,
+		double nodeY,
+		double nodeZ,
 		bool goingForward,
 		bool goingBack,
 		bool goingLeft,
@@ -40,12 +66,12 @@ namespace NetworkMessage{
 	):
 		NetworkMessage(PLAYERINPUT),
 		mNickname(nickname),
-		mNodeYaw(nodeYaw),
-		mNodePitch(nodePitch),
-		mNodeRoll(nodeRoll),
-		mNodePositionX(nodePositionX),
-		mNodePositionY(nodePositionY),
-		mNodePositionZ(nodePositionZ),
+		mYaw(nodeYaw),
+		mPitch(nodePitch),
+		mRoll(nodeRoll),
+		mX(nodeX),
+		mY(nodeY),
+		mZ(nodeZ),
 		mGoingForward(goingForward),
 		mGoingBack(goingBack),
 		mGoingLeft(goingLeft),
@@ -62,13 +88,13 @@ namespace NetworkMessage{
 
 	std::string PlayerInput::getNickname(){return mNickname;}
 
-	double PlayerInput::getYaw(){return mNodeYaw;}
-	double PlayerInput::getPitch(){return mNodePitch;}
-	double PlayerInput::getRoll(){return mNodeRoll;}
+	double PlayerInput::getYaw(){return mYaw;}
+	double PlayerInput::getPitch(){return mPitch;}
+	double PlayerInput::getRoll(){return mRoll;}
 
-	double PlayerInput::getX(){return mNodePositionX;}
-	double PlayerInput::getY(){return mNodePositionY;}
-	double PlayerInput::getZ(){return mNodePositionZ;}
+	double PlayerInput::getX(){return mX;}
+	double PlayerInput::getY(){return mY;}
+	double PlayerInput::getZ(){return mZ;}
 
 	bool PlayerInput::getGoingForward(){return mGoingForward;}
 	bool PlayerInput::getGoingBack(){return mGoingBack;}
@@ -85,13 +111,13 @@ namespace NetworkMessage{
 
 		convert << mNickname << "\n";
 
-		convert << mNodeYaw << "\n";
-		convert << mNodePitch << "\n";
-		convert << mNodeRoll << "\n";
+		convert << mYaw << "\n";
+		convert << mPitch << "\n";
+		convert << mRoll << "\n";
 
-		convert << mNodePositionX << "\n";
-		convert << mNodePositionY << "\n";
-		convert << mNodePositionZ << "\n";
+		convert << mX << "\n";
+		convert << mY << "\n";
+		convert << mZ << "\n";
 
 		convert << mGoingForward << "\n";
 		convert << mGoingBack << "\n";
