@@ -24,8 +24,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef LOCALMAP_H
-#define LOCALMAP_H
+#ifndef LOCALMAP_HPP
+#define LOCALMAP_HPP
 
 #include <deque>
 
@@ -42,7 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ExplosionListener.hpp"
 #include "OgrePlayerList.hpp"
 
-/**	Physical representation of the map
+/**	Physical representation of the Map
  */
 class LocalMap : public Map, public ExplosionListener {
 
@@ -59,10 +59,10 @@ class LocalMap : public Map, public ExplosionListener {
 		/// Destructor
 		virtual ~LocalMap();
 
-		///	Generate the map's graphics and physics
+		///	Generate the Map's graphics and physics
 		void generate();
 
-		/// Get the center of the map
+		/// Get the center of the Map
 		Ogre::Vector3 getMapCenter();
 		/// Create an explosion
 		bool bombExploded(Ogre::Vector3 position, int range);
@@ -80,7 +80,7 @@ class LocalMap : public Map, public ExplosionListener {
 		void createExplosion(Ogre::Vector3 pos, int range);
 		/// Destroy a block and show an animation
 		void destroyBlock(unsigned int i, unsigned int j);
-		/// Kill player and detonate bomb in the cell
+		/// Kill player and detonate Bomb in the cell
 		void searchAndDestroyObjects(int row, int col);
 
 		//Attributes
@@ -98,4 +98,4 @@ class LocalMap : public Map, public ExplosionListener {
 
 };
 
-#endif // LOCALMAP_H
+#endif // LOCALMAP_HPP

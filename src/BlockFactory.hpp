@@ -24,8 +24,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef BLOCKFACTORY_H
-#define BLOCKFACTORY_H
+#ifndef BLOCKFACTORY_HPP
+#define BLOCKFACTORY_HPP
 
 #include <sstream>
 
@@ -36,6 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Map.hpp"
 #include "Cube.hpp"
 #include "Pyramid.hpp"
+
 /**	A factory for Block
  */
 class BlockFactory {
@@ -46,7 +47,7 @@ class BlockFactory {
 		/// Destructor
 		virtual ~BlockFactory();
 
-		/// Create a block at a particular position
+		/// Create a Block at a particular position
 		Ogre::ManualObject* createBlock(
 			Map::PrintType cellType,
 			unsigned int i,
@@ -60,4 +61,4 @@ class BlockFactory {
 
 };
 
-#endif // BLOCKFACTORY_H
+#endif // BLOCKFACTORY_HPP

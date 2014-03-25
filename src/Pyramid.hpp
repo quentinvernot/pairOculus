@@ -24,11 +24,12 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef PYRAMID_H
-#define PYRAMID_H
+#ifndef PYRAMID_HPP
+#define PYRAMID_HPP
 
 #include "Block.hpp"
-/**	Pyramidal representation of a block
+
+/**	Pyramidal representation of a Block
  */
 class Pyramid : public Block {
 	public:
@@ -45,15 +46,15 @@ class Pyramid : public Block {
 		);
 		/// Default destructor
 		virtual ~Pyramid();
-		/// Show the caracteristical points of the pyramid
+		/// Show the caracteristical points of the Pyramid
 		virtual void createBlockPoint();
-		/// Show the skeleton of the pyramid
+		/// Show the skeleton of the Pyramid
 		virtual void createBlockWireframe();
-		/// Show the solid pyramid
+		/// Show the solid Pyramid
 		virtual void createBlockSolid();
 
 	protected:
 	private:
 };
 
-#endif // PYRAMID_H
+#endif // PYRAMID_HPP

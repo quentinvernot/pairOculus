@@ -24,8 +24,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef CUBE_H
-#define CUBE_H
+#ifndef CUBE_HPP
+#define CUBE_HPP
 
 #include "Block.hpp"
 
@@ -45,11 +45,11 @@ class Cube : public Block {
 		);
 		virtual ~Cube();
 
-		/// Show the caracteristical points of the cube
+		/// Show the caracteristical points of the Cube
 		virtual void createBlockPoint();
-		/// Show the skeleton of the cube
+		/// Show the Skeleton of the Cube
 		virtual void createBlockWireframe();
-		/// Show the solid cube
+		/// Show the solid Cube
 		virtual void createBlockSolid();
 
 	protected:
@@ -57,4 +57,4 @@ class Cube : public Block {
 
 };
 
-#endif // CUBE_H
+#endif // CUBE_HPP

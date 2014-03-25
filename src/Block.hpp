@@ -24,18 +24,19 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef BLOCK_H
-#define BLOCK_H
+#ifndef BLOCK_HPP
+#define BLOCK_HPP
 
 #include <OgreManualObject.h>
 
 using namespace Ogre;
+
 /**	Abstract representation of the Block.
  *	Store the position, the size and the representation.
  */
 class Block {
 	public:
-		/// The kind of type a block can be
+		/// The kind of type a Block can be
 		enum PrintType {
 			EMPTY,		//! Create an empty Block
 			POINT,		//! White point on angles
@@ -46,14 +47,14 @@ class Block {
 
 		/// Constructor
 		Block(Ogre::ManualObject *man, PrintType print, Real px, Real py, Real pz, Real sx = 100, Real sy = 100, Real sz = 100);
-		/// Default destructor
+		/// Destructor
 		virtual ~Block();
 
-		/// Schould show the caracteristical points of the block
+		/// Schould show the caracteristical points of the Block
 		virtual void createBlockPoint() = 0;
-		/// Should show the skeleton of the block
+		/// Should show the skeleton of the Block
 		virtual void createBlockWireframe() = 0;
-		/// Should show the solid block
+		/// Should show the solid Block
 		virtual void createBlockSolid() = 0;
 
 		/** Access positionX
@@ -104,4 +105,4 @@ class Block {
 	private:
 };
 
-#endif // BLOCK_H
+#endif // BLOCK_HPP

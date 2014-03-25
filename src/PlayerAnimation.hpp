@@ -24,14 +24,14 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef PLAYERANIMATION_H
-#define PLAYERANIMATION_H
+#ifndef PLAYERANIMATION_HPP
+#define PLAYERANIMATION_HPP
 
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
 
-/** Animations for the players.
- * Set the player's animations up.
+/**	Animations for the RemotePlayer.
+ *	Set the Player's animations up and manage them.
  */
 class PlayerAnimation {
 	public:
@@ -70,4 +70,4 @@ class PlayerAnimation {
 		/// The player's animation state
 		Ogre::AnimationState *mPlayerAnimationState;
 };
-#endif /* PLAYERANIMATION_H */
+#endif // PLAYERANIMATION_HPP

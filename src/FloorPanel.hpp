@@ -24,8 +24,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef FLOORPANEL_H
-#define FLOORPANEL_H
+#ifndef FLOORPANEL_HPP
+#define FLOORPANEL_HPP
 
 #include <OgreManualObject.h>
 
@@ -53,4 +53,4 @@ class FloorPanel {
 		Ogre::ManualObject *manualFloor;
 	private:
 };
-#endif // FLOORPANEL_H
+#endif // FLOORPANEL_HPP
