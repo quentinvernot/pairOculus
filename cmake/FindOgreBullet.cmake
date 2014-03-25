@@ -11,16 +11,28 @@ if(OGREBULLET_INCLUDE_DIR)
     set(OGREBULLET_FIND_QUIETLY TRUE)
 endif(OGREBULLET_INCLUDE_DIR)
 
-find_path(
-	OGREBULLET_INCLUDE_DIR "Dynamics/OgreBulletDynamicsRigidBody.h"
-	PATH_SUFFIXES "OgreBullet"
-)
+if (WIN32)
+	find_path(
+		OGREBULLET_INCLUDE_DIR "Dynamics/include/OgreBulletDynamicsRigidBody.h"
+		$ENV{OGREBULLET_ROOT}
+	)
+	find_library(OGREBULLET_COL_LIB "OgreBulletCollisions" $ENV{OGREBULLET_ROOT})
+	find_library(OGREBULLET_DYN_LIB "OgreBulletDynamics" $ENV{OGREBULLET_ROOT})
 
-find_library(OGREBULLET_COL_LIB "OgreBulletCollisions")
-find_library(OGREBULLET_DYN_LIB "OgreBulletDynamics")
+	set(OGREBULLET_INCLUDE_DIRS "${OGREBULLET_INCLUDE_DIR}/Collisions/include" "${OGREBULLET_INCLUDE_DIR}/Dynamics/include")
+	set(OGREBULLET_LIBRARIES ${OGREBULLET_COL_LIB} ${OGREBULLET_COL_LIB})
+elseif (UNIX)
+	find_path(
+		OGREBULLET_INCLUDE_DIR "Dynamics/OgreBulletDynamicsRigidBody.h"
+		PATH_SUFFIXES "OgreBullet"
+	)
 
-set(OGREBULLET_INCLUDE_DIRS "${OGREBULLET_INCLUDE_DIR}/Collisions" "${OGREBULLET_INCLUDE_DIR}/Dynamics")
-set(OGREBULLET_LIBRARIES OgreBulletCollisions OgreBulletDynamics)
+	find_library(OGREBULLET_COL_LIB "OgreBulletCollisions")
+	find_library(OGREBULLET_DYN_LIB "OgreBulletDynamics")
+
+	set(OGREBULLET_INCLUDE_DIRS "${OGREBULLET_INCLUDE_DIR}/Collisions" "${OGREBULLET_INCLUDE_DIR}/Dynamics")
+	set(OGREBULLET_LIBRARIES OgreBulletCollisions OgreBulletDynamics)
+endif()
 
 # handle the QUIETLY and REQUIRED arguments and set OGREBULLET_FOUND to TRUE if
 # all listed variables are TRUE

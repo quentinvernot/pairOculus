@@ -19,6 +19,9 @@ if(NOT OIS_FOUND)
 endif()
 
 # Find Bullet
+if(EXISTS $ENV{BULLET_ROOT})
+	set(BULLET_ROOT $ENV{BULLET_ROOT})
+endif()
 find_package(Bullet REQUIRED)
 
 if(NOT BULLET_FOUND)
@@ -43,18 +46,19 @@ endif()
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-# Components that need linking (NB does not include header-only components like bind)
-find_package(Boost COMPONENTS date_time system thread QUIET)
+find_package(Boost COMPONENTS date_time system thread REQUIRED)
 
 if(NOT Boost_FOUND)
 	message(SEND_ERROR "Failed to find Boost.")
 endif()
 
-IF(UNIX)
-	IF(CMAKE_COMPILER_IS_GNUCC)
+if(UNIX)
+	if(CMAKE_COMPILER_IS_GNUCC)
 		ADD_DEFINITIONS(-Wall -g -pthread)
-	ENDIF(CMAKE_COMPILER_IS_GNUCC)
-ENDIF(UNIX)
+	endif(CMAKE_COMPILER_IS_GNUCC)
+else()
+	ADD_DEFINITIONS(-D_WIN32_WINNT=0x0501 -DWINVER=0x0501 -luuid)
+endif(UNIX)
 
 set(
 	MAINHDRS
