@@ -43,6 +43,9 @@ namespace NetworkMessage{
 		for(std::string token = ""; getline(buf, token, '\n'); )
 			parts.push_back(token);
 
+		if(parts.size() == 0)
+			return NULL;
+
 		unsigned int j = 0;
 		double x, y, z;
 		PlayerList playerList;
