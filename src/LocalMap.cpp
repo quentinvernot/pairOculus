@@ -1,3 +1,29 @@
+/*
+This source file is part of pairOculus, a student project aiming at creating a
+simple 3D multiplayer game for the Oculus Rift.
+
+Repository can be found here : https://github.com/Target6/pairOculus
+
+Copyright (c) 2013 Zykino
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "LocalMap.hpp"
 
 LocalMap::LocalMap(
@@ -24,7 +50,7 @@ LocalMap::~LocalMap(){
 void LocalMap::generate() {
 
 	using namespace OgreBulletCollisions;
-	
+
 	Ogre::SceneManager *sceneMgr = mWorld->getSceneManager();
 
 	FloorPanel* fp = new FloorPanel(
@@ -50,7 +76,7 @@ void LocalMap::generate() {
 	Ogre::SceneNode *node;
 
 	BoxCollisionShape *boxShape;
-	
+
 	stringstream genName;
 
 	mBodies = new OgreBulletDynamics::RigidBody **[mHeight];
@@ -92,12 +118,6 @@ void LocalMap::generate() {
 		}
 
 	}
-	
-	Entity *entity = mWorld->getSceneManager()->createEntity("bomb.mesh");
-	node = sceneMgr->getRootSceneNode()->createChildSceneNode();
-	node->setPosition(Ogre::Vector3(0, mScale/2, 0));
-	node->attachObject(entity);
-	node->scale(0.1, 0.1, 0.1);
 
 	Ogre::Light* light = sceneMgr->createLight("light");
 	light->setPosition(16, 80, 16);
@@ -121,7 +141,7 @@ void LocalMap::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		mCrumblingBlocks[i]->translate(currentVelocity);
 
 	while(
-		mCrumblingBlocks.size() > 0 && 
+		mCrumblingBlocks.size() > 0 &&
 		mCrumblingBlocks.front()->getPosition().y < -mScale/2
 	){
 			mWorld->getSceneManager()->destroyManualObject(
@@ -160,13 +180,12 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 	if(row == -1 || col == -1) //outside the map
 		return;
 
-	if(!isUnbreakable(row, col)){
+	if(!isUnbreakable(row, col)){	//if not in an unbreakable block
 
 		mMap[row][col] = EMPTY;
 		searchAndDestroyObjects(row, col);
 
-		i = 1;
-		while(range - i > 0 && !isUnbreakable(row + i, col)){
+		for(i = 1; range - i > 0 && !isUnbreakable(row + i, col); i++){
 
 			if(mMap[row + i][col] == EMPTY)
 				searchAndDestroyObjects(row + i, col);
@@ -177,12 +196,10 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 			}
 			else
 				destroyBlock(row + i, col);
-
-			i++;
 		}
 
-		i = -1;
-		while(range + i > 0 && !isUnbreakable(row + i, col)){
+
+		for(i = -1; range + i > 0 && !isUnbreakable(row + i, col); i--){
 
 			if(mMap[row + i][col] == EMPTY)
 				searchAndDestroyObjects(row + i, col);
@@ -193,12 +210,10 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 			}
 			else
 				destroyBlock(row + i, col);
-
-			i--;
 		}
 
-		i = 1;
-		while(range - i > 0 && !isUnbreakable(row, col + i)){
+
+		for(i = 1; range - i > 0 && !isUnbreakable(row, col + i); i++){
 
 			if(mMap[row][col + i] == EMPTY)
 				searchAndDestroyObjects(row, col + i);
@@ -209,12 +224,10 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 			}
 			else
 				destroyBlock(row, col + i);
-
-			i++;
 		}
 
-		i = -1;
-		while(range + i > 0 && !isUnbreakable(row, col + i)){
+
+		for(i = -1; range + i > 0 && !isUnbreakable(row, col + i); i--){
 
 			if(mMap[row][col + i] == EMPTY)
 				searchAndDestroyObjects(row, col + i);
@@ -225,8 +238,6 @@ void LocalMap::createExplosion(Ogre::Vector3 pos, int range){
 			}
 			else
 				destroyBlock(row, col + i);
-
-			i--;
 		}
 
 	}

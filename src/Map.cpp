@@ -1,3 +1,29 @@
+/*
+This source file is part of pairOculus, a student project aiming at creating a
+simple 3D multiplayer game for the Oculus Rift.
+
+Repository can be found here : https://github.com/Target6/pairOculus
+
+Copyright (c) 2013 Zykino
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "Map.hpp"
 
 Map::Map(unsigned int height, unsigned int width, time_t seed):
@@ -66,7 +92,7 @@ Map::PrintType** Map::generateMap() {
 	mMap[mHeight-2][mWidth-3] = EMPTY;
 	mMap[mHeight-3][mWidth-2] = EMPTY;
 
-	// To see the map (for debuging it)
+	// To see the map in terminal (for debug)
 	printMap();
 
 	return mMap;
@@ -87,7 +113,7 @@ bool Map::isBreakable(unsigned int i, unsigned int j) {
 	}
 
 	std::cerr << "WARNING Found an unknow kind of block in isBreakable" << std::endl;
-	return false;	// You must never come here
+	return false;	// You shouldn't be there
 }
 
 bool Map::isUnbreakable(unsigned int i, unsigned int j) {
@@ -105,7 +131,7 @@ bool Map::isUnbreakable(unsigned int i, unsigned int j) {
 	}
 
 	std::cerr << "WARNING Found an unknow kind of block in isUnbreakable" << std::endl;
-	return false;	// You must never come here
+	return false;	// You shouldn't be there
 }
 
 time_t Map::getSeed(){return mSeed;}

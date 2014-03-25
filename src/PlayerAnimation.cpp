@@ -1,3 +1,29 @@
+/*
+This source file is part of pairOculus, a student project aiming at creating a
+simple 3D multiplayer game for the Oculus Rift.
+
+Repository can be found here : https://github.com/Target6/pairOculus
+
+Copyright (c) 2013 Target6
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "PlayerAnimation.hpp"
 
 PlayerAnimation::PlayerAnimation(Ogre::SceneManager *sceneMgr, Ogre::Entity *entity) :
@@ -60,22 +86,6 @@ void PlayerAnimation::setupIdleAnimation () {
 	key = tShoulderLeft->createNodeKeyFrame(0.0f);
 	key->setRotation(Ogre::Quaternion(Ogre::Degree(-60), Ogre::Vector3::UNIT_Z));
 
-/*	// Hip Right
-	key = tHipRight->createNodeKeyFrame(duration);
-	key->setRotation(Ogre::Quaternion(Ogre::Degree(20), Ogre::Vector3::UNIT_Z));
-
-	// Hip Left
-	key = tHipLeft->createNodeKeyFrame(duration);
-	key->setRotation(Ogre::Quaternion(Ogre::Degree(-20), Ogre::Vector3::UNIT_Z));
-
-	// Shoulder Right
-	key = tShoulderRight->createNodeKeyFrame(duration);
-	key->setRotation(Ogre::Quaternion(Ogre::Degree(60), Ogre::Vector3::UNIT_Z));
-
-	// Shoulder Left
-	key = tShoulderLeft->createNodeKeyFrame(duration);
-	key->setRotation(Ogre::Quaternion(Ogre::Degree(-60), Ogre::Vector3::UNIT_Z));
-*/
 	mSceneMgr->createAnimationState(mEntity->getName() + "Idle");
 }
 
@@ -276,8 +286,8 @@ void PlayerAnimation::doRunAnimation () {
 }
 
 void PlayerAnimation::stopAnimation () {
-	doIdleAnimation ();
-//	mPlayerAnimationState = NULL;
+	mPlayerAnimationState->setLoop(false);
+	mPlayerAnimationState->setTimePosition(mPlayerAnimationState->getLength());
 }
 
 Ogre::AnimationState* PlayerAnimation::getPlayerAnimationState() {return mPlayerAnimationState;}

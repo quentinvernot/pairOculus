@@ -2,7 +2,7 @@
 This source file is part of pairOculus, a student project aiming at creating a
 simple 3D multiplayer game for the Oculus Rift.
 
-Repository can be found here : https://github.com/Target6/pairOculus 
+Repository can be found here : https://github.com/Target6/pairOculus
 
 Copyright (c) 2013 Target6
 
@@ -77,7 +77,7 @@ bool RemotePlayer::frameRenderingQueued(const Ogre::FrameEvent &evt){
 		if (mVelocity.x != 0 && mVelocity.z != 0)
 			mPlayerAnimationState->doRunAnimation();
 		else
-			mPlayerAnimationState->doIdleAnimation();
+			mPlayerAnimationState->stopAnimation();
 
 		mPlayerAnimationState->getPlayerAnimationState()->addTime(evt.timeSinceLastFrame);
 

@@ -2,7 +2,7 @@
 This source file is part of pairOculus, a student project aiming at creating a
 simple 3D multiplayer game for the Oculus Rift.
 
-Repository can be found here : https://github.com/Target6/pairOculus 
+Repository can be found here : https://github.com/Target6/pairOculus
 
 Copyright (c) 2013 Target6
 
@@ -37,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class Player{
 
 	public:
-		//Methods	
+		//Methods
 		/// Constructor.
 		Player(std::string nickname);
 		/// Default destructor.
@@ -66,8 +66,8 @@ class Player{
 		/// Sets the body's position on the Z axis.
 		virtual void setZ(double z);
 		/** Gets the player's starting position.
-		 *  \remarks 
-		 * 		The starting position is stored and can be used be children
+		 *  \remarks
+		 * 		The starting position is stored and can be used by children
 		 *  	classes.
 		 */
 		virtual void setStartingPosition(double x, double y, double z);
