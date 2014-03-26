@@ -55,7 +55,7 @@ class Explosion{
 
 		/// Generates the explosion's graphics.
 		void generateGraphics();
-		/// 
+		/// Computes the remaining distance the object can travel.
 		bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 		/// Returns the remaining distance until destruction.

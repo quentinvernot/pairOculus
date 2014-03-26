@@ -60,12 +60,11 @@ void Explosion::generateGraphics(){
 	entity->setMaterialName("Examples/Smoke");
 	AxisAlignedBox boundingB = entity->getBoundingBox();
 	Vector3 size = boundingB.getSize();
-	size /= 40000;
+	size /= 4000;
 	SceneNode *bodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode(mName + "ExplosionBodyNode");
 	SceneNode *entityNode = bodyNode->createChildSceneNode(mName + "ExplosionEntityNode");
 	entityNode->attachObject(entity);
 	entityNode->scale(0.0005, 0.0005, 0.0005);
-	entityNode->setPosition(0, -size.x, 0);
 	SphereCollisionShape *boxShape = new SphereCollisionShape(size.x);
 	mBody = new OgreBulletDynamics::RigidBody(mName + "SphereExplosion", mWorld);
 
