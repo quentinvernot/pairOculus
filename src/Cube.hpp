@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "Block.hpp"
 
-///	Cubic Block.
+///	A Cubic Block.
 class Cube : public Block {
 
 	public:
