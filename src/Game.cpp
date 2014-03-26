@@ -1,6 +1,6 @@
 #include "Game.hpp"
 
-Game::Game(std::string nickname, std::string address, std::string port):
+Game::Game(std::string nickname, std::string address):
 	mOgreRoot(0),
 	mOgreResourcesCfg(Ogre::StringUtil::BLANK),
 	mOgrePluginsCfg(Ogre::StringUtil::BLANK),
@@ -14,7 +14,7 @@ Game::Game(std::string nickname, std::string address, std::string port):
 	mBombManager(0),
 	mLocalMap(0),
 	mAddress(address),
-	mPort(port),
+	mPort("1337"),
 	mNMFactory(new NetworkMessage::NetworkMessageFactory()),
 	mGCListener(0),
 	mOnlineMode(false),
@@ -311,6 +311,13 @@ bool Game::setup(){
 	if(!configure())
 		return false;
 
+	bulletSetup();
+
+	if(mOnlineMode)
+		networkSetup();
+	else
+		offlineSetup();
+
 	// Create any resource listeners (for loading screens)
 	createResourceListener();
 	// Load resources
@@ -348,13 +355,6 @@ bool Game::configure(){
 			mCameraManager,
 			mOgreRoot->initialise(true, "Game Render Window")
 		);
-
-		bulletSetup();
-
-		if(mOnlineMode)
-			networkSetup();
-		else
-			offlineSetup();
 
 		return true;
 
