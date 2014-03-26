@@ -21,6 +21,10 @@ CMakeCache.txt
 CMakeFiles/*
 cmake_install.cmake
 
+# Doxygen
+html/*
+latex/*
+
 # Executable
 dist/bin/pairOculus
 dist/bin/server
