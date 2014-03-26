@@ -38,6 +38,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using boost::asio::ip::tcp;
 
+/** A network sender and receiver class.
+ *  Use it by extending it and implementing its methods.
+ */
 class NetworkIO{
 
 	public:
@@ -56,7 +59,7 @@ class NetworkIO{
 		virtual void start();
 		/// Closes the connection.
 		virtual void close();
-		/// Sends a message.
+		/// Adds the given message to the queue.
 		void sendMessage(NetworkMessage::NetworkMessage *message);
 
 	protected:

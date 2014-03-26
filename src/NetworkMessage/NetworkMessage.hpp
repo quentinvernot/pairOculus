@@ -80,9 +80,9 @@ namespace NetworkMessage{
 			/** Message's header.
 			 *  \remarks
 			 *  	The header's format is as follow :
-			 *  	<Message type>\n<Body length>\n
-			 * 		<Message type> is 2 characters long.
-			 * 		<Body length> is 4 characters long.
+			 *  	'MessageType'\n'BodyLength'\n
+			 * 		MessageType is 2 characters long.
+			 * 		BodyLength is 4 characters long.
 			 */
 			std::string mHeader;
 			/// Message's body.

@@ -54,18 +54,21 @@ class Map {
 		 * \return the map to send it to the clients
 		 */
 		PrintType** generateMap();
-		/** Asks if a cell is breakable
-		 * \param the coordonees of the cell
-		 * \return true if a block is breakable here
+		/** Asks if a cell is breakable.
+		 * \param i the coordinate of the cell on the x-axis.
+		 * \param j the coordinate of the cell on the z-axis.
+		 * \return true if a block is breakable here.
 		 */
 		bool isBreakable(unsigned int i, unsigned int j);
 		/** Asks if a cell is unbreakable
-		 * \param the coordonees of the cell
+		 * \param i the coordinate of the cell on the x-axis.
+		 * \param j the coordinate of the cell on the z-axis.
 		 * \return true if a block is unbreakable here
 		 */
 		bool isUnbreakable(unsigned int i, unsigned int j);
-		/** set in Player the start position
-		 * \param The player witch we are asking the starting position
+		/** Set in Player the start position.
+		 * \param pos the starting position.
+		 * \param player the player witch we are asking the starting position.
 		 */
 		void setStartingPosition(int pos, Player *player);
 		/** Access mMap

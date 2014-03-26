@@ -29,8 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "Block.hpp"
 
-/**	Pyramidal representation of a Block
- */
+///	A Pyramidal Block.
 class Pyramid : public Block {
 	public:
 		/// Constructor

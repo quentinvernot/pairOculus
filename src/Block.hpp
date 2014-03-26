@@ -87,6 +87,7 @@ class Block {
 		Ogre::ManualObject* GetManualBlock() { return manualBlock; }
 	protected:
 		// Attributes
+		/// The type of block.
 		PrintType print;
 		/// The position on X axis
 		Real positionX;

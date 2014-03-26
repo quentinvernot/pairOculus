@@ -146,6 +146,7 @@ class OgrePlayer : public Player{
 
 		/// Time until the player can place the next bomb.
 		double mBombCooldown;
+		/// Current time left until the player can place the next bomb.
 		double mBombCooldownLeft;
 
 };
