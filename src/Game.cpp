@@ -84,6 +84,9 @@ bool Game::keyPressed(const OIS::KeyEvent &arg){
 
 	if(arg.key == OIS::KC_M)
 		mCameraManager->decreaseIPD();
+		
+	if(arg.key == OIS::KC_N)
+		mWorld->setShowDebugShapes(!mWorld->getShowDebugShapes());
 
 	if(mOnlineMode && arg.key == OIS::KC_R)
 		mGCListener->sendMessage(
@@ -360,7 +363,7 @@ bool Game::bulletSetup(){
 	debugDrawer->setDrawWireframe(true);	// we want to see the Bullet containers
 
 	mWorld->setDebugDrawer(debugDrawer);
-	mWorld->setShowDebugShapes(true);		// enable it if you want to see the Bullet containers
+	mWorld->setShowDebugShapes(false);
 	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
 	node->attachObject(static_cast <SimpleRenderable *> (debugDrawer));
 
