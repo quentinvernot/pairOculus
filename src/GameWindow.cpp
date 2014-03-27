@@ -72,7 +72,7 @@ void GameWindow::setViewMode(ViewMode mode){
 
 bool GameWindow::keyPressed(const OIS::KeyEvent &arg){
 
-	if(arg.key == OIS::KC_A)
+	if(arg.key == OIS::KC_O)
 		switchViewMode();
 
 	return true;
