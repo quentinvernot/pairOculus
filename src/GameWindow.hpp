@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define __GAMEWINDOW_HPP
 
 #include "CameraManager.hpp"
+#include "KeyboardPressListener.hpp"
 
 #include <OVR.h>
 
@@ -45,7 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <OISKeyboard.h>
 
 /// The game's window.
-class GameWindow{
+class GameWindow : public KeyboardPressListener{
 
 	public:
 		//Methods
@@ -64,7 +65,7 @@ class GameWindow{
 		Ogre::RenderWindow *getWindow();
 
 		/// Treats the keyboard inputs.
-		bool injectKeyDown(const OIS::KeyEvent &arg);
+		bool keyPressed(const OIS::KeyEvent &arg);
 
 	private:
 		//Methods

@@ -74,7 +74,7 @@ void LocalPlayer::lookAt(Ogre::Vector3 vec){
 
 }
 
-bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
+bool LocalPlayer::mouseMoved(const OIS::MouseEvent &arg){
 
 	mYawCorrection += Ogre::Degree(-arg.state.X.rel * 0.15f);
 
@@ -95,15 +95,7 @@ bool LocalPlayer::injectMouseMove(const OIS::MouseEvent &arg){
 
 }
 
-bool LocalPlayer::injectMouseDown(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
-	return true;
-}
-
-bool LocalPlayer::injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
-	return true;
-}
-
-bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
+bool LocalPlayer::keyPressed(const OIS::KeyEvent &arg){
 
 	if(mIsDead || mHasWon)
 		return true;
@@ -145,7 +137,7 @@ bool LocalPlayer::injectKeyDown(const OIS::KeyEvent &arg){
 
 }
 
-bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
+bool LocalPlayer::keyReleased(const OIS::KeyEvent &arg){
 
 	if(mIsDead || mHasWon)
 		return true;
@@ -187,7 +179,7 @@ bool LocalPlayer::injectKeyUp(const OIS::KeyEvent &arg){
 
 }
 
-bool LocalPlayer::injectHeadMove(const Ogre::Vector3 &evt){
+bool LocalPlayer::headMoved(const Ogre::Vector3 &evt){
 
 	mYawCorrection += Ogre::Radian(evt.x);
 	mPitchCorrection  += Ogre::Radian(evt.y);

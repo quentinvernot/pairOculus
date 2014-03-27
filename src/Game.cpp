@@ -74,72 +74,21 @@ void Game::shutDown(){
 	mShutDownFlag = true;
 }
 
-bool Game::injectMouseMove(const OIS::MouseEvent &arg){
-
-	if(mGameSetUp)
-		return mLocalPlayer->injectMouseMove(arg);
-
-	return true;
-
-}
-
-bool Game::injectMouseDown(
-	const OIS::MouseEvent &arg, OIS::MouseButtonID id
-){
-
-	if(mGameSetUp)
-		return mLocalPlayer->injectMouseDown(arg, id);
-
-	return true;
-
-}
-
-bool Game::injectMouseUp(
-	const OIS::MouseEvent &arg, OIS::MouseButtonID id
-){
-
-	if(mGameSetUp)
-		return mLocalPlayer->injectMouseUp(arg, id);
-
-	return true;
-
-}
-
-bool Game::injectKeyDown(const OIS::KeyEvent &arg){
+bool Game::keyPressed(const OIS::KeyEvent &arg){
 
 	if(arg.key == OIS::KC_ESCAPE)
 		mShutDownFlag = true;
+
 	if(arg.key == OIS::KC_P)
 		mCameraManager->increaseIPD();
+
 	if(arg.key == OIS::KC_M)
 		mCameraManager->decreaseIPD();
+
 	if(mOnlineMode && arg.key == OIS::KC_R)
 		mGCListener->sendMessage(
 			mNMFactory->buildMessage(NetworkMessage::GAMESTART)
 		);
-
-	mGameWindow->injectKeyDown(arg);
-
-	if(mGameSetUp)
-		return mLocalPlayer->injectKeyDown(arg);
-
-	return true;
-
-}
-
-bool Game::injectKeyUp(const OIS::KeyEvent &arg){
-
-	if(mGameSetUp)
-		return mLocalPlayer->injectKeyUp(arg);
-
-	return true;
-
-}
-
-bool Game::injectHeadMove(const Ogre::Vector3 &evt){
-
-	if(mGameSetUp)
-		return mLocalPlayer->injectHeadMove(evt);
 
 	return true;
 
@@ -311,13 +260,6 @@ bool Game::setup(){
 	if(!configure())
 		return false;
 
-	bulletSetup();
-
-	if(mOnlineMode)
-		networkSetup();
-	else
-		offlineSetup();
-
 	// Create any resource listeners (for loading screens)
 	createResourceListener();
 	// Load resources
@@ -325,6 +267,13 @@ bool Game::setup(){
 
 	// Create the frame listener
 	createFrameListener();
+
+	bulletSetup();
+
+	if(mOnlineMode)
+		networkSetup();
+	else
+		offlineSetup();
 
 	if(mInput->hasOculusRift())
 		mGameWindow->setViewMode(OCULUS);
@@ -454,20 +403,8 @@ void Game::createFrameListener(){
 	Ogre::LogManager::getSingletonPtr()->logMessage("Creating Input");
 	mInput = new Input(mGameWindow->getWindow());
 
-	mInput->setMouseListener(
-		boost::bind(&Game::injectMouseMove, this, _1),
-		boost::bind(&Game::injectMouseDown, this, _1, _2),
-		boost::bind(&Game::injectMouseUp, this, _1, _2)
-	);
-
-	mInput->setKeyboardListener(
-		boost::bind(&Game::injectKeyDown, this, _1),
-		boost::bind(&Game::injectKeyUp, this, _1)
-	);
-
-	mInput->setSensorFusionListener(
-		boost::bind(&Game::injectHeadMove, this, _1)
-	);
+	mInput->addKeyboardPressListener(this);
+	mInput->addKeyboardPressListener(mGameWindow);
 
 	mOgreRoot->addFrameListener(this);
 
@@ -546,8 +483,18 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 
 	if(mGameRunning){
 
-		if(!mSceneCreated)
+		if(!mSceneCreated){
+
+			// Creates the scene.
 			createScene();
+
+			// Enables the player's inputs.
+			mInput->addMouseMoveListener(mLocalPlayer);
+			mInput->addKeyboardPressListener(mLocalPlayer);
+			mInput->addKeyboardReleaseListener(mLocalPlayer);
+			mInput->addHeadMoveListener(mLocalPlayer);
+
+		}
 
 		for(unsigned int i = 0; i < mPlayerList->size(); i++)
 			(*mPlayerList)[i]->frameRenderingQueued(evt);

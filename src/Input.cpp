@@ -26,14 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "Input.hpp"
 
-Input::Input(Ogre::RenderWindow *window):
-	mCallbackMouseMoved(0),
-	mCallbackMousePressed(0),
-	mCallbackMouseReleased(0),
-	mCallbackKeyPressed(0),
-	mCallbackKeyReleased(0),
-	mCallbackHeadMoved(0)
-{
+Input::Input(Ogre::RenderWindow *window){
 
 	Ogre::LogManager::getSingletonPtr()->logMessage("Initializing OIS");
 
@@ -48,10 +41,23 @@ Input::Input(Ogre::RenderWindow *window):
 	pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 	mInputManager = OIS::InputManager::createInputSystem(pl);
 
+	mMouse = static_cast<OIS::Mouse*>(
+		mInputManager->createInputObject(OIS::OISMouse, true)
+	);
+	mMouse->setEventCallback(this);
+
+	mKeyboard = static_cast<OIS::Keyboard*>(
+		mInputManager->createInputObject(OIS::OISKeyboard, true)
+	);
+	mKeyboard->setEventCallback(this);
+
 	Ogre::LogManager::getSingletonPtr()->logMessage("OIS Initialized");
 	
 	Ogre::LogManager::getSingletonPtr()->logMessage("Initializing OVR");
 	OVR::System::Init(OVR::Log::ConfigureDefaultLog(OVR::LogMask_All));
+	
+	mSensorFusionDevice = new SensorFusionDevice();
+	mSensorFusionDevice->setEventCallback(this);
 	
 	Ogre::LogManager::getSingletonPtr()->logMessage("OVR Initialized");
 
@@ -84,48 +90,46 @@ void Input::capture(){
 
 }
 
-void Input::setMouseListener(
-	boost::function<bool (const OIS::MouseEvent&)> callbackMouseMoved,
-	boost::function<
-		bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-	> callbackMousePressed,
-	boost::function<
-		bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-	> callbackMouseReleased
-){
-
-	mMouse = static_cast<OIS::Mouse*>(
-		mInputManager->createInputObject(OIS::OISMouse, true)
-	);
-	mCallbackMouseMoved = callbackMouseMoved;
-	mCallbackMousePressed = callbackMousePressed;
-	mCallbackMouseReleased = callbackMouseReleased;
-	mMouse->setEventCallback(this);
-
+void Input::addMouseMoveListener(MouseMoveListener *listener){
+	mMouseMoveListeners.insert(listener);
+}
+void Input::removeMouseMoveListener(MouseMoveListener *listener){
+	mMouseMoveListeners.erase(listener);
 }
 
-void Input::setKeyboardListener(
-	boost::function<bool (const OIS::KeyEvent&)> callbackKeyPressed,
-	boost::function<bool (const OIS::KeyEvent&)> callbackKeyReleased
-){
-
-	mKeyboard = static_cast<OIS::Keyboard*>(
-		mInputManager->createInputObject(OIS::OISKeyboard, true)
-	);
-	mCallbackKeyPressed = callbackKeyPressed;
-	mCallbackKeyReleased = callbackKeyReleased;
-	mKeyboard->setEventCallback(this);
-
+void Input::addMousePressListener(MousePressListener *listener){
+	mMousePressListener.insert(listener);
+}
+void Input::removeMousePressListener(MousePressListener *listener){
+	mMousePressListener.erase(listener);
 }
 
-void Input::setSensorFusionListener(
-	boost::function<bool (const Ogre::Vector3 &evt)> callbackHeadMoved
-){
+void Input::addMouseReleaseListener(MouseReleaseListener *listener){
+	mMouseReleaseListener.insert(listener);
+}
+void Input::removeMouseReleaseListener(MouseReleaseListener *listener){
+	mMouseReleaseListener.erase(listener);
+}
 
-	mSensorFusionDevice = new SensorFusionDevice();
-	mCallbackHeadMoved = callbackHeadMoved;
-	mSensorFusionDevice->setEventCallback(this);
+void Input::addKeyboardPressListener(KeyboardPressListener *listener){
+	mKeyboardPressListener.insert(listener);
+}
+void Input::removeKeyboardPressListener(KeyboardPressListener *listener){
+	mKeyboardPressListener.erase(listener);
+}
 
+void Input::addKeyboardReleaseListener(KeyboardReleaseListener *listener){
+	mKeyboardReleaseListener.insert(listener);
+}
+void Input::removeKeyboardReleaseListener(KeyboardReleaseListener *listener){
+	mKeyboardReleaseListener.erase(listener);
+}
+
+void Input::addHeadMoveListener(HeadMoveListener *listener){
+	mHeadMoveListener.insert(listener);
+}
+void Input::removeHeadMoveListener(HeadMoveListener *listener){
+	mHeadMoveListener.erase(listener);
 }
 
 bool Input::connectOculusRift(){
@@ -140,49 +144,58 @@ bool Input::hasOculusRift(){return mSensorFusionDevice->hasOculusRift();}
 
 bool Input::mouseMoved(const OIS::MouseEvent &arg){
 
-	if(mCallbackMouseMoved == NULL)
-		return true;
+	std::set<MouseMoveListener *>::iterator it;
+	for (it = mMouseMoveListeners.begin(); it != mMouseMoveListeners.end(); ++it)
+		(*it)->mouseMoved(arg);
 
-	return mCallbackMouseMoved(arg);
+	return true;
 
 }
 
 bool Input::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 
-	if(mCallbackMousePressed == NULL)
-		return true;
+	std::set<MousePressListener *>::iterator it;
+	for (it = mMousePressListener.begin(); it != mMousePressListener.end(); it++)
+		(*it)->mousePressed(arg, id);
 
-	return mCallbackMousePressed(arg, id);
+	return true;
 }
 
 bool Input::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 
-	if(mCallbackMouseReleased == NULL)
-		return true;
+	std::set<MouseReleaseListener *>::iterator it;
+	for (it = mMouseReleaseListener.begin(); it != mMouseReleaseListener.end(); it++)
+		(*it)->mouseReleased(arg, id);
 
-	return mCallbackMouseReleased(arg, id);
+	return true;
 }
 
 bool Input::keyPressed(const OIS::KeyEvent &arg){
 
-	if(mCallbackKeyPressed == NULL)
-		return true;
-	return mCallbackKeyPressed(arg);
+	std::set<KeyboardPressListener *>::iterator it;
+	for (it = mKeyboardPressListener.begin(); it != mKeyboardPressListener.end(); it++)
+		(*it)->keyPressed(arg);
+	
+	return true;
 
 }
 
 bool Input::keyReleased(const OIS::KeyEvent &arg){
 
-	if(mCallbackKeyReleased == NULL)
-		return true;
-	return mCallbackKeyReleased(arg);
+	std::set<KeyboardReleaseListener *>::iterator it;
+	for (it = mKeyboardReleaseListener.begin(); it != mKeyboardReleaseListener.end(); it++)
+		(*it)->keyReleased(arg);
+	
+	return true;
 
 }
 
 bool Input::headMoved(const Ogre::Vector3 &evt){
 
-	if(mCallbackHeadMoved == NULL)
-		return true;
-	return mCallbackHeadMoved(evt);
+	std::set<HeadMoveListener *>::iterator it;
+	for (it = mHeadMoveListener.begin(); it != mHeadMoveListener.end(); it++)
+		(*it)->headMoved(evt);
+
+	return true;
 
 }

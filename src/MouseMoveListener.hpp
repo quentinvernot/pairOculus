@@ -24,26 +24,26 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef __SENSORFUSIONLISTENER_HPP
-#define __SENSORFUSIONLISTENER_HPP
+#ifndef __MOUSEMOVELISTENER_HPP
+#define __MOUSEMOVELISTENER_HPP
 
-#include <OgreVector3.h>
-#include <OVR.h>
+#include <OISEvents.h>
+#include <OISMouse.h>
 
-/** A sensor fusion device listener.
+/** A mouse move event listener.
  *  Use it by extending it and implementing its methods.
- *  Set the callback with SensorFusionDevice::setEventCallback.
+ *  Set the callback with Input::addMouseMoveListener.
  */
-class SensorFusionListener{
+class MouseMoveListener{
 
 	public:
 		//Methods
 		/// Destructor.
-		virtual ~SensorFusionListener(){};
+		virtual ~MouseMoveListener(){};
 
-		/// Will be called when the head moves.
-		virtual bool headMoved(const Ogre::Vector3 &evt)=0;
+		/// Will be called when a bomb explodes.
+		virtual bool mouseMoved(const OIS::MouseEvent &arg)=0;
 
 };
 
-#endif //__SENSORFUSIONLISTENER_HPP
+#endif //__MOUSEMOVELISTENER_HPP

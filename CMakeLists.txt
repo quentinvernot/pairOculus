@@ -80,6 +80,11 @@ set(
 	./src/NetworkIO.hpp
 	./src/PlayerAnimation.hpp
 	./src/Input.hpp
+	./src/MouseMoveListener.hpp
+	./src/MousePressListener.hpp
+	./src/MouseReleaseListener.hpp
+	./src/KeyboardPressListener.hpp
+	./src/KeyboardReleaseListener.hpp
 	./src/RemotePlayer.hpp
 	./src/GameClient/Listener.hpp
 	./src/GameClient/Connector.hpp

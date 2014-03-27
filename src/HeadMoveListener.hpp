@@ -24,26 +24,26 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef __SENSORFUSIONLISTENER_HPP
-#define __SENSORFUSIONLISTENER_HPP
+#ifndef __HEADMOVELISTENER_HPP
+#define __HEADMOVELISTENER_HPP
 
 #include <OgreVector3.h>
 #include <OVR.h>
 
-/** A sensor fusion device listener.
+/** A sensor fusion head move listener.
  *  Use it by extending it and implementing its methods.
- *  Set the callback with SensorFusionDevice::setEventCallback.
+ *  Set the callback with Input::addHeadMoveListener.
  */
-class SensorFusionListener{
+class HeadMoveListener{
 
 	public:
 		//Methods
 		/// Destructor.
-		virtual ~SensorFusionListener(){};
+		virtual ~HeadMoveListener(){};
 
 		/// Will be called when the head moves.
 		virtual bool headMoved(const Ogre::Vector3 &evt)=0;
 
 };
 
-#endif //__SENSORFUSIONLISTENER_HPP
+#endif //__HEADMOVELISTENER_HPP

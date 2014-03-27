@@ -31,6 +31,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "CameraManager.hpp"
 #include "PlayerEventListener.hpp"
 
+#include "MouseMoveListener.hpp"
+#include "KeyboardPressListener.hpp"
+#include "KeyboardReleaseListener.hpp"
+#include "HeadMoveListener.hpp"
+
 #include <OgreCamera.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
@@ -49,7 +54,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *  	This player takes its inputs from the mouse, keyboard and the Oculus 
  *  	Rift. It also manages the camera's position and orientation.
  */
-class LocalPlayer : public OgrePlayer{
+class LocalPlayer : 
+	public OgrePlayer,
+	public MouseMoveListener,
+	public KeyboardPressListener,
+	public KeyboardReleaseListener,
+	public HeadMoveListener
+{
 
 	public:
 		//Methods
@@ -76,17 +87,13 @@ class LocalPlayer : public OgrePlayer{
 		void lookAt(Ogre::Vector3 vec);
 
 		/// Treats the mouse's movements.
-		bool injectMouseMove(const OIS::MouseEvent &arg);
-		/// Treats the mouse's click.
-		bool injectMouseDown(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		/// Treats the mouse's click's release.
-		bool injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+		bool mouseMoved(const OIS::MouseEvent &arg);
 		/// Treats the keyboard's pressed keys.
-		bool injectKeyDown(const OIS::KeyEvent &arg);
+		bool keyPressed(const OIS::KeyEvent &arg);
 		/// Treats the keyboard's released keys.
-		bool injectKeyUp(const OIS::KeyEvent &arg);
+		bool keyReleased(const OIS::KeyEvent &arg);
 		/// Treats the Oculus Rift's head move.
-		bool injectHeadMove(const Ogre::Vector3 &evt);
+		bool headMoved(const Ogre::Vector3 &evt);
 
 		/** Moves the player at each frame and adapt the graphics.
 		 *  \remarks

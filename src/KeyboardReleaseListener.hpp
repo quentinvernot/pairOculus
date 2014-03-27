@@ -24,26 +24,26 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef __SENSORFUSIONLISTENER_HPP
-#define __SENSORFUSIONLISTENER_HPP
+#ifndef __KEYBOARDRELEASELISTENER_HPP
+#define __KEYBOARDRELEASELISTENER_HPP
 
-#include <OgreVector3.h>
-#include <OVR.h>
+#include <OISEvents.h>
+#include <OISKeyboard.h>
 
-/** A sensor fusion device listener.
+/** A keyboard key release event listener.
  *  Use it by extending it and implementing its methods.
- *  Set the callback with SensorFusionDevice::setEventCallback.
+ *  Set the callback with Input::addKeyboardReleaseListener.
  */
-class SensorFusionListener{
+class KeyboardReleaseListener{
 
 	public:
 		//Methods
 		/// Destructor.
-		virtual ~SensorFusionListener(){};
+		virtual ~KeyboardReleaseListener(){};
 
-		/// Will be called when the head moves.
-		virtual bool headMoved(const Ogre::Vector3 &evt)=0;
+		/// Will be called when a bomb explodes.
+		virtual bool keyReleased(const OIS::KeyEvent &arg)=0;
 
 };
 
-#endif //__SENSORFUSIONLISTENER_HPP
+#endif //__KEYBOARDRELEASELISTENER_HPP

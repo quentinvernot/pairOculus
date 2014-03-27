@@ -52,8 +52,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
 
 #include "CameraManager.hpp"
-#include "Input.hpp"
 #include "GameWindow.hpp"
+
+#include "Input.hpp"
 
 #include "LocalPlayer.hpp"
 #include "RemotePlayer.hpp"
@@ -68,7 +69,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /** The main class. Handles the game function and logic.
  * 
  */
-class Game : public Ogre::FrameListener, public PlayerEventListener{
+class Game : 
+	public Ogre::FrameListener,
+	public PlayerEventListener,
+	public KeyboardPressListener
+{
 
 	public:
 		//Methods
@@ -82,18 +87,8 @@ class Game : public Ogre::FrameListener, public PlayerEventListener{
 		/// Signals the game to stop.
 		void shutDown();
 
-		/// Injects mouse move inputs into the game.
-		bool injectMouseMove(const OIS::MouseEvent &arg);
-		/// Injects mouse button down inputs into the game.
-		bool injectMouseDown(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		/// Injects mouse button up inputs into the game.
-		bool injectMouseUp(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 		/// Injects keyboard key down inputs into the game.
-		bool injectKeyDown(const OIS::KeyEvent &arg);
-		/// Injects keyboard key up inputs into the game.
-		bool injectKeyUp(const OIS::KeyEvent &arg);
-		/// Injects sensor fusion head move inputs into the game.
-		bool injectHeadMove(const Ogre::Vector3 &evt);
+		bool keyPressed(const OIS::KeyEvent &arg);
 
 		/// Injects client close event into the game.
 		void injectClientClose();

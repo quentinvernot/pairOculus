@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __INPUT_HPP
 #define __INPUT_HPP
 
-#include <boost/function.hpp>
+#include <set>
 
 #include <OgreLogManager.h>
 #include <OgreSceneManager.h>
@@ -38,6 +38,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <OISInputManager.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
+
+#include "MouseMoveListener.hpp"
+#include "MousePressListener.hpp"
+#include "MouseReleaseListener.hpp"
+#include "KeyboardPressListener.hpp"
+#include "KeyboardReleaseListener.hpp"
+#include "HeadMoveListener.hpp"
 
 #include "SensorFusionDevice.hpp"
 #include "SensorFusionListener.hpp"
@@ -67,25 +74,20 @@ class Input :
 		/// Captures the current inputs and sends callbacks if they changed.
 		void capture();
 
-		/// Sets the callback functions in the event of a mouse input.
-		void setMouseListener(
-			boost::function<bool (const OIS::MouseEvent&)> _callbackMouseMoved,
-			boost::function<
-				bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-			> _callbackMousePressed,
-			boost::function<
-				bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-			> _callbackMouseReleased
-		);
-		/// Sets the callback functions in the event of a keyboard input.
-		void setKeyboardListener(
-			boost::function<bool (const OIS::KeyEvent&)> _callbackKeyPressed,
-			boost::function<bool (const OIS::KeyEvent&)> _callbackKeyReleased
-		);
-		/// Sets the callback functions in the event of a sensor fusion input.
-		void setSensorFusionListener(
-			boost::function<bool (const Ogre::Vector3 &evt)> callbackHeadMoved
-		);
+		void addMouseMoveListener(MouseMoveListener *listener);
+		void removeMouseMoveListener(MouseMoveListener *listener);
+		void addMousePressListener(MousePressListener *listener);
+		void removeMousePressListener(MousePressListener *listener);
+		void addMouseReleaseListener(MouseReleaseListener *listener);
+		void removeMouseReleaseListener(MouseReleaseListener *listener);
+
+		void addKeyboardPressListener(KeyboardPressListener *listener);
+		void removeKeyboardPressListener(KeyboardPressListener *listener);
+		void addKeyboardReleaseListener(KeyboardReleaseListener *listener);
+		void removeKeyboardReleaseListener(KeyboardReleaseListener *listener);
+
+		void addHeadMoveListener(HeadMoveListener *listener);
+		void removeHeadMoveListener(HeadMoveListener *listener);
 
 		/// Asks the SensorFusionDevice to try to connect to the Oculus Rift.
 		bool connectOculusRift();
@@ -115,27 +117,17 @@ class Input :
 
 		/// The mouse device.
 		OIS::Mouse *mMouse;
-		/// Callback function called when the mouse moves.
-		boost::function<bool (const OIS::MouseEvent&)> mCallbackMouseMoved;
-		/// Callback function called when a mouse button is pressed.
-		boost::function<
-			bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-		> mCallbackMousePressed;
-		/// Callback function called when a mouse button is released.
-		boost::function<
-			bool (const OIS::MouseEvent&, OIS::MouseButtonID)
-		> mCallbackMouseReleased;
-
 		/// The keyboard device.
 		OIS::Keyboard *mKeyboard;
-		/// Callback function called when a key is pressed.
-		boost::function<bool (const OIS::KeyEvent&)> mCallbackKeyPressed;
-		/// Callback function called when a key is released.
-		boost::function<bool (const OIS::KeyEvent&)> mCallbackKeyReleased;
-
 		/// The sensor fusion device.
 		SensorFusionDevice *mSensorFusionDevice;
-		boost::function<bool (const  Ogre::Vector3 &evt)> mCallbackHeadMoved;
+
+		std::set<MouseMoveListener *> mMouseMoveListeners;
+		std::set<MousePressListener *> mMousePressListener;
+		std::set<MouseReleaseListener *> mMouseReleaseListener;
+		std::set<KeyboardPressListener *> mKeyboardPressListener;
+		std::set<KeyboardReleaseListener *> mKeyboardReleaseListener;
+		std::set<HeadMoveListener *> mHeadMoveListener;
 
 };
 
