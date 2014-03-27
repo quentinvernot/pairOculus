@@ -40,8 +40,8 @@ OculusCamera::OculusCamera(Ogre::Camera *leftCam, Ogre::Camera *rightCam):
 	setRightCamera(rightCam);
 	mIPD = mStereoConfig->GetIPD() * 0.5f;
 	mBaseOffset.x = mIPD/2;
-	mBaseOffset.y = 0.55;
-	mBaseOffset.z = 0.75;
+	mBaseOffset.y = 0.055;
+	mBaseOffset.z = 0.075;
 	setPosition(mNodePosition);
 	applyOffset();
 
@@ -116,13 +116,13 @@ void OculusCamera::lookAt(Ogre::Vector3 vec){
 #include <iostream>
 void OculusCamera::increaseIPD(){
 	mIPD += 0.001/2;
-	mBaseOffset.x = mIPD/4;
+	mBaseOffset.x = mIPD/2;
 	std::cout << mIPD << std::endl;
 }
 
 void OculusCamera::decreaseIPD(){
 	mIPD -= 0.001;
-	mBaseOffset.x = mIPD/4;
+	mBaseOffset.x = mIPD/2;
 	std::cout << mIPD << std::endl;
 }
 
@@ -180,6 +180,7 @@ void OculusCamera::applyOffset(){
 	mCameraOffset = mRightCamera->getDirection() * mBaseOffset.z;
 
 	mRightCamera->move(mCameraOffset);
+
 	mCameraOffset += 2 * mRightCamera->getRight() * mBaseOffset.x;
 	mLeftCamera->move(mCameraOffset);
 
