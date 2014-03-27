@@ -34,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "MouseMoveListener.hpp"
 #include "KeyboardPressListener.hpp"
 #include "KeyboardReleaseListener.hpp"
-#include "HeadMoveListener.hpp"
+#include "SensorFusionListener.hpp"
 
 #include <OgreCamera.h>
 #include <OgreLogManager.h>
@@ -59,7 +59,7 @@ class LocalPlayer :
 	public MouseMoveListener,
 	public KeyboardPressListener,
 	public KeyboardReleaseListener,
-	public HeadMoveListener
+	public SensorFusionListener
 {
 
 	public:

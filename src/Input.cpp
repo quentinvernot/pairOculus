@@ -98,38 +98,38 @@ void Input::removeMouseMoveListener(MouseMoveListener *listener){
 }
 
 void Input::addMousePressListener(MousePressListener *listener){
-	mMousePressListener.insert(listener);
+	mMousePressListeners.insert(listener);
 }
 void Input::removeMousePressListener(MousePressListener *listener){
-	mMousePressListener.erase(listener);
+	mMousePressListeners.erase(listener);
 }
 
 void Input::addMouseReleaseListener(MouseReleaseListener *listener){
-	mMouseReleaseListener.insert(listener);
+	mMouseReleaseListeners.insert(listener);
 }
 void Input::removeMouseReleaseListener(MouseReleaseListener *listener){
-	mMouseReleaseListener.erase(listener);
+	mMouseReleaseListeners.erase(listener);
 }
 
 void Input::addKeyboardPressListener(KeyboardPressListener *listener){
-	mKeyboardPressListener.insert(listener);
+	mKeyboardPressListeners.insert(listener);
 }
 void Input::removeKeyboardPressListener(KeyboardPressListener *listener){
-	mKeyboardPressListener.erase(listener);
+	mKeyboardPressListeners.erase(listener);
 }
 
 void Input::addKeyboardReleaseListener(KeyboardReleaseListener *listener){
-	mKeyboardReleaseListener.insert(listener);
+	mKeyboardReleaseListeners.insert(listener);
 }
 void Input::removeKeyboardReleaseListener(KeyboardReleaseListener *listener){
-	mKeyboardReleaseListener.erase(listener);
+	mKeyboardReleaseListeners.erase(listener);
 }
 
-void Input::addHeadMoveListener(HeadMoveListener *listener){
-	mHeadMoveListener.insert(listener);
+void Input::addSensorFusionListener(SensorFusionListener *listener){
+	mSensorFusionListeners.insert(listener);
 }
-void Input::removeHeadMoveListener(HeadMoveListener *listener){
-	mHeadMoveListener.erase(listener);
+void Input::removeSensorFusionListener(SensorFusionListener *listener){
+	mSensorFusionListeners.erase(listener);
 }
 
 bool Input::connectOculusRift(){
@@ -155,7 +155,7 @@ bool Input::mouseMoved(const OIS::MouseEvent &arg){
 bool Input::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 
 	std::set<MousePressListener *>::iterator it;
-	for (it = mMousePressListener.begin(); it != mMousePressListener.end(); it++)
+	for (it = mMousePressListeners.begin(); it != mMousePressListeners.end(); it++)
 		(*it)->mousePressed(arg, id);
 
 	return true;
@@ -164,7 +164,7 @@ bool Input::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 bool Input::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 
 	std::set<MouseReleaseListener *>::iterator it;
-	for (it = mMouseReleaseListener.begin(); it != mMouseReleaseListener.end(); it++)
+	for (it = mMouseReleaseListeners.begin(); it != mMouseReleaseListeners.end(); it++)
 		(*it)->mouseReleased(arg, id);
 
 	return true;
@@ -173,7 +173,7 @@ bool Input::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 bool Input::keyPressed(const OIS::KeyEvent &arg){
 
 	std::set<KeyboardPressListener *>::iterator it;
-	for (it = mKeyboardPressListener.begin(); it != mKeyboardPressListener.end(); it++)
+	for (it = mKeyboardPressListeners.begin(); it != mKeyboardPressListeners.end(); it++)
 		(*it)->keyPressed(arg);
 	
 	return true;
@@ -183,7 +183,7 @@ bool Input::keyPressed(const OIS::KeyEvent &arg){
 bool Input::keyReleased(const OIS::KeyEvent &arg){
 
 	std::set<KeyboardReleaseListener *>::iterator it;
-	for (it = mKeyboardReleaseListener.begin(); it != mKeyboardReleaseListener.end(); it++)
+	for (it = mKeyboardReleaseListeners.begin(); it != mKeyboardReleaseListeners.end(); it++)
 		(*it)->keyReleased(arg);
 	
 	return true;
@@ -192,8 +192,8 @@ bool Input::keyReleased(const OIS::KeyEvent &arg){
 
 bool Input::headMoved(const Ogre::Vector3 &evt){
 
-	std::set<HeadMoveListener *>::iterator it;
-	for (it = mHeadMoveListener.begin(); it != mHeadMoveListener.end(); it++)
+	std::set<SensorFusionListener *>::iterator it;
+	for (it = mSensorFusionListeners.begin(); it != mSensorFusionListeners.end(); it++)
 		(*it)->headMoved(evt);
 
 	return true;

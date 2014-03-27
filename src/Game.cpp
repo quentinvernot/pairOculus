@@ -492,7 +492,7 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent &evt){
 			mInput->addMouseMoveListener(mLocalPlayer);
 			mInput->addKeyboardPressListener(mLocalPlayer);
 			mInput->addKeyboardReleaseListener(mLocalPlayer);
-			mInput->addHeadMoveListener(mLocalPlayer);
+			mInput->addSensorFusionListener(mLocalPlayer);
 
 		}
 

@@ -44,7 +44,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "MouseReleaseListener.hpp"
 #include "KeyboardPressListener.hpp"
 #include "KeyboardReleaseListener.hpp"
-#include "HeadMoveListener.hpp"
 
 #include "SensorFusionDevice.hpp"
 #include "SensorFusionListener.hpp"
@@ -74,20 +73,32 @@ class Input :
 		/// Captures the current inputs and sends callbacks if they changed.
 		void capture();
 
+		/// Adds a MouseMoveListener.
 		void addMouseMoveListener(MouseMoveListener *listener);
+		/// Removes a MouseMoveListener.
 		void removeMouseMoveListener(MouseMoveListener *listener);
+		/// Adds a MousePressListener.
 		void addMousePressListener(MousePressListener *listener);
+		/// Removes a MousePressListener.
 		void removeMousePressListener(MousePressListener *listener);
+		/// Adds a MouseReleaseListener.
 		void addMouseReleaseListener(MouseReleaseListener *listener);
+		/// Removes a MouseReleaseListener.
 		void removeMouseReleaseListener(MouseReleaseListener *listener);
 
+		/// Adds a KeyboardPressListener.
 		void addKeyboardPressListener(KeyboardPressListener *listener);
+		/// Removes a KeyboardPressListener.
 		void removeKeyboardPressListener(KeyboardPressListener *listener);
+		/// Adds a KeyboardReleaseListener.
 		void addKeyboardReleaseListener(KeyboardReleaseListener *listener);
+		/// Removes a KeyboardReleaseListener.
 		void removeKeyboardReleaseListener(KeyboardReleaseListener *listener);
 
-		void addHeadMoveListener(HeadMoveListener *listener);
-		void removeHeadMoveListener(HeadMoveListener *listener);
+		/// Adds a SensorFusionListener.
+		void addSensorFusionListener(SensorFusionListener *listener);
+		/// Removes a SensorFusionListener.
+		void removeSensorFusionListener(SensorFusionListener *listener);
 
 		/// Asks the SensorFusionDevice to try to connect to the Oculus Rift.
 		bool connectOculusRift();
@@ -122,12 +133,18 @@ class Input :
 		/// The sensor fusion device.
 		SensorFusionDevice *mSensorFusionDevice;
 
+		/// List of all the registered MouseMoveListeners.
 		std::set<MouseMoveListener *> mMouseMoveListeners;
-		std::set<MousePressListener *> mMousePressListener;
-		std::set<MouseReleaseListener *> mMouseReleaseListener;
-		std::set<KeyboardPressListener *> mKeyboardPressListener;
-		std::set<KeyboardReleaseListener *> mKeyboardReleaseListener;
-		std::set<HeadMoveListener *> mHeadMoveListener;
+		/// List of all the registered MousePressListener.
+		std::set<MousePressListener *> mMousePressListeners;
+		/// List of all the registered MouseReleaseListener.
+		std::set<MouseReleaseListener *> mMouseReleaseListeners;
+		/// List of all the registered KeyboardPressListener.
+		std::set<KeyboardPressListener *> mKeyboardPressListeners;
+		/// List of all the registered KeyboardReleaseListener.
+		std::set<KeyboardReleaseListener *> mKeyboardReleaseListeners;
+		/// List of all the registered SensorFusionListener.
+		std::set<SensorFusionListener *> mSensorFusionListeners;
 
 };
 
