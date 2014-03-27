@@ -124,7 +124,7 @@ void OgrePlayer::generateHitbox(
 
 	mBody->disableDeactivation();
 	mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
-	mBody->getBulletRigidBody()->setGravity(btVector3(0, 0, 0));
+	mBody->getBulletRigidBody()->setGravity(btVector3(0, -98.1 * 2, 0));
 
 }
 
@@ -163,6 +163,8 @@ void OgrePlayer::computeVelocity(const Ogre::FrameEvent &evt){
 	if(mGoingRight || mAccelRight)
 		mVelocity += mAccelRight * getRightDirection();
 
+	mVelocity.y = mBody->getLinearVelocity().y;
+	
 	if(mGoingUp || mAccelUp)
 		mVelocity += mAccelUp * getUpDirection();
 	if(mGoingDown || mAccelDown)
@@ -182,7 +184,7 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 			mY = mBody->getSceneNode()->getPosition().y;
 			mZ = mBody->getSceneNode()->getPosition().z;
 		}
-		
+
 		mX += mVelocity.x * evt.timeSinceLastFrame * mTopSpeed;
 		mY += mVelocity.y * evt.timeSinceLastFrame * mTopSpeed;
 		mZ += mVelocity.z * evt.timeSinceLastFrame * mTopSpeed;
@@ -206,7 +208,10 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 			)
 		);
 
-		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
+		Ogre::Vector3 physicsVelocity(Ogre::Vector3::ZERO);
+		//physicsVelocity.y = mBody->getLinearVelocity().y;
+
+		mBody->setLinearVelocity(physicsVelocity);
 
 	}
 
