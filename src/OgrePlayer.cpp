@@ -2,7 +2,7 @@
 This source file is part of pairOculus, a student project aiming at creating a
 simple 3D multiplayer game for the Oculus Rift.
 
-Repository can be found here : https://github.com/Target6/pairOculus 
+Repository can be found here : https://github.com/Target6/pairOculus
 
 Copyright (c) 2013 Target6
 
@@ -163,8 +163,8 @@ void OgrePlayer::computeVelocity(const Ogre::FrameEvent &evt){
 	if(mGoingRight || mAccelRight)
 		mVelocity += mAccelRight * getRightDirection();
 
-	mVelocity.y = mBody->getLinearVelocity().y;
-	
+	//mVelocity.y = mBody->getLinearVelocity().y;
+
 	if(mGoingUp || mAccelUp)
 		mVelocity += mAccelUp * getUpDirection();
 	if(mGoingDown || mAccelDown)
@@ -196,7 +196,7 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 		mX += mPositionCorrection.x;
 		mY += mPositionCorrection.y;
 		mZ += mPositionCorrection.z;
-	
+
 	}
 
 	if(mGraphicsSetUp){
@@ -208,10 +208,7 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 			)
 		);
 
-		Ogre::Vector3 physicsVelocity(Ogre::Vector3::ZERO);
-		//physicsVelocity.y = mBody->getLinearVelocity().y;
-
-		mBody->setLinearVelocity(physicsVelocity);
+		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
 
 	}
 
