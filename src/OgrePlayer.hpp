@@ -115,17 +115,17 @@ class OgrePlayer : public Player{
 		Ogre::Entity *mEntity;
 
 		/// Current amount of forward momentum.
-		int mAccelForward;
+		double mAccelForward;
 		/// Current amount of backward momentum.
-		int mAccelBack;
+		double mAccelBack;
 		/// Current amount of leftward momentum.
-		int mAccelLeft;
+		double mAccelLeft;
 		/// Current amount of rightward momentum.
-		int mAccelRight;
+		double mAccelRight;
 		/// Current amount of upward momentum.
-		int mAccelUp;
+		double mAccelUp;
 		/// Current amount of downward momentum.
-		int mAccelDown;
+		double mAccelDown;
 
 		/// Current velocity vector.
 		Ogre::Vector3 mVelocity;

@@ -103,9 +103,9 @@ class Player{
 		std::string mNickname;
 
 		/// The player's maximum speed without outside forces (such as gravity).
-		int mTopSpeed;
+		double mTopSpeed;
 		/// The player's maximum acceleration without outside forces.
-		int mTopAccel;
+		double mTopAccel;
 
 		/// Flag indicating if the player is moving fast (e.g. running).
 		bool mFastMove;

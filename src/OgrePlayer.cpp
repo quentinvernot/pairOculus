@@ -52,7 +52,7 @@ OgrePlayer::OgrePlayer(
 	mBombCooldown(1),
 	mBombCooldownLeft(0)
 {
-	mTopSpeed = 10;
+	mTopSpeed = 5;
 }
 
 void OgrePlayer::injectPlayerInput(NetworkMessage::PlayerInput *message){
@@ -124,29 +124,32 @@ void OgrePlayer::generateHitbox(
 
 	mBody->disableDeactivation();
 	mBody->getBulletRigidBody()->setAngularFactor(btVector3(0, 0, 0));
-	mBody->getBulletRigidBody()->setGravity(btVector3(0, -98.1 * 2, 0));
+	//mBody->getBulletRigidBody()->setGravity(btVector3(0, 0, 0));
 
 }
 
 void OgrePlayer::computeAcceleration(){
 
-	if(mGoingForward && mAccelForward < mTopAccel) mAccelForward += 1;
-	else if(!mGoingForward && mAccelForward > 0) mAccelForward -= 1;
+	if(mGoingForward) mAccelForward = 1;
+	else if(!mGoingForward) mAccelForward = 0;
 
-	if(mGoingLeft && mAccelLeft < mTopAccel) mAccelLeft += 1;
-	else if(!mGoingLeft && mAccelLeft > 0) mAccelLeft -= 1;
+	if(mGoingLeft) mAccelLeft = 1;
+	else if(!mGoingLeft) mAccelLeft = 0;
 
-	if(mGoingBack && mAccelBack < mTopAccel) mAccelBack += 1;
-	else if(!mGoingBack && mAccelBack > 0) mAccelBack -= 1;
+	if(mGoingBack) mAccelBack = 1;
+	else if(!mGoingBack) mAccelBack = 0;
 
-	if(mGoingRight && mAccelRight < mTopAccel) mAccelRight += 1;
-	else if(!mGoingRight && mAccelRight > 0) mAccelRight -= 1;
+	if(mGoingRight) mAccelRight = 1;
+	else if(!mGoingRight) mAccelRight = 0;
 
-	if(mGoingUp && mAccelUp < mTopAccel) mAccelUp += 1;
-	else if(!mGoingUp && mAccelUp > 0) mAccelUp -= 1;
+	if(mGoingUp){
+		mAccelUp = 1;
+		mAccelDown = 0;
+	}
+	else if(!mGoingUp) mAccelUp = 0;
 
-	if(mGoingDown && mAccelDown < mTopAccel) mAccelDown += 1;
-	else if(!mGoingDown && mAccelDown > 0) mAccelDown -= 1;
+	if(mGoingDown) mAccelDown = 1;
+	else if(!mGoingDown) mAccelDown = 0;
 
 }
 
@@ -163,8 +166,6 @@ void OgrePlayer::computeVelocity(const Ogre::FrameEvent &evt){
 	if(mGoingRight || mAccelRight)
 		mVelocity += mAccelRight * getRightDirection();
 
-	//mVelocity.y = mBody->getLinearVelocity().y;
-
 	if(mGoingUp || mAccelUp)
 		mVelocity += mAccelUp * getUpDirection();
 	if(mGoingDown || mAccelDown)
@@ -179,14 +180,13 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 	}
 	else{
 
-		if(mGraphicsSetUp){
+		if(mGraphicsSetUp && !mIsDead && !mHasWon){
 			mX = mBody->getSceneNode()->getPosition().x;
 			mY = mBody->getSceneNode()->getPosition().y;
 			mZ = mBody->getSceneNode()->getPosition().z;
 		}
 
 		mX += mVelocity.x * evt.timeSinceLastFrame * mTopSpeed;
-		mY += mVelocity.y * evt.timeSinceLastFrame * mTopSpeed;
 		mZ += mVelocity.z * evt.timeSinceLastFrame * mTopSpeed;
 
 		mYaw += mYawCorrection.valueDegrees();
@@ -201,14 +201,23 @@ void OgrePlayer::computeNodePosition(const Ogre::FrameEvent &evt){
 
 	if(mGraphicsSetUp){
 
-		mBody->getBulletRigidBody()->proceedToTransform(
-			btTransform(
-				btQuaternion(Ogre::Degree(mYaw + 180).valueRadians(), 0, 0),
-				btVector3(mX, mY, mZ)
-			)
-		);
+		btTransform tr;
+		tr.setIdentity();
+		tr.setRotation(btQuaternion(Ogre::Degree(mYaw + 180).valueRadians(), 0, 0));
+		tr.setOrigin(btVector3(mX, mY, mZ));
 
-		mBody->setLinearVelocity(Ogre::Vector3::ZERO);
+		mBody->getBulletRigidBody()->setWorldTransform(tr);
+
+		if(!mIsDead && !mHasWon)
+			mBody->setLinearVelocity(
+				Ogre::Vector3(
+					mVelocity.x * mTopSpeed,
+					mBody->getLinearVelocity().y,
+					mVelocity.z * mTopSpeed
+				)
+			);
+		else
+			mBody->setLinearVelocity(Ogre::Vector3::ZERO);
 
 	}
 
