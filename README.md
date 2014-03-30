@@ -13,7 +13,7 @@ You will need the following libraries to build the project :
 ## Building the project
 This project uses CMake as a build system. Use it to configure and generate the Makefile, then build the project with make.
 
-Note that on Windows, LibOVR is currently (2014-03-27) only suppports vc++.  
+Note that on Windows, LibOVR currently (2014-03-27) only suppports vc++.  
 A way to compile it with mingw can be found [here](https://developer.oculusvr.com/forums/viewtopic.php?t=2282).
 
 ## Documentation
