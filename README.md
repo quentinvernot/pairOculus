@@ -7,8 +7,10 @@ You will need the following libraries to build the project :
 * Boost 1.52 or better
 * OGRE 3D 1.8.1
 * Bullet 2.82
-* OgreBullet, can be found here : https://bitbucket.org/alexeyknyshev/ogrebullet
+* OgreBullet, can be found [here](https://bitbucket.org/alexeyknyshev/ogrebullet).
 * LibOVR (from the Oculus Rift's SDK) 0.2.5c
+
+See HOWTO.md for more details.
 
 ## Building the project
 This project uses CMake as a build system. Use it to configure and generate the Makefile, then build the project with make.
